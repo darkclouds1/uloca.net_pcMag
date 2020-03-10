@@ -1,0 +1,15 @@
+
+
+공공데이타	2018/07/18
+애플리케이션을 생성하였습니다
+
+PlusFriendAPI
+
+네이티브 앱 키
+56922e2ad4b815f59d05810c5b9449f4
+REST API 키
+17bf629324b4150707ea1a88a5746439
+JavaScript 키
+40f2d54f881315625f678a47d296cd84
+Admin 키
+a7e7c962f1c5a60df4dbde3a3822499a

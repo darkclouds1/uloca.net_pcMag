@@ -1,0 +1,171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2017-11-02 17:34+0900\n"
+"PO-Revision-Date: 2017-11-02 17:34+0900\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-KeywordsList: _;__;gettext;gettext_noop\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: confirm.php:4 confirm.php:6 editor.php:80 editor.php:81 editor.php:88
+#: editor.php:89
+msgid "Password"
+msgstr "パスワード"
+
+#: confirm.php:8
+msgid "※ Your password is incorrect."
+msgstr "※ パスワードが間違っています。"
+
+#: confirm.php:15
+msgid "Document"
+msgstr "本文"
+
+#: confirm.php:17 document.php:94 editor.php:112
+msgid "List"
+msgstr "リスト"
+
+#: confirm.php:20
+msgid "Password confirm"
+msgstr "パスワードの確認"
+
+#: document.php:20 editor.php:76 editor.php:77 list.php:32
+msgid "Author"
+msgstr "投稿者"
+
+#: document.php:24
+msgid "Date"
+msgstr "投稿日"
+
+#: document.php:28
+msgid "Views"
+msgstr "閲覧数"
+
+#: document.php:41
+msgid "Like"
+msgstr "いいね"
+
+#: document.php:42
+msgid "Unlike"
+msgstr "いやだ"
+
+#: document.php:45
+msgid "Print"
+msgstr "印刷"
+
+#: document.php:52
+#, php-format
+msgid "Download %s"
+msgstr "ダウンロード %s"
+
+#: document.php:99 list.php:69 list.php:85 list2.php:14 list2.php:30
+msgid "Edit Link"
+msgstr "リンクの編集"
+
+#: document.php:100 list.php:73 list.php:87 list2.php:18 list2.php:32
+msgid "Are you sure you want to delete?"
+msgstr "削除しますか？"
+
+#: document.php:100
+msgid "Delete Link"
+msgstr "リンクを削除"
+
+#: document.php:107 list.php:113
+msgid "KBoard is the best community software available for WordPress"
+msgstr "Kboardはワードプレスで使用可能なコミュニティソフトウェアです。"
+
+#: editor.php:15 editor.php:16 latest.php:10 list.php:31 list.php:49
+msgid "Title"
+msgstr "タイトル"
+
+#: editor.php:20 editor.php:21
+msgid "Link"
+msgstr "リンク"
+
+#: editor.php:25
+msgid "Target"
+msgstr "ターゲット"
+
+#: editor.php:28
+msgid "blank"
+msgstr "blank"
+
+#: editor.php:29
+msgid "self"
+msgstr "self"
+
+#: editor.php:35
+msgid "Options"
+msgstr "オプション"
+
+#: editor.php:37
+msgid "Secret"
+msgstr "非公開"
+
+#: editor.php:39 list.php:58
+msgid "Notice"
+msgstr "お知らせ"
+
+#: editor.php:47 editor.php:50 editor.php:61 editor.php:64 latest.php:9
+#: list.php:48
+msgid "Category"
+msgstr "カテゴリ"
+
+#: editor.php:50 editor.php:64
+msgid "Select"
+msgstr "選択"
+
+#: editor.php:103
+msgid "CAPTCHA"
+msgstr "CAPTCHA"
+
+#: editor.php:111 editor.php:114
+msgid "Back"
+msgstr "前へ"
+
+#: editor.php:119 list.php:18
+msgid "Register Link"
+msgstr "登録リンク"
+
+#: functions.php:9
+msgid "Missing link address."
+msgstr "リンク先がない"
+
+#: functions.php:10
+msgid "There is no more data to display."
+msgstr "表示するデータはもうありません。"
+
+#: latest.php:8 list.php:47
+msgid "Number"
+msgstr "手順"
+
+#: latest.php:11 list.php:50
+msgid "Source"
+msgstr "出所"
+
+#: latest.php:12 list.php:51
+msgid "Article Date"
+msgstr "記事の日付"
+
+#: latest.php:13 list.php:52 list.php:93 list2.php:38
+msgid "Shortcuts"
+msgstr "ショートカット"
+
+#: list.php:19 list.php:30
+msgid "All"
+msgstr "全体"
+
+#: list.php:73 list.php:87 list2.php:18 list2.php:32
+msgid "Delete link"
+msgstr "リンクを削除"
+
+#: list.php:108
+msgid "View More"
+msgstr "もっと見る"

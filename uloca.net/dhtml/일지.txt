@@ -1,0 +1,391 @@
+
+
+---------------------------------------------------------------------------
+live server	10G 광아우토반 FullSSD 비즈니스
+서버 환경		UTF-8 (PHP7.0, mariadb-10.0.x)	2000M
+서버아이피		uws7-056 | 183.111.138.214
+uloca22/w3m69p21!@
+---------------------------------------------------------------------------
+test server	10G 광아우토반 FullSSD 절약형
+서버 환경		UTF-8 (PHP7.0, mariadb-10.0.x)	200M
+서버아이피		uws7-066 | 183.110.224.156
+
+uloca23.cafe24.com
+uloca23/w3m69p21!@/ ftp/db/uloca23090(
+uloca23		data.go.kr	jayhmj/ w3m69p21!@
+
+정순장 ip	= 222.108.91.28
+my ip = 39.112.158.39
+
+사전규격/입,낙찰	aQAvWmy3XF13lanl8ELaaOBq%2Fw4W1OHXY9b40KiZQ1hZuMX0Cv6B3ickvm5tzWMcMaw0VsYbRayxIwSVCAPybw%3D%3D
+
+========= Data 보완 =======================================================
+최종 레코드
+openBidInfo	1365194		20160408130 00 2016년 공원 내 수목관리공사(동탄산업단지권)
+openBidSeq	78225635	20160623914 00 4108688513 191504000 87.403 2016-06-24 09:36:27 낙찰하한선 미달 219853
+
+insert 속도가 엄청 느려짐
+
+select * from openBidSeq_2018 where bidNtceNo='20181031146' 20181014956' '20181011209' '20180919237' '20181035977' '20181100087' '20181026151'
+
+select * from openBidInfo where bidNtceNo='20181014044'
+$numOfRows = 990; 상한 변경
+
+
+
+select count(*),substr(opengDt,1,10) from openBidInfo where opengDt > '2018-11-21' group by substr(opengDt,1,10)
+select count(*),substr(bidNtceDt,1,10) from openBidInfo where bidNtceDt > '2018-11-21' group by substr(bidNtceDt,1,10)
+
+insert into openBidSeq ( `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` ) 
+(Select `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` from openBidSeq_tmp)
+
+아마 2018-10-12 부터 일일자료수집 다시 실행 할것
+
+	이후 정상
+	방식 변경요		openBidSeq_tmp 로 만든후 -> openBidSeq 로 추가 후 tmp 삭제
+
+insert into openBidSeq_tmp ( `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` ) 
+values ('20181001852','00','1292699309','287000','97.042','','2018-10-19 13:41:20','1','1545602')
+
+========= 2019-01-04 =======================================================
+========= 2019-01-03 =======================================================
+========= 2019-01-02 =======================================================
+모바일에서 키워드 검색후에 낙찰결과, 낙찰기업 버튼 클릭 시  조회 안되고, 기업링크도 안되네요.
+
+========= 2019-01-01 =======================================================
+statistics	log 수정
+pc에서 하다가 10회넘어면 태블릿에서 10번하고 또 휴대폰에서 10번하고 하면 하루에 최대 20-30회 무료 이용 되겠네. 
+로그인 안하면 ip 주소나 세션 체크 하나 마찬가지..
+mobile graph 너무 촘촘함....
+
+========= 2018-12-31 =======================================================
+간단하게 바꿨어요.  로그인 없이 검색하면 세션처리해서 검색 10회 넘어가면 회원가입 유도하고, 회원 가입뒤에도 10회 이상 넘어가면 하루결재 또는 한달결재 유도하도록 할려구오.
+다른 브라우저에서 검색하면 세션 카운트가 의미없어짐......
+저는, 서울제로페이, 카카오페이 관련 조사하고, 컨텐츠 만들어 놓을게요.
+========= 2018-12-28 =======================================================
+메인 차트 보기/안보기
+<일정> uloca23 에서 챠트 관련 기능 ==> uloca 업로드 후 ==> 결재모듈 시작해야
+수정한것
+g2b.php	statiistics3s.php	publiicdata.php	dbConn.php	g2b.js	bidresult.php	getInfobycomp.php	companyInfo.php
+sendmail2.php
+========= 2018-12-27 =======================================================
+첫 차트 보이기 문제. body onload 가 문제, 소스 제일 뒤로...
+========= 2018-12-26 =======================================================
+
+========= 2018-12-24 =======================================================
+과금 설계	C:\UlocaV2\과금정책.pptx
+	로그인
+	화면 보기 카운트
+	회비 입금
+	회비 삭감 카운트
+
+<개선사항>
+1. 메인에서 공고명/수요기관 검색하면 디폴트로 그래프는 사라지고 <그래프보기> 눌렀을때만 보임. 재검색하면 다시 그래프 안보이게
+2. 메인 검색 후 목록에서 <수요기관> 클릭하면 현재 새창이 뜸 —> 메인 검색에서 수요기관으로 재검색되도록 (새창아님)
+3. Post방식으로 개선 필요
+	g2b	개찰일시	bidResult
+	g2b.js	g2b.php	publicData.php	getInfobyComp.php	companyInfo.php
+	pubdatas.php	datas.js	insAutoSet.php
+
+--------	mobile 에 아직 미적용
+
+========= 2018-12-21 =======================================================
+graph 저녁에 22에 적용예정	
+
+ajaxposts.php	ajax post test
+========= 2018-12-20 =======================================================
+일단 그래프해놓고,, 과금쪽으로 가시죠.
+기업검색(추가)도 알아보고 있습니다
+
+과금 모든 팝업도 삽입 할것..
+========= 2018-12-19 =======================================================
+test에서 작업함.
+statistics1.php
+statistics2s.php
+g2b.php
+g2b.js
+publicData.php
+
+select ROUND(b.tuchalrate1) tr, count(b.idx) cnt from openBidInfo a, forecastData b 
+where substr(a.opengDt,1,10) >= '2008-12-19' and substr(a.opengDt,1,10) <= '2018-12-19' 
+and substr(a.bidNtceNo,1,2) = '20' and a.bidNtceNo=b.bidNtceNo 
+ and a.bidtype = '용역' and a.bidNtceNm like '%부산%' group by ROUND(b.tuchalrate1)
+
+select ROUND(b.tuchalrate1) tr, count(b.idx) cnt  from openBidInfo a, forecastData b 
+where  substr(a.opengDt,1,10) >= '2008-12-19' and substr(a.opengDt,1,10) <= '2018-12-19' 
+and  a.bidNtceNo=b.bidNtceNo and substr(a.bidNtceNo,1,2) = '20' 
+and ROUND(b.tuchalrate1)>=75 and ROUND(b.tuchalrate1)<=99 and a.bidtype = '용역' and a.bidNtceNm like '%부산%' group by ROUND(b.tuchalrate1)
+
+========= 2018-12-18 =======================================================
+낙찰결과 통계 - statistics1.php(client) -> statistics2s.php(서버)
+
+회비를 접속횟수로 소진하자는 의견.
+
+========= 2018-12-17 =======================================================
+wp 안에 dhtmlx 문제있슴
+
+========= 2018-12-14 =======================================================
+select FLOOR(tuchalrate1*10)/10 tr, count(*) cnt from forecastData where FLOOR(tuchalrate1*10)/10>=85 and FLOOR(tuchalrate1*10)/10<=90 group by FLOOR(tuchalrate1/10)
+
+매일 데이타수집 프로그램 파일 찾기
+select ROUND(b.tuchalrate1) tr, count(b.idx) cnt  from openBidInfo a, forecastData b where substr(a.opengDt,1,10) >= '2018-11-01' and substr(a.opengDt,1,10) <= '2018-12-15' and substr(a.bidNtceNo,1,2) = '20' and a.bidNtceNo=b.bidNtceNo and ROUND(b.tuchalrate1)>='75' and ROUND(b.tuchalrate1)<='99' group by ROUND(b.tuchalrate1)
+
+========= 2018-12-13 =======================================================
+통계작업	유효 데이타 75 < tuchalrate1 < 100 842419 건
+SELECT min(tuchalrate1) FROM `forecastData` WHERE tuchalcnt != 0 and tuchalrate1> 75 = 75.00299835205078
+SELECT * FROM `forecastData` WHERE tuchalcnt != 0 and tuchalrate1> 75 and tuchalrate1 < 100 order by tuchalrate1 asc = 842419
+(select count(*) from forecastData where tuchalrate1 like '75%'
+
+select ceiling(tuchalrate1) tr, count(*) from forecastData where ceiling(tuchalrate1)>=75 and ceiling(tuchalrate1)<100 group by ceiling(tuchalrate1)
+
+
+========= 2018-12-12 =======================================================
+forecastData = 826,293건	823289 수집 완료
+SELECT * FROM `forecastData` WHERE tuchalcnt != 0	64,431건
+
+========= 2018-12-11 =======================================================
+http://uloca.net/nwp/getForecastCount3.php 할것 최종 보완
+일일자료수집 보완	g2b.js,dailyData.php, dailyDataSearch.php, dailyDatansSeq.php 수정
+========= 2018-12-10 =======================================================
+714620 이하 999 체크 tuchalcnt update
+select * from forecastData where idx<=714620 and tuchalcnt>=999 and tuchalamt1 != 0
+idx<=212805 and tuchalcnt>1000 update comp2,tuchalrate2,tuchalamt2
+
+
+========= 2018-12-08 =======================================================
+select * from forecastData where tuchalcnt = 0 and compno1 != '' order by  idx desc limit 0,10
+select * from forecastData where idx<=212815 order by idx desc limit 0,20
+bidNtceNo=20140721247 compno1=4098628679 tuchalrate1=88.345 tuchalamt1=62905619 compno2= tuchalrate2= tuchalamt2= tuchalcnt=7 pss=공사
+select a.*, b.* from forecastData a, openBidInfo b where a.bidNtceNo=b.bidNtceNo and a.bidNtceNo='20160204435'
+openBidInfo 추정가격,닉칠히힌율 (개찰전), 참가업체수(자료 업데이트 안됨-api call 하면 알수 있음 혹은 forecastData 에 있음.idx=212806 이후)
+)
+
+714620 이하 999 체크
+select count(*) from forecastData where tuchalcnt > 999
+
+select a.bidNtceNo,a.prtcptCnum,b.tuchalCnt from openBidInfo a,forecastData b where a.prtcptCnum=0 
+and a.opengDt<='2018-12-07' and b.bidNtceNo=a.bidNtceNo and b.idx<=212805
+
+----------------- openBidInfo = 1,460,520 건(2018-12-08)	1706290 = max(idx)나 , opengDt로 추가해도 됨
+통계 기초자료 forecastData 작업
+	응찰 갯수 나중에 추가 처음 idx=212806 부터 openBidInfo 에서, 없으면 api 에서
+	$response = $g2bClass->getRsltData($bidNtceNo,$bidNtceOrd); 
+	$json1 = json_decode($response, true);
+	$item1 = $json1['response']['body']['items'];
+	$tuchalcnt = count($item1);
+	update forecastData set tuchalcnt= '' where bidNtceNo=''
+========= 2018-12-07 =======================================================
+SELECT a.bidNtceNo, a.bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl, bidtype as pss, 
+count(b.bidNtceNo) as cnt FROM openBidInfo a, openBidSeq_2018 b where a.bidNtceNo = b.bidNtceNo group by b.bidNtceNo
+
+사전규격 완료	일일자료수집 보완
+사전규격 수집	2018-08-01 ~ 2018-12-05
+========= 2018-12-06 =======================================================
+openBidInfo 갯수 = 1,162,740	2018-12-05 일 부터 2018-11-20 일까지 1,170,751
+
+select * from openBidInfo where length(bidNtceNo) = 6 and bidNtceDt> '2018-11-20' and bidtype='사용'
+
+<정리>
+1) 개찰완료/진행중==> 구분이 되었으면 합니다. (낙찰결과-일자에 색깔을 낙찰된건은 그대로 유지하고, 낙찰전인것은 색깔을 회색으로) 
+
+2) 제안평가/투찰평가 ==> 구분되었으면 함. (이건 어떻게 구분할지 좀 더 알아봐야 할 것 같습니다)
+3) 사전규격 추가
+사전규격은 bidtype에 <사물/사공/사용>로 구분
+========= 2018-12-05 =======================================================
+getForecast.php		예측 데이타 수집.
+========= 2018-12-04 =======================================================
+일일자료 수집에 table 'workdate' 사용
+1. 모바일에서 입찰기업명>으로 검색 한 후 기업의 <응찰기록> 클릭 ==> 목록에서 <입찰결과>버튼 색깔을 빨간색으로 맞춰 주세요. ok
+2. <입찰결과>에서 낙찰건수 클릭하면 낙찰된건만 보이게 ==> (모바일에서)안되고 있어요.	<- table 이 아니라서 안됨
+========= 2018-12-03 =======================================================
+mobile 응찰기록<-기업정보-사업자등록번호	g2b/datas/getInfobyComp.php
+========= 2018-11-30 =======================================================
+========= 2018-11-29 =======================================================
+수요기관 너무 오래 걸림..	잘됨
+head sort
+입찰정보 페이징	1,000 + '더보기'	ok
+http://uloca.net/g2b/getBid.php		api->db	수요기관	- ok
+http://uloca.net/g2b/bidResult.php	api 마감일	- 그대로둠.. 낙찰결과가 전체 다나옴 1-5위만 나오는게 아니고...
+getInfobyComp.php	db call 로 바꼇슴
+
+1)uloca.net에  plugin/ g2b.php 소스 수정했습니다. - 입찰정보 상세주소(url) 가 없는 경우가 있어서..
+2) 입찰정보 검색 후 <수요기관> 클릭 시 :: 속도 엄청 늦어서 보니,, viewscs()를 호출하던데, 왜 늦은지 모르겠어요.
+3) 모바일에서 검색 버튼이 안눌러져요.
+4) 입찰정보하고, 입찰기업 검색이 구분되도록
+========= 2018-11-28 =======================================================
+ - 입찰정보>공고명 조회 후 수요기관 클릭 시 :: 공고명 포함해서 수요기관으로 검색	작업완료
+
+ 입찰정보 수집시 공고일자 기준으로(지금은 개찰일시), 중복체크-----------------------
+ $inqryDiv = 1	검색하고자하는 조회구분 1:공고게시일시, 2:개찰일시(방위사업청 연계건의 경우 아래 내용 참고하여 검색) 1. 공고게시일시 : 공고일자(pblancDate) 2. 개찰일시 : 개찰일시(opengDt)
+ nwp/dailyDataFill.php
+	1. 날짜, 검색조건=1 로 api call
+	2. openidInfo 에 이미 있는지 여부 체크
+	3. 없으면 insert
+
+
+========= 2018-11-27 =======================================================
+
+========= 2018-11-26 =======================================================
+		uloca22		uloca23
+openBidInfo	1,161,324	1,137,821	2018-11-25일까지의 데이타
+openBidSeq_2018	14,242,772	13,644,540	14,269,520
+openBidSeq_tmp	4,338	533,954		0	716,532
+합		14,247 14,242,7110
+
+일일자료수집	openBidSeq_tmp -> openBidSeq_2018
+
+입찰기업명 조회시 '응찰건수'는 openBidSeq 에서 가져오는데, openBidSeq_2018 를 년도로 나누면 쿼리를 바꾸어야 함.
+예전처럼 union을 쓰던지...
+입찰정보는 년도가 필요없음. 입찰기업 정보에는 년도가 필요할거 같음.(union 안쓰면)
+응찰 건수는 다른 화면으로 보내기로 결정,,
+
+방금 협의한것 정리
+<DB>
+openBidInfo => 년도 없이 한개 테이블
+openBidSeq_2018, 2017, 2016  ==> 년도별로 1개테이블
+
+<수집>
+oepnBidSeq_tmp에 수집해서 openBid_2018 년도별로 이관
+
+<화면>
+기업정보 검색 시 년도는 없애고
+낙찰 순위 1~5등 까지만 입찰정보에 포함된다고 멘트 처리
+
+데이터  API 수집 uloca22에 반영되면 알려주십시오. -----------------------
+insert into openBidSeq_2018
+(
+`bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx`
+) 
+(Select 
+ `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx`
+ from openBidSeq_tmp
+ WHERE `remark` in ( '1', '2','3','4','5')
+)
+========= 2018-11-23 =======================================================
+입찰정보 2번 검색후 width 확인요...
+
+openBidSeq	78,046,548	->	78,798,634
+openBidSeq_tmp	602,861
+일일자료수집에 사전규격은 빠져 있슴 .... 별도의 테이블을 마들것. -- 잠정 연기
+
+db -> hdd 로 복사 할것
+========= 2018-11-22 =======================================================
+getInfobyComp.php	응찰기록 mailMe3 미완
+	낙찰건수 버튼
+========= 2018-11-21 =======================================================
+기업정보 query db로 
+========= 2018-11-20 =======================================================
+1) sql문 수정  ( 전부 자체 DB로 전환)
+ - 년도별 -> 한개테이블로 (년도별 쿼리문 수정)
+ - 입찰/낙찰 API를 자체 디비로 변환
+ - 입찰정보>공고명 조회 후 수요기관 클릭 시 :: 공고명 포함해서 수요기관으로 검색
+ - 페이징 중간에 조회 시 에러 없이 새로 진행
+========= 2018-11-14 =======================================================
+========= 2018-11-13 =======================================================
+미팅
+	기업정보 db 검토
+	공고번호 나라장터 외에는 제외?
+
+
+	openBidInfo
+	openBiidSeq
+	openCompany	상세정보 api 사용
+
+	기업정보 서비스	상장기업	http://dart.fss.or.kr/
+			중소기업	http://sminfo.mss.go.kr/	monolith21/w3m69p21!@
+
+차트	dmtmlx	완료
+========= 2018-11-12 =======================================================
+기업정보 db merge
+입찰정보   =
+차트
+========= 2018-11-09 =======================================================
+기업정보 에러
+차트	dmtmlx
+========= 2018-11-08 =======================================================
+차트
+========= 2018-11-07 =======================================================
+입찰정보
+	수요기관, 낙찰결과, 낙찰기업 모바일용 작업요
+전체 방향 전환 고려
+
+========= 2018-11-06 =======================================================
+입찰정보내 입찰기업명 
+	pc	ok
+	mobile	-
+차트
+
+========= 2018-11-05 =======================================================
+========= 2018-11-01 =======================================================
+top button
+onscroll 없애고 '계속 검색' 버튼으로 대체
+========= 2018-10-31 =======================================================
+대전 jnvalue 출장
+========= 2018-10-30 =======================================================
+입찰정보 폰 작업 미완성
+========= 2018-10-29 =======================================================
+입찰정보 스크롤링 미완성
+========= 2018-10-27 =======================================================
+- 입찰 정보 (용역)-
+공고번호	공고명		추정가격			공고일시		수요기관	마감일시
+[>]	644444	부산시 하수도 발전 홍보 동영상 제작 용역	60,000,000	undefined	[undefined]부산광역시
+[>]	644308	부산좌천범일8 도시계획도로 폐기물처리용역(소각)	49,478,000	undefined	[undefined]한국토지주택공사
+
+
+- 사전규격 정보 -
+등록번호	품명	예산금액				등록일시		수요기관		마감일시
+[>]	644444	부산시 하수도 발전 홍보 동영상 제작 용역	60,000,000	undefined	[undefined]부산광역시
+[>]	644308	부산좌천범일8 도시계획도로 폐기물처리용역(소각)	49,478,000	undefined	[undefined]한국토지주택공사
+========= 2018-10-26 =======================================================
+입찰정보 완성(no paging)
+사전규격 완성
+
+이메일 체크
+http://uloca23.cafe24.com//datas/publicData.php?kwd=%EB%B6%80%EC%82%B0&startDate=2018-10-21&endDate=2018-10-26&dminsttNm=&bidservc=1&bidhrc=hrc
+========= 2018-10-25 =======================================================
+입찰정보
+입찰/사전정보 물품/공가/용역
+
+입찰 완료
+========= 2018-10-24 =======================================================
+json -> table
+========= 2018-10-23 =======================================================
+$json_string = $g2bClass->compressJson($response, $colArray);
+필요한 칼럼만 추출 - ajax 에서 json 으로 리턴 할때 사용..
+
+========= 2018-10-22 =======================================================
+입찰정보 이메일 손 볼것	마감일시 --> [undefined]2018-11-06
+
+복사	ULOCA22 --> ULOCA23
+
+b4 server to client g2b/jsonresult.txt 참조
+	입찰 정보 --> 축소 column 118col -> 6col
+	낙찰 정보 --> 그대로 15col
+	사전규격  --> 그대로 23col-> 6col
+========= 2018-10-19 =======================================================
+wordpress--dhtml
+db 화면 작업 끝나고 migration
+스키마->데이타
+========= 2018-10-18 =======================================================
+DHTML 시작
+
+uloca22-mariDB --> 내PC mysql --> Oracle w/dbeaver
+DHTMLX	dhtmlxSuite - Enterprise License - REF#12971761
+http://support.dhtmlx.com/  info@jnvalue.com/12971761
+
+
+===========================================20181015 ==================================
+김재홍대표하고 스티커 붙여가며 현재 현황을 정리해 봤습니다.
+
+결론적으로, 당장엔 DHTMLX (페이징, 그래픽), Oracle 로 바꾼다 입니다.
+
+위 모두 uloca23.에서 테스트 후 진행해 주세요.
+
+오라클은 제이앤밸류 서버 셋팅되는 대로 제가 dump 해 놓겠습니다.
+
+DHTMLX는 전무님이 적용해 주세요.
+===========================================20181006 ==================================
+
+대전 jnvallue 에서 미팅
+
+

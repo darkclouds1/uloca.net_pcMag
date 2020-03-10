@@ -1,0 +1,32 @@
+2019-02-20T01:30:50+09:00 CRITICAL Cannot declare class dbconn, because the name is already in use(/uloca22/www/classphp/dbConn.php, 줄 7)
+
+2019-02-20T01:40:01+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T01:46:09+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T11:58:19+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T12:04:49+09:00 CRITICAL Cannot declare class dbconn, because the name is already in use(/uloca22/www/classphp/dbConn.php, 줄 7)
+
+2019-02-20T12:50:24+09:00 CRITICAL Cannot declare class dbconn, because the name is already in use(/uloca22/www/classphp/dbConn.php, 줄 7)
+
+2019-02-20T12:58:05+09:00 CRITICAL Cannot declare class dbconn, because the name is already in use(/uloca22/www/classphp/dbConn.php, 줄 7)
+
+2019-02-20T13:07:10+09:00 CRITICAL Cannot declare class dbconn, because the name is already in use(/uloca22/www/classphp/dbConn.php, 줄 7)
+
+2019-02-20T13:11:07+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T13:12:17+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T13:31:19+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T19:11:17+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T19:15:25+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T19:27:21+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T19:28:30+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-20T19:31:44+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+

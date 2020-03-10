@@ -1,0 +1,20 @@
+@charset "utf-8";
+/**
+ * @author https://www.cosmosfarm.com/
+ */
+#cosmosfarm_members_social_login_active { width: 50%; }
+#cosmosfarm_members_social_login_active .ui-state-default { margin-bottom: 10px; padding: 10px; background-color: #fafafa; border: 1px solid #e5e5e5; }
+#cosmosfarm_members_social_login_active .ui-state-default label { display: block; width: 100%; }
+#cosmosfarm_members_social_login_active .ui-state-default input[type=text] { width: 100%; }
+
+.cosmosfarm-members-fields-wrap .ui-state-default { cursor: move; }
+
+table.subscription-order .status-paid { color: #3f51b5; }
+table.subscription-order .status-cancelled { color: #e91e63; }
+
+table.subscription-order .subscription-next-wait { color: #3f51b5; }
+table.subscription-order .subscription-next-expiry { color: #e91e63; }
+
+@media screen and (max-width: 600px) {
+	#cosmosfarm_members_social_login_active { width: 100%; }
+}

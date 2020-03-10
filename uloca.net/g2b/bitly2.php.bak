@@ -1,0 +1,41 @@
+<script>
+
+function getAjax_bitly(server,client) {
+ 	var xhttp = new XMLHttpRequest();
+ 	xhttp.onreadystatechange = function() {
+    	if (this.readyState == 4 && this.status == 200) {
+	     	///document.getElementById("demo").innerHTML = this.responseText;
+		 	client(this.responseText);
+    	} else if (this.status == 504) {
+			//move_stop();
+			alert('Time-out Error...');
+			return;
+	    } else {
+			//alert ("Error" + xhttp.status);
+		}
+	};
+	xhttp.open("GET", server, true);
+	xhttp.send();
+}
+
+function shortURL(link) {
+	format = 'txt';
+	login = 'enable21';
+	apiKey = 'R_cb94c2cd92bba988984791acf7704b6e';
+	
+	bitly = 'https://api-ssl.bitly.com/v3/shorten?login='+login+'&apiKey='+apiKey+'&longUrl='+encodeURIComponent(link)+'&format='+format;
+	getAjax_bitly(bitly,bitlyrecv);
+}
+
+function bitlyrecv(data) {
+	console.log( data);
+	alert (data);
+}
+
+//상세검색 샘플 
+var url = "https://uloca.net/ulocawp/?p=1138&searchType=1&kwd=%EC%BD%9C%EC%84%BC%ED%84%B0&dminsttNm=%EB%8C%80%EB%B2%95%EC%9B%90&compname=%EB%B0%95%EB%B4%89%EC%A7%84&curStart=0&cntonce=100&bidservc=1&bidinfo=1&bidhrc=bid&id=";
+//통합검색 샘플 
+url = "https://uloca.net/ulocawp/?p=1134&searchType=1&kwd=%EC%BD%9C%EC%84%BC%ED%84%B0%20%EC%9A%B4%EC%98%81&dminsttNm=&compname=&curStart=0&cntonce=100&bidinfo=1&id=uloca22";
+shortURL(url);
+
+</script>
