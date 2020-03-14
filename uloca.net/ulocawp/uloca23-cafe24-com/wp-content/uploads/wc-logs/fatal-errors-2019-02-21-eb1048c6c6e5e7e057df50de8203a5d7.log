@@ -1,0 +1,42 @@
+2019-02-21T12:43:23+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T12:45:48+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T12:47:02+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T12:48:52+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T12:53:19+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T13:25:39+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T17:09:29+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T08:14:10+00:00 CRITICAL Uncaught Error: [] operator not supported for strings in /uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php:56
+Stack trace:
+#0 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(286): WC_Admin_Menus->admin_menu('')
+#1 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(310): WP_Hook->apply_filters(NULL, Array)
+#2 /uloca22/www/ulocawp/wp-includes/plugin.php(453): WP_Hook->do_action(Array)
+#3 /uloca22/www/ulocawp/wp-admin/includes/menu.php(150): do_action('admin_menu', '')
+#4 /uloca22/www/ulocawp/wp-admin/menu.php(294): require_once('/uloca22/www/ul...')
+#5 /uloca22/www/ulocawp/wp-admin/admin.php(140): require('/uloca22/www/ul...')
+#6 /uloca22/www/ulocawp/wp-admin/nav-menus.php(13): require_once('/uloca22/www/ul...')
+#7 {main}
+  thrown(/uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php, 줄 56)
+
+2019-02-21T17:16:29+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T17:20:05+09:00 CRITICAL Cannot declare class g2bClass, because the name is already in use(/uloca22/www/classphp/g2bClass.php, 줄 7)
+
+2019-02-21T08:43:45+00:00 CRITICAL Uncaught Error: [] operator not supported for strings in /uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php:56
+Stack trace:
+#0 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(286): WC_Admin_Menus->admin_menu('')
+#1 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(310): WP_Hook->apply_filters(NULL, Array)
+#2 /uloca22/www/ulocawp/wp-includes/plugin.php(453): WP_Hook->do_action(Array)
+#3 /uloca22/www/ulocawp/wp-admin/includes/menu.php(150): do_action('admin_menu', '')
+#4 /uloca22/www/ulocawp/wp-admin/menu.php(294): require_once('/uloca22/www/ul...')
+#5 /uloca22/www/ulocawp/wp-admin/admin.php(140): require('/uloca22/www/ul...')
+#6 /uloca22/www/ulocawp/wp-admin/nav-menus.php(13): require_once('/uloca22/www/ul...')
+#7 {main}
+  thrown(/uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php, 줄 56)
+

@@ -27,4 +27,3 @@ if (function_exists('curl_init')) {
 		// curl 라이브러리가 설치 되지 않음. 다른 방법 알아볼 것 }
 	echo 'no curl';
 	}     
-//출처: http://tipland.tistory.com/57 [외로운 개발자]

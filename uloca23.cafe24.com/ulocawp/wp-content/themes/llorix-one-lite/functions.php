@@ -816,3 +816,12 @@ function llorix_one_lite_admin_notice() {
 	}
 }
 add_action( 'admin_notices', 'llorix_one_lite_admin_notice', 99 );
+
+
+add_filter( 'wpmem_logout_redirect', 'my_logout_redirect' );
+
+function my_logout_redirect()
+{
+// 로그아웃 시 리디렉션될 URL 반환
+return 'http://uloca23.cafe24.com/ulocawp/?page_id=1134';
+}

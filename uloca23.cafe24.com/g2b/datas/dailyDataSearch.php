@@ -67,7 +67,7 @@ echo '입찰공고 건수 = '.$countItem.' ';
 $sql = 'select max(idx) idx from '.$openBidInfo;
 $result = $conn->query($sql);
 if ($row = $result->fetch_assoc()) {
-	$idx = $row[idx];
+	$idx = $row[0];
 	if ($idx == 'NULL') $idx = 0;
 }
 if (count($item1)>0) {
