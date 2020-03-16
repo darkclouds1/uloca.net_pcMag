@@ -30,6 +30,9 @@ if ($chkBid == '' && $chkHrc == '') $chkBid = 'bid';
 	<title>나라장터 입찰정보 기업검색</title>
 	<meta name="description" content="나라장터 입찰정보 조달청 입찰기업 기업상세정보 낙찰정보 낙찰이력 크레탑 한국기업데이터 ">
 	<meta name="google-site-verification" content="l7HqV1KZeDYUI-2Ukg3U5c7FaCMRNe3scGPRZYjB_jM" />
+	
+	<meta name="msvalidate.01" content="5D12479BBA55E7ECB0C1B1EF4CC4218C" />
+	<title>Your SEO optimized title</title>
 
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="유로카닷넷:: 나라장터 입찰정보 기업검색">

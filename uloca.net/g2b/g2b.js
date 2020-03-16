@@ -1968,7 +1968,9 @@ function compKedSearch(compNo){
 	jm_no = "&pid_agr_yn=Y&jm_no=E017";  // 전문번호 E017
 	//6098164815 제일중앙
 
-	kedURL = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id="; 
+	//kedURL = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id="; 
+	kedURL = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id="; 
+
 	kedURL = kedURL + user_id + bzno + jm_no;
 	
 	//-------------------------------------
