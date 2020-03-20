@@ -54,6 +54,7 @@ function insertForecastInfo($conn,$bidNtceNo, $compno1, $tuchalrate1,$tuchalamt1
 	//select * from openBidInfo_2018_2 where bidNtceNo ='20180626257'
 }
 
+//면허제한명 업데이트
 function updateLcnsLmtNm($g2bClass,$conn,$openBidInfo,$bidNtceNo) {
 	$responseLimit = $g2bClass->getSvrDataLimit12($bidNtceNo,'00','2'); //getSvrDataLimit($startDate,$endDate,$numOfRows,'1','1');
 	$jsonLimit = json_decode($responseLimit, true);
@@ -71,8 +72,6 @@ function updateLcnsLmtNm($g2bClass,$conn,$openBidInfo,$bidNtceNo) {
 
 $idx ++;
 //$idx ++;
-
-
 
 $start = 0;
 //$idx = 0;
@@ -148,7 +147,7 @@ $i=1;
 			$result0 = $conn->query($sql);
 			$dup = 1; // forecast 안함
 			if ($row = $result0->fetch_assoc() && $row['cnt'] < 1) {
-				// 2019-01-12 추가 ---------------------------중복 안되게 있으면 업데이트---------------------------------------------
+				// 2019-01-12 추가 ---------------------------중복 안되게 있으면 업데이트 없으면 Insert---------------------------------------------
 				$dup = 1;
 				$sql = "select bidNtceOrd from ".$openBidSeq." where bidNtceNo = '".$arr['bidNtceNo']."' and compno='".$arr['prcbdrBizno']."'; ";
 				$result = $conn->query($sql);
@@ -208,4 +207,3 @@ $i=1;
 //}
 //echo ($idx-$cnt);
 //echo $msg;
-?>

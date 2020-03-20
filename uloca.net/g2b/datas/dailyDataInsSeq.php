@@ -302,13 +302,12 @@ if ($cnt>0) {
 		$openRank = (int)$arr["opengRank"];
 		
 		// rmrk=='' 이고 oepnRank에 값이있으면 정상
-		if (trim($rmrk) == '') {
-			if ( $openRank <> 0  ) {
-				$rmrk = $arr["opengRank"]; // 정상 case = 순위가 있으면 $rmrk에 순위를 적용
-			} else {
-				$openRank = $ii; // opengRank 가 잘못된 경우
-			}
+		if ( $openRank <> 0  ) {
+			$rmrk = $arr["opengRank"]; // 정상 case = 순위가 있으면 $rmrk에 순위를 적용
+		} else {
+			$openRank = $ii; // opengRank 가 잘못된 경우
 		}
+
 		
 		//-------------------------------------------------
 		//$openBidInfo 에 1순위 정보 추가 순위 -by jsj 190601
@@ -452,4 +451,3 @@ $i++; // 처리건수 return
 //}
 //echo ($idx-$cnt);
 echo $msg;
-?>

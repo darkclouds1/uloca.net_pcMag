@@ -131,31 +131,4 @@ if ($bidhrc == 'hrc') {
 	echo ($json_string);
 
 	exit;
-//var_dump($response1);
-
-//$json1 = json_decode($response1, true);
-//$item1 = $json1['response']['body']['items'];
-//echo '<br>'.'물품사전규격<br>';
-//var_dump($item1);
-
-
-
-/*
-
-$json2 = json_decode($response2, true);
-$item2 = $json2['response']['body']['items'];
-//echo '<br>'.'공사입찰<br>';
-//var_dump($item2);
-$json3 = json_decode($response3, true);
-$item3 = $json3['response']['body']['items'];
-
-//var_dump($item4);
-$item = array_merge($item1,$item2,$item3); //,$item4);
-//var_dump($item);
-*/
 }
-
-
-
-
-?>
