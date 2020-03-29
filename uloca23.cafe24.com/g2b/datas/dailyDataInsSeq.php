@@ -321,12 +321,12 @@ if ($cnt > 0) {
 		if ($openRank == 1) { // openRank 1순위 or $ii = 1(첫번째) -by jsj 190601
 			if ($row = $result0->fetch_assoc()) {
 				$sql = "UPDATE " . $openBidInfo . " SET ";
-				$sql .= " prtcptCnum = '" . $cnt . "', ";
-				$sql .= " bidwinnrNm = '" . addslashes($arr['prcbdrNm']) . "', ";
+				$sql .= " prtcptCnum = '"    . $cnt . "', ";
+				$sql .= " bidwinnrNm = '"    . addslashes($arr['prcbdrNm']) . "', ";
 				$sql .= " bidwinnrBizno = '" . $arr['prcbdrBizno'] . "', ";
-				$sql .= " sucsfbidAmt = '" . $arr['tuchalamt'] . "', ";
-				$sql .= " sucsfbidRate = '" . $arr['bidprcrt'] . "', ";
-				$sql .= " rlOpengDt = '" . $arr['rlOpengDt'] . "', ";
+				$sql .= " sucsfbidAmt = '"   . $arr['tuchalamt'] . "', ";
+				$sql .= " sucsfbidRate = '"  . $arr['bidprcrt'] . "', ";
+				$sql .= " rlOpengDt = '"     . $arr['rlOpengDt'] . "', ";
 				$sql .= " bidwinnrCeoNm = '" . $arr['prcbdrCeoNm'] . "', ";
 				// $sql .= " progrsDivCdNm = '" . $arr['progrsDivCdNm'] . "' ";  // 유찰, 개찰완료, 재입찰로 구분 됨 (값이 오지 않음)
 				$sql .= " progrsDivCdNm = '" . "개찰완료" . "' ";  				// 1순위 들어가면 = 개찰완료

@@ -214,7 +214,9 @@ function searchajax1(t1,t2) {
 	
 	move();
 	//--------------------------------
-	getAjaxPost(server,recv,parm);  // g2b/g2b.js -by jsj
+	// 통합검색
+	//--------------------------------
+	getAjaxPost(server, recv, parm);  // g2b/g2b.js -by jsj
 	//--------------------------------
 	// http://uloca23.cafe24.com/g2b/datas/publicData_2019.php?kwd=%EB%B6%80%EC%82%B0&compname=&fromDT=0&toDT=2019-01-10&curStart=0&cntonce=1000&bidinfo=1&id=blueoceans
 }
@@ -226,12 +228,6 @@ function recv_balju(datas) {
 	var data = JSON.parse(datas);
 	itembalju = data.response.body.items;
 
-	//clog('recv2 itembalju='+itembalju.length+' data='+datas);
-	//datas=JSON.parse(data);
-	//itembalju = data.response.body.items;
-	//itembalju=JSON.parse(itembalju);
-	//clog('recv2 itembalju='+itembalju[0]['bidNtceNm']);
-	
 	try
 	{
 		makeTable(datas);
@@ -241,6 +237,7 @@ function recv_balju(datas) {
 	{
 		alert('[유료서비스]다시 시도해주세요! :: recv_balju='+e.message);
 		clog('recv_balju '+data);
+
 	}
 	baljusw = false;
 	

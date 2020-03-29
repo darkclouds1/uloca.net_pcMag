@@ -1,6 +1,6 @@
 <?
 @extract($_POST);
-if ($pw == 'w3m69p21!@') {
+if ($pw == '1123') {
 ?>
 <!DOCTYPE html>
 <html>
@@ -164,15 +164,15 @@ button:hover {
   
 </div>
 <div class="container" style='width:500px; position: fixed; top: 60px; right: 100px;'>
-  <button class="btn-1">날자로 입찰정보+낙찰정보 보완</button><!-- onclick='clickme("dailyDataFill.php")' -->
-  <button class="btn-2">기간,갯수로 입찰정보+낙찰정보 보완</a></button><!--  onclick='clickme("dailyDataFill2.php")' -->
+  <button class="btn-1" onclick='clickme("dailyDataFill_1.php")'>날자로 입찰정보+낙찰정보 보완</button><!-- onclick='clickme("dailyDataFill.php")' -->
+  <!-- dailyDataFill.php 는 해당일자의 공공번호와 낙찰공고번호와의 매치가 안되고 각가 불러옴.  -->
+  <button class="btn-2" onclick='clickme("dailyDataFill2.php")'>기간,갯수로 입찰정보+낙찰정보 보완</a></button><!--  onclick='clickme("dailyDataFill2.php")' -->
   <button class="btn-3">개찰정보 보완</button><!--  onclick='clickme("dailySeqFill.php")' -->
   <button class="btn-4" onclick='clickme("logviewer.php")'>로그 보기</button>
   <button class="btn-4" onclick='clickme("execsql.php")'>utility</button>
 </div>
 </body>
 </html>
-
 
 
 <?
@@ -197,7 +197,7 @@ button:hover {
 </script>
 </head>
 <form action="index.php" name="myForm" id="myForm" method="post" >
-ULOCA 비밀번호  <input type=password name=pw id=pw value='' />
+ULOCA 비밀번호  <input type=password name=pw id=pw value='' autofocus />
 <a onclick="document.getElementById('myForm').submit();" class="search">인증</a>
 </form>
 </body>

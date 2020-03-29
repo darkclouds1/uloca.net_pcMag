@@ -228,7 +228,7 @@ function g2bShortCode()
 								<tr>
 									<th>입찰정보</th>
 									<td>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='20' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" placeholder="' 공고명 ' or ' 수요기관명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='25' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" placeholder="' ex.'정보 감리? 서울' <= 키워드 or 공고번호? 수요기관  '" />
 									</td>
 
 								</tr>
@@ -236,7 +236,7 @@ function g2bShortCode()
 								<tr>
 									<th>기업검색</th>
 									<td>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='20' value="" style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" placeholder="' 업체명 ' or ' 대표자명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='25' value="" style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" placeholder="' 업체명 ' or ' 대표자명 '" />
 									</td>
 								</tr>
 								<input type="hidden" name="id" id="id" value="<?= $id ?>" />
@@ -270,12 +270,12 @@ function g2bShortCode()
 								<tr>
 									<th>입찰정보</th>
 									<td>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='40' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' placeholder="' 공고명 ' or ' 수요기관명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' placeholder="ex.'정보 감리? 서울' <= 키워드 or 공고번호? 수요기관 '" />
 									</td>
 								<tr>
 									<th>기업검색</th>
 									<td colspan=5>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='40' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="' 업체명 ' or ' 대표자명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="' 업체명 ' or ' 대표자명 '" />
 									</td>
 									<input type="hidden" name="id" id="id" value="<?= $id ?>" />
 									<input type="hidden" name="lastStartDate" id="lastStartDate" value="<?= $lastStartDate ?>" />
@@ -1406,33 +1406,11 @@ function g2bShortCode()
 				//move();		
 				getAjaxPost(server, recv, parm);
 				parm = ""; //pram 초기화가 안됨  -by jsj 190320 1356줄이 클라어하고 들어감.... by hmj
-				/*   $.ajax({
-        type: "get",/*method type* /
-		scriptCharset: "utf-8" ,
-        contentType: "application/json; charset=utf-8",
-        url: "/datas/publicData.php"+parm,
-        //data: parm , /*parameter pass data is parameter name param is value * /
-        //dataType: "json",
-        success: function(data) {
-               // data = new Buffer(data, 'UTF-8');
-			   //clog(data);
-			   //document.getElementById('tables').innerHTML = data;
-			   makeTable(data);
-			   move_stop();
-            }
-        ,
-        error: function(result) {
-			move_stop();
-            alert("Error "+objToString(result));
-        }
-    });
-*/
 			}
 
 			function recv(data) {
 				move_stop();
 				SearchCounts++; //무료검색횟수 count+ -by jsj 0314
-				//clog(data);
 				try {
 					makeTable(data);
 				} catch (e) {

@@ -44,9 +44,10 @@ class dbconn {
 		//echo ' cnt='.$cnt;
 		return $cnt;
 	}
-	
+	// -----------------------------------------------
+	// 상세검색 
 	// 입찰공고, 사전규격 -상세검색 -by jsj 190317
-	// openBidInfo 검색 키워드 or like문 여러번
+	// -----------------------------------------------
 	function getSvrDataDB2($conn, $bidrdo, $kwd, $dminsttNm, $pss,$sYear, $LikeOrEqual, $startNo, $noOfRow) {
 		//$qry = '%'.$compname.'%';
 		/* SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl FROM openBidInfo 
@@ -58,40 +59,44 @@ class dbconn {
 		*/
 		$kwd1 = explode(' ',$kwd);
 		$kwds = '';
-		$kwd2 = ''; // dminsttNm
+		$kwd2 = ''; 
+		// 공고번호로 조회 추가 -by jsj 20200324
 		for ($i=0;$i<sizeof($kwd1);$i++) {
-			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' and "; // or->and 로 바꿈 20190223
-			//$kwd2 .= " dminsttNm like '%".$kwd1[$i]."%' and ";
-
+			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' AND "; // 공고명, or->and 로 바꿈 20190223
+			$kwd2 .= " bidNtceNo like '%".$kwd1[$i]."%' AND "; // 공고번호, 
 		}
 		$dminsttNm1 = explode(' ',$dminsttNm);
 		$dminsttNms = ''; // dminsttNm
 		for ($i=0;$i<sizeof($dminsttNm1);$i++) {
-			$dminsttNms .= " dminsttNm like '%".$dminsttNm1[$i]."%' and ";
+			$dminsttNms .= " dminsttNm like '%".$dminsttNm1[$i]."%' OR ";
 
 		}
 		$kwds = substr($kwds,0,strlen($kwds)-4);
+		$kwd2 = substr($kwd2,0,strlen($kwd2)-4);
 		$dminsttNms = substr($dminsttNms,0,strlen($dminsttNms)-4);
-
 
 		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl, bidtype as pss, opengDt, locate "; 
 		$sql .= " FROM openBidInfo ";
 		$sql .= "WHERE 1=1 "; //and substr(bidNtceNo,1,2) = '20' ";
-		if ($pss != '') $sql .= "and bidtype = '".$pss."' ";
-		if ($kwds != '') $sql .= "and ((" . $kwds . " )) ";
-		//if ($dminsttNm == "") $sql .= ") or (". $kwd2 .")) ";
+		if ($pss != '') $sql .= "AND bidtype = '".$pss."' ";
 
+		//공고명 키워드
+		if ($kwds != '') $sql .= " AND ((" . $kwds . " )) ";
+		//if ($kwd2 != '') $sql .= " AND ((" . $kwd2 . " )) "; 
+
+		//if ($dminsttNm == "") $sql .= ") or (". $kwd2 .")) ";
 		//if ($kwds != '') $sql .= "and bidNtceNm like '%".$kwd."%' ";
-		if ($dminsttNm != '' && $LikeOrEqual == 'equal') $sql .= " and dminsttNm = '".$dminsttNm."' ";
-		else if ($dminsttNms != '') $sql .= "and ((" . $dminsttNms . " )) ";
+		// 수요기관
+		if ($dminsttNm != '' && $LikeOrEqual == 'equal') $sql .= " AND dminsttNm = '".$dminsttNm."' "; 
+		else if ($dminsttNms != '') $sql .= " AND ((" . $dminsttNms . " )) ";
 		//if ($dminsttNm != '' ) $sql .= " and dminsttNm like '%".$dminsttNm."%' ";
-		$sql .= " order by opengDt desc limit ".$startNo.",".$noOfRow." ";
+		$sql .= " ORDER BY opengDt desc limit ".$startNo.",".$noOfRow." ";
 		
 		//echo($sql);
 		
 		$stmt = $conn->stmt_init();
 		$stmt = $conn->prepare($sql);
-		
+
 		//return $sql;
 		//$stmt->bind_param("1", $pss);
 		//$stmt->bind_param("2", $kwds);
@@ -115,8 +120,8 @@ class dbconn {
 		$kwds = '';
 		$kwd2 = ''; // dminsttNm
 		for ($i=0;$i<sizeof($kwd1);$i++) {
-			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' and "; // or->and 로 바꿈 20190223
-			$kwd2 .= " dminsttNm like '%".$kwd1[$i]."%' and ";
+			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' AND "; // or->and 로 바꿈 20190223
+			$kwd2 .= " dminsttNm like '%".$kwd1[$i]."%' OR  ";
 
 		}
 		$kwds = substr($kwds,0,strlen($kwds)-4);
@@ -138,11 +143,11 @@ class dbconn {
 		
 		//$sql .= "and ( bidNtceNm like '%".$kwd."%' ";
 		$sql .= "  AND ((" . $kwds . " ";
-		if ($dminsttNm == "") $sql .= ") or (". $kwd2 .")) "; //"or dminsttNm like '%".$kwd."%') ";
-		else $sql .= "and dminsttNm = '".$dminsttNm."')) ";
+		if ($dminsttNm == "") $sql .= ") OR (". $kwd2 .")) "; //"or dminsttNm like '%".$kwd."%') ";
+		else $sql .= " OR dminsttNm = '".$dminsttNm."')) ";
 		if ($toDT != 0) $sql .= "and substr(bidNtceDt,1,10) <= '".$toDT."' ";
-		$sql .= "and substr(bidNtceDt,1,10) > '".$fromDT."' ";
-		$sql .= " order by bidNtceDt desc "; // limit ".$startNo.",".$noOfRow." ";
+		$sql .= " AND substr(bidNtceDt,1,10) > '".$fromDT."' ";
+		$sql .= " ORDER BY bidNtceDt desc "; // limit ".$startNo.",".$noOfRow." ";
 		
 		//echo($sql);
 		
@@ -156,26 +161,62 @@ class dbconn {
 		return $stmt;
 	}
 	
-	//입찰정보 
+	//-------------------------------------
+	// 입찰정보 통합검색 -by jsj 20200326
+	//-------------------------------------
 	function getSvrDataDB4($conn,$kwd,$dminsttNm,$curStart,$cntonce) {
-		//$qry = '%'.$compname.'%';
-		/* SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl FROM openBidInfo 
-		WHERE bidtype = '물품' 
-		and bidNtceNm like '%서버%' 
-		and dminsttNm like '%철도%'  
-		사전규격 = [ 'bfSpecRgstNo', 'prdctClsfcNoNm', 'asignBdgtAmt', 'rgstDt', 'rlDminsttNm', 'opninRgstClseDt', 'bidNtceNoList' ];
-					등록번호			품명					배정예산금액	등록일시		실수요기관명		의견등록마감일시		입찰공고번호목록
-		*/
-		$kwd1 = explode(' ',$kwd);
-		$kwds = '';
-		$kwd2 = ''; // dminsttNm
-		for ($i=0;$i<sizeof($kwd1);$i++) {
-			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' and "; // or->and 로 바꿈 20190223
-			$kwd2 .= " dminsttNm like '%".$kwd1[$i]."%' and ";
-
+		// 등록번호, 품명, 배정예산금액, 등록일시, 실수요기관명, 의견등록마감일시, 입찰공고번호목록
+		//"?" 뒤는 수요기관으로 검색 -by jsj 20200326
+		$kwd1 = ''; // 1번째 문자열 (공고명, 공고번호)
+		$kwd2 = ''; // 2번째 문자열 (수요기관)
+		$kwd = explode('?', $kwd); 
+		for ($i=0;$i<sizeof($kwd);$i++) {
+			if ($i == 0 ) {
+				$kwd1 .= " ".$kwd[$i]. " "; // 공고명 문자열은 ? 포함된 1번째열
+			} else {
+				$kwd2 .= " ".$kwd[$i]. " "; // 수요기관 문자열
+			}
 		}
-		$kwds = substr($kwds,0,strlen($kwds)-4);
-		$kwd2 = substr($kwd2,0,strlen($kwd2)-4);
+		
+		/* strpos 에서 특수문자 삭제가 잘 안됨
+		if (strpos($kwd, "?")) { 
+			// \? 특수문자 삭제
+			$kwd1 = substr($kwd, 0, strpos($kwd, "\?") - 1); 
+			$kwd2 = strstr($kwd, "?"); 
+		} else {
+			$kwd1 = $kwd;
+		}
+		*/
+
+		$kwds = ''; // 공고명 SQL
+		$kwdN = ''; // 공고번호 SQL
+		$kwdd = ''; // 수요기관 SQL
+
+		// 공고명, 공고번호 SQL 작성
+		$kwd1 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd1); //특수문자 없앰
+		$kwdsn = explode(' ', trim($kwd1)); 
+		for ($i=0;$i<sizeof($kwdsn);$i++) {
+			if ($kwdsn[$i] == '') continue; 							
+			if (ctype_alnum($kwdsn[$i]) == false ) { 					// 공고명은 영문자, 숫자만 있는 것은 제외
+				$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	// 공고명   (AND=포함된 키워드가 모두 있어야 함)
+			}
+			if (ctype_alnum($kwdsn[$i])) { 								// 공고번호는 영문자, 숫자만 
+				$kwdN .= " bidNtceNo like '%" .$kwdsn[$i]. "%' OR  "; 	// 공고번호 (OR = 번호는 중복이 거의 없음)
+			}
+		}
+		//수요기관 SQL 작성 
+		$kwd2 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd2); //특수문자 없앰
+		$kwddd = explode(' ', trim($kwd2));
+		for ($i=0;$i<sizeof($kwddd);$i++) {		
+			if ($kwddd[$i] == '') continue;
+			$kwdd .= " dminsttNm like '%" .$kwddd[$i].  "%' AND "; // 수요기관
+		}
+
+		// SQL보완 마지막 4문자 "and " 삭제해서 SQL 보완
+		$kwds = substr($kwds,0,strlen($kwds)-4);  // 공고명
+		$kwdN = substr($kwdN,0,strlen($kwdN)-4);  // 공고번호
+		$kwdd = substr($kwdd,0,strlen($kwdd)-4);  // 수요기관
+
 		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl, ";
 		$sql .= "		CASE WHEN bidtype = '물품' THEN '입찰물품' ";
 		$sql .= "			 WHEN bidtype = '용역' THEN '입찰용역' ";
@@ -186,27 +227,22 @@ class dbconn {
 		$sql .= "		CASE WHEN opengDt IS NULL THEN '' ";
 		$sql .= "			 WHEN opengDt = 'NULL' THEN '' ELSE opengDt END opengDt, locate";
 		$sql .= " FROM openBidInfo ";
-		$sql .= "WHERE 1=1 "; //and substr(bidNtceNo,1,2) = '20' ";
-		
-		//$sql .= "and ( bidNtceNm like '%".$kwd."%' ";
-		$sql .= " and ((" . $kwds . " ";
-		if ($dminsttNm == "") {
-			$sql .= ") or (". $kwd2 .")) "; //"or dminsttNm like '%".$kwd."%') ";
-		} else { 
-			$sql .= "and dminsttNm = '".$dminsttNm."')) ";
+		$sql .= "WHERE 1 ";
+		if ($dminsttNm == "" ) { 
+			if (trim($kwdd) <> '') $sql .= " AND (" .$kwdd. " ) "; // 수요기관
+			if (trim($kwds) <> '') $sql .= " AND (" .$kwds. " ) "; // 공고명
+			if (trim($kwdN) <> '') $sql .= " AND (" .$kwdN. " ) "; // 공고번호			
+		} else {  // 파라미터 수요기관으로 재검색
+			if (trim($kwdd) <> '') $sql .= " AND  (" .$kwdd. " ) "; // 수요기관
+			if (trim($kwds) <> '') $sql .= " AND  (" .$kwds. " ) "; // 공고명
 		}
-		//if ($toDT != 0) $sql .= "and substr(bidNtceDt,1,10) <= '".$toDT."' ";
-		//$sql .= " and substr(bidNtceDt,1,10) > '".$fromDT."' ";
-		$sql .= "order by bidNtceDt desc limit ".$curStart.",".$cntonce." ";
-		
-		//echo($sql);  //debug
+		$sql .= "ORDER BY bidNtceDt desc limit ".$curStart.",".$cntonce." ";
+
+		// debug -by jsj 20200327 SQL Debug
+		// return $sql;
 
 		$stmt = $conn->stmt_init();
 		$stmt = $conn->prepare($sql);
-		//return $sql;
-		//$stmt->bind_param("s", $pss);
-		//if (!$stmt->execute()) return $stmt->errno;
-		//$colArray = array ( 'bidNtceNo', 'bidNtceOrd', 'bidNtceNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidClseDt','bidNtceDtlUrl');
 		$stmt->execute();
 		return $stmt;
 	}
@@ -327,7 +363,7 @@ class dbconn {
 				$tr .= '<td>'.$row['dminsttnm'].'</td>';
 				$tr .= '<td>'.$search.'</td>';
 				//$tr .= '<td>'.$send.'</td>';
-				$tr .= '<td hidden="hidden" style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td hidden="hidden" style="text-align:center;">'.$row['till'].'</td>';
 				//$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				//$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
@@ -341,7 +377,7 @@ class dbconn {
 				$tr .= '<td class="even" >'.$row['dminsttnm'].'</td>';
 				$tr .= '<td class="even" >'.$search.'</td>';
 				//$tr .= '<td class="even" >'.$send.'</td>';
-				$tr .= '<td hidden="hidden" class="even" style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td hidden="hidden" class="even" style="text-align:center;">'.$row['till'].'</td>';
 				//$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				//$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
@@ -829,5 +865,3 @@ class KedCd {
 	}
 
 } //class kedCd 코드집
-
-?>

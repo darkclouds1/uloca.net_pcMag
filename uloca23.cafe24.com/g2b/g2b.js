@@ -903,7 +903,23 @@ function compInfo(compno) {
 function detailCompany(compno) {
 	clog ("detailCompany compno="+compno);
 	//url = '/g2b/datas/companyInfo.php?compno='+compno;
-	url = '/ulocawp?page_id=2074&compno='+compno;
+    url = '/ulocawp?page_id=2074&compno='+compno;
+    //url = '/ulocawp?page_id=2074&compno='+compno;  //<==uloca22
+
+	//frm = document.compInfoForm;
+	//frm.compno.value = compno;
+
+
+	//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
+	//url = '/g2b/datas/bidResult.php'; //?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
+	//alert(window.location.hostname);
+	//popupWindow = window.open(
+    //    '','compInfoForm','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
+
+	//frm.action = url; //winddow.location.hostname + url;
+	//frm.method="post";
+	//frm.target="compInfoForm";
+	//frm.submit();
 
 	popupWindow = window.open(url);
 
@@ -1016,6 +1032,17 @@ function searchDaily() {
 		alert('시작시간이 종료시간보다 작습니다.');
 		return;
 	}
+	 /* if (endDate.length == 9) endDate += ' 23:59';
+	if (startDate.length != 16)
+	{
+		alert('시작일시를 바르게 입력하세요. yyyy-mm-dd hh:mm');
+		return;
+	}
+	if (endDate.length != 16)
+	{
+		alert('종료일시를 바르게 입력하세요. yyyy-mm-dd hh:mm');
+		return;
+	} */
 	noRow = 0;
 	noSeq = 0;
 	doingsw = true;
@@ -1137,7 +1164,7 @@ function getAjax(server,client) {
 		alert('Time-out Error...');
 		return;
     } else {
-		//alert ("Error" + xhttp.status);
+		alert ("Error" + xhttp.status);
 	}
   };
   xhttp.open("GET", server, true);
@@ -1154,7 +1181,7 @@ function getAjaxPost(server,client,parm) {
 			alert('Time-out Error...');
 			return;
 		} else {
-			//alert ("Error" + xhttp.status);
+			alert ("Error" + xhttp.status);
 		}
 	  };
 	xhr.open("POST", server, true);
@@ -1941,9 +1968,9 @@ function compKedSearch(compNo){
 	jm_no = "&pid_agr_yn=Y&jm_no=E017";  // 전문번호 E017
 	//6098164815 제일중앙
 
-	//kedURL = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=";
-	kedURL = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=";
-	
+	//kedURL = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id="; 
+	kedURL = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id="; 
+
 	kedURL = kedURL + user_id + bzno + jm_no;
 	
 	//-------------------------------------

@@ -11,23 +11,23 @@ require($_SERVER['DOCUMENT_ROOT'] . '/classphp/dbConn.php');
 $dbConn = new dbConn;
 $conn = $dbConn->conn();
 
-//$bidNtceNo='20170532764';
-//$bidNtceOrd='00';
 //url = 'http://uloca23.cafe24.com/g2b/bidResult.php?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd+'&pss='+pss;
 $g2bClass = new g2bClass;
 $uloca_live_test = $g2bClass->getSystem('1');
 $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
-/*session_id ($ss);
 
+/*
 if(isset($_COOKIE['resudi'])) {
     echo "Cookie named resudi='" . $resudi . "' ";
 } else echo 'no cookie resudi';
-echo 'userid='.$_SESSION['current_user']->user_login;  */
+echo 'userid='.$_SESSION['current_user']->user_login;
+*/
 // --------------------------------- log
 $rmrk = '입찰결과창';
 $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '08'); // $_SESSION['current_user']->user_login
 // --------------------------------- log
-// 입찰 결과
+
+// 낙찰 결과
 $response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
 $json1 = json_decode($response1, true);
 $item1 = $json1['response']['body']['items'];
@@ -38,7 +38,9 @@ $response0 = $g2bClass->getBidInfo($bidNtceNo, $bidNtceOrd, $pss);
 $json0 = json_decode($response0, true);
 $item0 = $json0['response']['body']['items'];
 
-//var_dump($item1);
+//echo "입찰정보=" ;
+//var_dump($item0);
+
 if ($mobile == "Mobile") $mailtop = 80;
 else $mailtop = 80;
 $mailintop = $mailtop + 4;	// mail address
@@ -154,22 +156,24 @@ $mailintop = $mailtop + 4;	// mail address
 
 			<?
 			// 사정율 계산 ----------------------------------
+			// 사정율 = 투찰금액/기초금액 (예정가격없을때)
+			// 사정율(실제) = 예정가격/기초금액 (추첨후 예정가격 나옴)
+
 			if ($pss == '입찰물품') $bidrdo = 'opnbidThng'; //$bsnsDivCd = '1'; // 물품
 			else if ($pss == '입찰공사') $bidrdo = 'opnbidCnstwk'; //$bsnsDivCd = '1'; // 공사
 			else if ($pss == '입찰용역') $bidrdo = 'opnbidservc'; //$bsnsDivCd = '1'; // 용역
-
-			$itemr = $g2bClass->getSvrDataOpn($bidrdo, $bidNtceNo); // 예정가격,기초금액
+			$itemr = $g2bClass->getSvrDataOpn($bidrdo, $bidNtceNo); // 예정가격,기초금액 가져옴
 			$json1 = json_decode($itemr, true);
 			$sasungyul = 0;
-			$plnprc = 0;
-			$bssamt = '';
+			$plnprc = 0; //예정금액
+			$bssamt = ''; //기초금액
 			$items = $json1['response']['body']['items'];
 			if (count($items) > 0) {
 				foreach ($items as $arr) {
 					$plnprc = $arr['plnprc'];
 					$bssamt = $arr['bssamt'];
-					if ($bssamt != '' && $bssamt != 0) $sasungyul = $plnprc / $bssamt; // 예정가격/기초금액
-
+					$bssamt1 = $arr['bssamt'];  //기초금액의 사정율 계산을 위한 변수
+					if ($bssamt != '' && $bssamt != 0) $sasungyul = $plnprc / $bssamt ; // 사정율 = 예정가격 / 기초금액
 				}
 			}
 			if ($plnprc != '') $plnprc = number_format($plnprc);
@@ -185,7 +189,7 @@ $mailintop = $mailtop + 4;	// mail address
 
 			<div id=totalrechrc>낙찰결과 (공공데이터포털 API) Total record=<?= count($item1) ?></div>
 			<div id=LinKExplain align="left">
-				<br>예정가격: <?= $plnprc ?> , 기초금액: <?= $bssamt ?>, 사정율: <?= number_format($sasungyul, 4, '.', '') ?>
+				<br>예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul, 4, '.', '') ?>)</font>
 				<br><br>✔︎<font color="red">[사업자번호]클릭</font>→입찰이력 <font color="red"> [업체명]클릭</font>→ 업체정보
 			</div>
 
@@ -194,10 +198,12 @@ $mailintop = $mailtop + 4;	// mail address
 					<tr>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">순위</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="25%;">업체명</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="20%;">업체명</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">대표자</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">입찰금액(원)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰금액(원)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰율(%)</th>
+
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">기초금액투찰율(%)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">입찰번호</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">비고</th>
 					</tr>
@@ -254,6 +260,10 @@ $mailintop = $mailtop + 4;	// mail address
 							$Rank_rmark = $arr['rmrk'];
 						}
 
+						//기초금액과 투찰율 계산
+						 $bssamtrt = ( $arr['bidprcAmt'] / $bssamt1 ) * 100;
+
+						// 1순위
 						if ($k == 1) { //$i == 0) {
 							$tr = '<tr>';
 							$tr .= '<td scope="row" style="text-align: center; color:red;">' . $k . '</td>';
@@ -261,8 +271,11 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td style="color:red;"><a onclick=\'compInfo(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrNm'] . '</a></td>';
 							$tr .= '<td style="color:red;">' . $arr['prcbdrCeoNm'] . '</td>';
 							if ($arr['bidprcAmt'] == '') $tr .= '<td style="color:red; text-align: right;" > </td>';
-							else $tr .= '<td style="color:red; text-align: right;" >' . number_format($arr['bidprcAmt']) . '</td>';
-							$tr .= '<td style="text-align: right; color:red;">' . $arr['bidprcrt'] . '</td>';
+							else $tr .= '<td style="color:red; text-align: right;" >' . number_format($arr['bidprcAmt']) . '</td>'; //투찰금액
+							$tr .= '<td style="text-align: right; color:red;">' . $arr['bidprcrt'] . '</td>'; // 예정금액의 투찰율
+
+							$tr .= '<td style="text-align: right; color:red;">' . number_format($bssamtrt, 3) . '</td>'; // 기초금액의 투찰율
+
 							$tr .= '<td style="text-align: center; color:red;">' . $arr['rbidNo'] . '</td>';
 							$tr .= '<td style="color:red;">' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';
@@ -271,28 +284,31 @@ $mailintop = $mailtop + 4;	// mail address
 							//$openBidInfo 에 1순위 정보 업데이트 -by jsj 190601
 							//-------------------------------------------------
 							$sql1 = "UPDATE openBidInfo SET ";
-							$sql1 .= " 	prtcptCnum = " . (int) $arr['prtcptCnum'] . ", ";
-							$sql1 .= " 	bidwinnrNm = '" . addslashes($arr['prcbdrNm']) . "', ";
-							$sql1 .= " 	bidwinnrBizno = '" . $arr['prcbdrBizno'] . "', ";
-							$sql1 .= " 	sucsfbidAmt = '" . $arr['bidprcAmt'] . "', ";
-							$sql1 .= " 	sucsfbidRate = '" . $arr['bidprcrt'] . "', ";
-							$sql1 .= " 	rlOpengDt = '" . $arr['rlOpengDt'] . "', ";
-							$sql1 .= " 	bidwinnrCeoNm = '" . $arr['prcbdrCeoNm'] . "', ";
-							$sql .=  "  progrsDivCdNm = '" . "개찰완료" . "', ";  				// 1순위 들어가면 = 개찰완료
+							$sql1 .= " 	prtcptCnum = "      . count($item1) . ", ";    			// 입찰업체수
+							$sql1 .= " 	bidwinnrNm = '"     . addslashes($arr['prcbdrNm']) . "', ";
+							$sql1 .= " 	bidwinnrBizno = '"  . $arr['prcbdrBizno'] . "', ";
+							$sql1 .= " 	sucsfbidAmt = '"    . $arr['bidprcAmt'] . "', ";
+							$sql1 .= " 	sucsfbidRate = '"   . $arr['bidprcrt'] . "', ";
+							$sql1 .= " 	rlOpengDt = '"      . $item0[0]['OpengDt']. "', ";  // 개찰정보 있음 (실개찰일시? 개찰일시를 넣고있음)
+							$sql1 .= " 	bidwinnrCeoNm = '"  . $arr['prcbdrCeoNm'] . "', ";
+							$sql1 .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  		
 							$sql1 .= " 	modifyDT = now()";
-							$sql1 .= " WHERE bidNtceNo ='" . $bidNtceNo . "' ";
-							$sql1 .= "   AND bidNtceOrd ='" . $bidNtceOrd . "'; ";
-							$conn->query($sql1);
+							$sql1 .= " WHERE bidNtceNo ='"  . $bidNtceNo . "' ";
+							// $sql1 .= "   AND bidNtceOrd ='" . $bidNtceOrd . "' ";  //차수에 관계없이 입찰결과는 업데이트
+							if ($conn->query($sql1) == false) {
+								$msg = "SQL error=" . $sql1 . "<br>";
+							}
 
 							//---------------------------------------------------
-							//$openBidSeq_xxxx 에 입찰이력 업데이트 -by jsj 190601
+							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
 							//---------------------------------------------------
 							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
 							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
 							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
-							$result = $conn->query($sql);
-							//debug
-							//echo $sql;
+
+							If ($conn->query($sql) <> true) {
+								echo "Error sql=" .$sql. "<br>";
+							}
 
 						} else {
 
@@ -303,18 +319,20 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td>' . $arr['prcbdrCeoNm'] . '</td>';
 							if ($arr['bidprcAmt'] == '') $tr .= '<td> </td>';
 							else  $tr .= '<td align=right>' . number_format($arr['bidprcAmt']) . '</td>';
-							$tr .= '<td style="text-align: right;">' . $arr['bidprcrt'] . '</td>';
+							$tr .= '<td style="text-align: right;">' . $arr['bidprcrt'] . '</td>';     // 예정금액의 투찰율
+							$tr .= '<td style="text-align: right; ">' . number_format($bssamtrt,3) . '</td>'; // 기초금액의 투찰율
 							$tr .= '<td style="text-align: center;">' . $arr['rbidNo'] . '</td>';
 							$tr .= '<td>' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';
-
 							//---------------------------------------------------
-							//$openBidSeq_2019 에 입찰이력 업데이트 -by jsj 190601
+							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
 							//---------------------------------------------------
 							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
 							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
 							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
-							$result = $conn->query($sql);
+							If ($conn->query($sql) <> true) {
+								echo "Error sql=" .$sql. "<br>";
+							}
 						}
 						echo $tr;
 						$i += 1;

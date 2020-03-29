@@ -200,6 +200,10 @@ $item1 = $json1['response']['body']['items'];
 //echo '<br>'.'물품사전규격<br>';
 //var_dump($item1);
 
+
+
+
+
 $json2 = json_decode($response2, true);
 $item2 = $json2['response']['body']['items'];
 //echo '<br>'.'공사입찰<br>';
@@ -274,6 +278,9 @@ echo '</table>';
 <?
 	} // end of hrc 
 ?>
+
+
+
 
 </body>
 </html>

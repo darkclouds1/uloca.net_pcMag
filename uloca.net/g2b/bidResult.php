@@ -154,6 +154,9 @@ $mailintop = $mailtop + 4;	// mail address
 
 			<?
 			// 사정율 계산 ----------------------------------
+			// 사정율 = 투찰금액/기초금액 (예정가격없을때)
+			// 사정율(실제) = 예정가격/기초금액 (추첨후 예정가격 나옴)
+
 			if ($pss == '입찰물품') $bidrdo = 'opnbidThng'; //$bsnsDivCd = '1'; // 물품
 			else if ($pss == '입찰공사') $bidrdo = 'opnbidCnstwk'; //$bsnsDivCd = '1'; // 공사
 			else if ($pss == '입찰용역') $bidrdo = 'opnbidservc'; //$bsnsDivCd = '1'; // 용역
@@ -161,14 +164,15 @@ $mailintop = $mailtop + 4;	// mail address
 			$itemr = $g2bClass->getSvrDataOpn($bidrdo, $bidNtceNo); // 예정가격,기초금액
 			$json1 = json_decode($itemr, true);
 			$sasungyul = 0;
-			$plnprc = 0;
-			$bssamt = '';
+			$plnprc = 0; //예정금액
+			$bssamt = ''; //기초금액
 			$items = $json1['response']['body']['items'];
 			if (count($items) > 0) {
 				foreach ($items as $arr) {
 					$plnprc = $arr['plnprc'];
 					$bssamt = $arr['bssamt'];
-					if ($bssamt != '' && $bssamt != 0) $sasungyul = $plnprc / $bssamt; // 예정가격/기초금액
+					$bssamt1 = $arr['bssamt'];  //기초금액의 사정율 계산을 위한 변수
+					if ($bssamt != '' && $bssamt != 0) $sasungyul = $plnprc / $bssamt ; // 사정율 = 예정가격 / 기초금액
 
 				}
 			}
@@ -185,7 +189,7 @@ $mailintop = $mailtop + 4;	// mail address
 
 			<div id=totalrechrc>낙찰결과 (공공데이터포털 API) Total record=<?= count($item1) ?></div>
 			<div id=LinKExplain align="left">
-				<br>예정가격: <?= $plnprc ?> , 기초금액: <?= $bssamt ?>, 사정율: <?= number_format($sasungyul, 4, '.', '') ?>
+				<br>예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul, 4, '.', '') ?>)</font>
 				<br><br>✔︎<font color="red">[사업자번호]클릭</font>→입찰이력 <font color="red"> [업체명]클릭</font>→ 업체정보
 			</div>
 
@@ -194,10 +198,12 @@ $mailintop = $mailtop + 4;	// mail address
 					<tr>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">순위</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="25%;">업체명</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="20%;">업체명</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">대표자</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">입찰금액(원)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰금액(원)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰율(%)</th>
+
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">기초금액투찰율(%)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">입찰번호</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">비고</th>
 					</tr>
@@ -254,6 +260,10 @@ $mailintop = $mailtop + 4;	// mail address
 							$Rank_rmark = $arr['rmrk'];
 						}
 
+						//기초금애긔 투찰율 계산
+						 $bssamtrt = ( $arr['bidprcAmt'] / $bssamt1 ) * 100;
+
+						// 1순위
 						if ($k == 1) { //$i == 0) {
 							$tr = '<tr>';
 							$tr .= '<td scope="row" style="text-align: center; color:red;">' . $k . '</td>';
@@ -261,8 +271,11 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td style="color:red;"><a onclick=\'compInfo(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrNm'] . '</a></td>';
 							$tr .= '<td style="color:red;">' . $arr['prcbdrCeoNm'] . '</td>';
 							if ($arr['bidprcAmt'] == '') $tr .= '<td style="color:red; text-align: right;" > </td>';
-							else $tr .= '<td style="color:red; text-align: right;" >' . number_format($arr['bidprcAmt']) . '</td>';
-							$tr .= '<td style="text-align: right; color:red;">' . $arr['bidprcrt'] . '</td>';
+							else $tr .= '<td style="color:red; text-align: right;" >' . number_format($arr['bidprcAmt']) . '</td>'; //투찰금액
+							$tr .= '<td style="text-align: right; color:red;">' . $arr['bidprcrt'] . '</td>'; // 예정금액의 투찰율
+
+							$tr .= '<td style="text-align: right; color:red;">' . number_format($bssamtrt,3) . '</td>'; // 기초금액의 투찰율
+
 							$tr .= '<td style="text-align: center; color:red;">' . $arr['rbidNo'] . '</td>';
 							$tr .= '<td style="color:red;">' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';
@@ -303,7 +316,8 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td>' . $arr['prcbdrCeoNm'] . '</td>';
 							if ($arr['bidprcAmt'] == '') $tr .= '<td> </td>';
 							else  $tr .= '<td align=right>' . number_format($arr['bidprcAmt']) . '</td>';
-							$tr .= '<td style="text-align: right;">' . $arr['bidprcrt'] . '</td>';
+							$tr .= '<td style="text-align: right;">' . $arr['bidprcrt'] . '</td>';     // 예정금액의 투찰율
+							$tr .= '<td style="text-align: right; ">' . number_format($bssamtrt,3) . '</td>'; // 기초금액의 투찰율
 							$tr .= '<td style="text-align: center;">' . $arr['rbidNo'] . '</td>';
 							$tr .= '<td>' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';

@@ -754,7 +754,7 @@ class g2bClass {
 		$queryParams .= '&' . urlencode('inqryBgnDt') . '=' . $inqryBgnDt;
 		$queryParams .= '&' . urlencode('inqryEndDt') . '=' . $inqryEndDt;
 		$queryParams .= '&' . urlencode('corpNm') . '=' . ''; // 검색하고자 하는 업체명 조회구분 1,2인 경우 선택
-		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1:공고게시일시, 2:개찰일시, 3:입찰공고번호 */
+		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1: 등록일시, 2:공고게시일시, 3:개찰일시, 4:입찰공고번호 */
 		$queryParams .= '&' . urlencode('bizno') . '=' . ''; // 사업자등록번호
 		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); /*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
 		

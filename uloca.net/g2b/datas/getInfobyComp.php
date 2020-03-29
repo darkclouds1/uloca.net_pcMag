@@ -19,7 +19,7 @@ if (!isset($compno)) {
 	exit;
 }
 
-$sql = "select c.compno, c.compname,c.repname from openCompany c where c.compno='" . $compno . "'";
+$sql = "select compno, compname, repname from openCompany where compno='" . $compno . "'";
 
 //echo $sql;
 $result = $conn->query($sql);
@@ -37,29 +37,30 @@ $openBidInfo = 'openBidInfo'; //_'.$duration;
 
 // rbidNo (입찰번호) 추가:: 낙찰결과에 공고번호,공고ord,사업자번호,입찰번호 ==>4개를 유니크Key로 
 // -by jsj 20190804
-$sql = "select x.*,y.bidNtceNm,y.ntceInsttNm,y.dminsttNm,y.bidtype pss,y.opengDt,y.sucsfbidRate from ( ";
-$sql .= "select a.tuchalamt,a.tuchalrate,a.tuchaldatetime,a.remark,a.bidNtceNo, a.bidNtceOrd, a.rbidNo ";
-$sql .= "from openBidSeq_2020 a where a.compno='" . $compno . "'";
-$sql .= "union ";
-$sql .= "select a.tuchalamt,a.tuchalrate,a.tuchaldatetime,a.remark,a.bidNtceNo, a.bidNtceOrd, a.rbidNo ";
-$sql .= "from openBidSeq_2019 a where a.compno='" . $compno . "'";
-$sql .= "union ";
-$sql .= "select b.tuchalamt,b.tuchalrate,b.tuchaldatetime,b.remark,b.bidNtceNo, b.bidNtceOrd, b.rbidNo ";
-$sql .= "from openBidSeq_2018 b where b.compno='" . $compno . "'";
-$sql .= "union ";
-$sql .= "select c.tuchalamt,c.tuchalrate,c.tuchaldatetime,c.remark,c.bidNtceNo, c.bidNtceOrd, c.rbidNo ";
-$sql .= "from openBidSeq_2017 c where c.compno='" . $compno . "'";
-$sql .= "union ";
-$sql .= "select d.tuchalamt,d.tuchalrate,d.tuchaldatetime,d.remark,d.bidNtceNo, d.bidNtceOrd, d.rbidNo ";
-$sql .= "from openBidSeq_2016 d where d.compno='" . $compno . "'";
-$sql .= ") x, ";
-$sql .= "openBidInfo y ";
-$sql .= "where x.bidNtceNo = y.bidNtceNo ";
-$sql .= "order by x.bidNtceNo DESC"; //-by jsj 2018-01/24 공고번호로 소팅
-//$sql .= "order by tuchaldatetime desc";
-//}
-//echo $sql;
-//exit;
+$sql = " SELECT x.*, y.bidNtceNm,y.ntceInsttNm,y.dminsttNm,y.bidtype pss,y.opengDt,y.sucsfbidRate FROM ( ";
+$sql .= " SELECT a.tuchalamt,a.tuchalrate,a.tuchaldatetime,a.remark, a.bidNtceNo, MAX(a.bidNtceOrd) AS bidNtceOrd, a.rbidNo ";
+$sql .= " FROM openBidSeq_2020 a where a.compno='" . $compno . "' ";
+$sql .= " GROUP BY a.bidNtceNo ";
+$sql .= " UNION ";
+$sql .= " SELECT b.tuchalamt,b.tuchalrate,b.tuchaldatetime,b.remark, b.bidNtceNo, MAX(b.bidNtceOrd) AS bidNtceOrd, b.rbidNo ";
+$sql .= " FROM openBidSeq_2019 b where b.compno='" . $compno . "' ";
+$sql .= " GROUP BY b.bidNtceNo ";
+$sql .= " UNION ";
+$sql .= " SELECT c.tuchalamt,c.tuchalrate,c.tuchaldatetime,c.remark, c.bidNtceNo, MAX(c.bidNtceOrd) AS bidNtceOrd, c.rbidNo ";
+$sql .= " FROM openBidSeq_2018 c where c.compno='" . $compno . "' ";
+$sql .= " GROUP BY c.bidNtceNo ";
+$sql .= " UNION ";
+$sql .= " SELECT d.tuchalamt,d.tuchalrate,d.tuchaldatetime,d.remark, d.bidNtceNo, MAX(d.bidNtceOrd) AS bidNtceOrd, d.rbidNo ";
+$sql .= " FROM openBidSeq_2017 d where d.compno='" . $compno . "' ";
+$sql .= " GROUP BY d.bidNtceNo ";
+$sql .= " UNION ";
+$sql .= " SELECT e.tuchalamt,e.tuchalrate,e.tuchaldatetime,e.remark, e.bidNtceNo, MAX(e.bidNtceOrd) AS bidNtceOrd, e.rbidNo ";
+$sql .= " FROM openBidSeq_2016 e where e.compno='" . $compno . "' ";
+$sql .= " GROUP BY e.bidNtceNo ";
+$sql .= " ) x, openBidInfo y ";
+$sql .= " WHERE x.bidNtceNo = y.bidNtceNo ";
+$sql .= " AND x.bidNtceOrd = y.bidNtceOrd ";
+$sql .= " ORDER BY x.bidNtceNo DESC "; 
 
 $result = $conn->query($sql);
 //var_dump($result);

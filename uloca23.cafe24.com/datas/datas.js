@@ -89,7 +89,6 @@ function clearSearch() {
 	form.chkHrc.checked = true;
 	//alert(form.bidservc.checked);
 }
-
 var xhr;
 function ajaxUloca(server,client) {
 // XMLHttpRequest 객체의 생성
@@ -115,7 +114,6 @@ function ajaxUloca(server,client) {
         }
       }; */
 }
-
 function ajaxClient() {
 	if (xhr.readyState === XMLHttpRequest.DONE) {
           if (xhr.status === 200) {
@@ -146,7 +144,10 @@ function getAjax(server,client) {
   xhttp.send();
 }
 
+
+
 function checkDup() {
+	
 	var table = document.getElementById('bidData'); 
     rows = table.getElementsByTagName('tr');
 	var form = document.myForm;
@@ -204,7 +205,6 @@ function gobackins() {
 	//form.sendsms.checked = false;
 	if (trObj0 != '') trObj0.style.color = 'black';	
 }
-
 // 수정
 function lineupdate() {
 	var form = document.myForm
@@ -264,7 +264,6 @@ function lineupdate() {
         }
     });
 }
-
 // 삭제
 function linedelete() {
 
@@ -339,7 +338,6 @@ function clickTrEvent(trObj) {
 	document.getElementById('doins').style.display = 'none';
 	
 }
-
 var oldColor = '#000000';
 var newColor = '#FF0000';
 function changeTrColor(trObj) {

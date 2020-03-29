@@ -8,7 +8,7 @@ class g2bClass {
 	public $ServiceKey= 'Q5eI3cYX4CzlTWVI4YMFOkw41NPqQMvSZ%2FXhLM9eud43t%2B7NKImGzkhz4%2F4iIHi0SmrZBkgYSrlhhyshLQhVvA%3D%3D';  //'mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D';
 	public $ServiceKey2= 'BT4h3Pd5ovl0%2BOWmcIGClMw42vc%2F%2B9Asx6MAg%2Fa4xt1jg%2BF4q9ZfU9Tm8qlo09bZWZjSlcr3Uf062qMVG56vpA%3D%3D'; // 입찰
 	public $ServiceKey_uloca23 = 'aQAvWmy3XF13lanl8ELaaOBq%2Fw4W1OHXY9b40KiZQ1hZuMX0Cv6B3ickvm5tzWMcMaw0VsYbRayxIwSVCAPybw%3D%3D';
-	public $uloca_live_test = '2'; // 1:live 2:test
+	public $uloca_live_test = '1'; // 1:live 2:test
 	//bitly -by jsj 0323
 	public $login = 'enable21';
 	public $appkey = 'R_cb94c2cd92bba988984791acf7704b6e';
@@ -88,25 +88,36 @@ class g2bClass {
 		switch ($bidrdo) {
 			
 			case 'scsbidthing':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품낙찰 (현황)
 				break;
 			case 'scsbidcnstwk':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사낙찰 (현황)
 				break;
 			case 'scsbidservc':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 용역낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 용역낙찰 (현황)
 				break;
+			// 낙찰목록(물품,공사,용역) 추가 -by jsj 20200329
+			case 'openbidthing':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch'; // 물품낙찰 (목록)
+				break;
+			case 'openbidcnstwk':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoCnstwkPPSSrch'; // 공사낙찰 (목록)
+				break;
+			case 'openbidservc':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoServcPPSSrch'; // 용역낙찰 (목록)
+				break;
+
 			case 'scsbidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch'; // 외자낙찰
 				break;
 			case 'bidthing':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰 (나라장터검색조건)
 				break;
 			case 'bidcnstwk':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch'; // 공사입찰
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch'; // 공사입찰 (나라장터검색조건)
 				break;
 			case 'bidservc':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰 (나라장터검색조건)
 				break;
 			case 'bidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoFrgcptPPSSrch'; // 외자입찰
@@ -738,23 +749,28 @@ class g2bClass {
 	} // getCompInfo3
 	
 	/* -------------------------------------------------------------------------
-	 낙찰 조회
+	//  낙찰 조회
+	//  낙찰(목록)progrsDivCdNm (유찰, 개찰완료, 재입찰)
 	 ------------------------------------------------------------------------- */
-	function getBidRslt($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss) {
-		$inqDiv = 2; // 개찰일시
+	function 
+	getBidRslt($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss) {
+		$inqDiv = 2; // 개찰일시 1:공고게시일시, 2:개찰일시, 3:입찰공고번호
 		$ch = curl_init();
 		global $ServiceKey;
-		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 나라장터 검색조건에 의한 낙찰된 목록 현황 용역조회
-		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사조회
-		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품
-		
+		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch';    				   // 낙찰현황 용역조회
+		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 낙찰현황 공사조회
+		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch';   // 낙찰현황 물품조회
+		if ($pss == "물품목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch';   // 낙찰목록 물품조회
+		if ($pss == "공사목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoCnstwkPPSSrch'; // 낙찰목록 공사조회
+		if ($pss == "용역목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoServcPPSSrch';  // 낙찰목록 용역조회
+
 		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); /*한 페이지 결과 수*/
 		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); /*페이지 번호*/
 		//$queryParams .= '&' . urlencode('ServiceKey') . '=' . urlencode('-'); /*공공데이터포털에서 받은 인증키*/
 		$queryParams .= '&' . urlencode('inqryBgnDt') . '=' . $inqryBgnDt;
 		$queryParams .= '&' . urlencode('inqryEndDt') . '=' . $inqryEndDt;
 		$queryParams .= '&' . urlencode('corpNm') . '=' . ''; // 검색하고자 하는 업체명 조회구분 1,2인 경우 선택
-		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1:공고게시일시, 2:개찰일시, 3:입찰공고번호 */
+		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1: 등록일시, 2:공고게시일시, 3:개찰일시, 4:입찰공고번호 */
 		$queryParams .= '&' . urlencode('bizno') . '=' . ''; // 사업자등록번호
 		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); /*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
 		
@@ -803,7 +819,7 @@ class g2bClass {
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 		$response = curl_exec($ch);
 		curl_close($ch);
-		return $response; 
+		return $response;
 	} // getBidRslt
 	
 	/* ---------------------------------------------------------------------------------
@@ -1047,7 +1063,7 @@ class g2bClass {
 		//select max(bidNtceOrd) as Ord from openBidInfo2 where bidNtceNo ='20171217933'
 	}
 	/* ---------------------------------------------------------------------------------
-	 입찰 정보 :
+	 입찰 정보 : 참조)getBidPblancListInfoServcPPSSrch (나라장터 검색조건)
 	 ------------------------------------------------------------------------------------ */
 	function getBidInfo($bidNtceNo,$bidNtceOrd,$pss) {
 		$ch = curl_init();
@@ -1603,8 +1619,8 @@ class g2bClass {
 	function autoRecList($login_userid) {
 		
 		
-		//$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
-		$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
+		$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
+		//$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
 		// Check connection
 		if ($conn->connect_error) {
 			die("DB Connection failed: " . $conn->connect_error);
@@ -1974,38 +1990,36 @@ class g2bClass {
 		
 	}
 
-	function getFromUrl($url, $method = 'POST') {
+	function getFromUrl($url, $method = 'POST')
+	{
 		$ch = curl_init();
 		$agent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0)';
-		
-		switch(strtoupper($method)) {
-		case 'GET':
-			curl_setopt($ch, CURLOPT_URL, $url);
-			break;
 
-		case 'POST':
-			$info = parse_url($url);
-			$url = $info['scheme'] . '://' . $info['host'] . $info['path'];
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $info['query']);
-            break;
-		
-		default:
-			return false;
+		switch (strtoupper($method)) {
+			case 'GET':
+				curl_setopt($ch, CURLOPT_URL, $url);
+				break;
+
+			case 'POST':
+				$info = parse_url($url);
+				$url = $info['scheme'] . '://' . $info['host'] . $info['path'];
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_POST, true);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $info['query']);
+				break;
+			default:
+				return false;
 		}
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	    curl_setopt($ch, CURLOPT_HEADER, false);
-	    curl_setopt($ch, CURLOPT_REFERER, $url);
-	    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_REFERER, $url);
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
 		$res = curl_exec($ch);
-	    curl_close($ch);
-		
+		curl_close($ch);
+
 		return $res;
 	}	//getFromUrl
 
 } 	// g2bClass
-
-?>
