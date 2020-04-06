@@ -1405,7 +1405,7 @@ function g2bShortCode()
 
 				//move();		
 				getAjaxPost(server, recv, parm);
-				parm = ""; //pram 초기화가 안됨  -by jsj 190320 1356줄이 클라어하고 들어감.... by hmj
+				parm = ""; //pram 초기화가 안됨  -by jsj 190320 1356줄이 클리어하고 들어감.... by hmj
 			}
 
 			function recv(data) {

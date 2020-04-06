@@ -8,11 +8,11 @@ class  classDAO {
 		$conn = $dbConn->conn();
 
 		$SQL  = "SELECT dt , id, ip, pg, rmrk FROM `logdb` WHERE 1";
-        $SQL .= "   AND id <> 'uloca22'";
-        $SQL .= "   AND rmrk <> '일일자료수집'";	//
-        $SQL .= "   AND ip <> '222.108.91.28'";  	// 오류동 IP
-        $SQL .= "   AND ip <> '175.197.112.218'";  	// 모바일(노트9) IP
-        $SQL .= "   AND ip <> '222.237.175.195'";  	// 유노비젼 IP
+        $SQL .= "   AND id <> 'uloca22' ";
+        $SQL .= "   AND rmrk <> '일일자료수집' ";	//
+        // $SQL .= "   AND ip <> '222.108.91.28'";  	// 오류동 IP
+        // $SQL .= "   AND ip <> '175.197.112.218'";  	// 모바일(노트9) IP
+        // $SQL .= "   AND ip <> '222.237.175.195'";  	// 유노비젼 IP
         $SQL .= "   AND date(dt) = date(?)";  		// 입력날
         $SQL .= " GROUP BY `ip` "; 
         $SQL .= " limit 1000; "; 

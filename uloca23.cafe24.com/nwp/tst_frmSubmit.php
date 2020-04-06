@@ -11,7 +11,6 @@ $conn = $dbConn->conn();
 
 echo " startDate=" . $_POST['startDate'] . ", enddate=" . $_POST['endDate'] . ", contn=" . $_POST['contn'] . ", stop=" . $_POST['stop'] . "<br>";
 
-
 $dur = '2020';
 if ($_POST['startDate'] != '') {
     $dur = substr($startDate, 0, 4);
@@ -25,19 +24,26 @@ if (isset($_POST['contn'])) {
 } else {
     $contn = 0;
 }
-
 $startDate = $_POST['startDate'];
 $endDate = $_POST['endDate'];
-
-$sql = "select workdt, lastdt from workdate where workname = 'dailyDataFill'";
-$result = $conn->query($sql);
-if ($row = $result->fetch_assoc()) {
-    $workdt = $row['workdt'];
-    $lastdt = $row['lastdt'];
+if ($startDate == '') {
+    $sql = "select workdt, lastdt from workdate where workname = 'dailyDataFill'";
+    $result = $conn->query($sql);
+    if ($row = $result->fetch_assoc()) {
+        $workdt = $row['workdt'];
+        $startDate = $row['lastdt'];
+        $endDate = $startDate;
+    }
 }
 
-echo " lastdt= " . $lastdt;
+echo " startDate= " .$startDate. ", ";
+echo " endDate= " .$endDate;
 
+$workname = 'dailyDataFill';
+$workdt = date('Y-m-d', strtotime(date("Ymd")));
+$endDate = date('Y-m-d', strtotime($endDate));
+echo " 저장할 endDate=" .$endDate;
+workdate($conn, $workname, $workdt, $endDate);
 
 ?>
 
@@ -45,36 +51,38 @@ echo " lastdt= " . $lastdt;
 <html>
 
 <head>
-    <title>ULOCA</title>
+<title>낙찰결과 Fill/<?= $bidNtceNo ?></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="format-detection" content="telephone=no">
+	<!--//-by jsj 전화걸기로 링크되는 것 막음 -->
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="/ulocawp/wp-content/themes/one-edge/style.css" />
-    <link rel="stylesheet" type="text/css" href="/dhtml/codebase/fonts/font_roboto/roboto.css" />
-    <link rel="stylesheet" type="text/css" href="/dhtml/codebase/dhtmlx.css" />
-    <link rel="stylesheet" type="text/css" href="http://uloca23.cafe24.com/g2b/css/g2b.css" />
-    <link rel="stylesheet" href="http://uloca23.cafe24.com/jquery/jquery-ui.css">
-    <script src="http://uloca23.cafe24.com/jquery/jquery.min.js"></script>
-    <script src="http://uloca23.cafe24.com/jquery/jquery-ui.min.js"></script>
-    <script src="http://uloca23.cafe24.com/g2b/g2b.js"></script>
-    <script src="/dhtml/codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190102" />
+	<link rel="stylesheet" href="/jquery/jquery-ui.css">
+
+	<script src="/jquery/jquery.min.js"></script>
+	<script src="/jquery/jquery-ui.min.js"></script>
+	<script src="/js/common.js?version=20190203"></script>
+	<script src="/g2b/g2b.js?version=20190203"></script>
+	<script src="/g2b/g2b_2019.js?version=20190203"></script>
 
     <script>
+		var stopOn = false;
 
         function doit() {
+            move();
             frm = document.myForm;
-            if (frm.contn.checked == true) {
-                frm.submit();
-            }
+            alert ("Start submit");
+            frm.submit();
         }
 
         function stopit() {
             var contn = document.getElementById("contn");
             contn.checked = false;
-            alert ("sotop!");
-            return;
+            stopOn = true;
+            alert("stop! = ");
         }
 
         function donextday() {
@@ -87,15 +95,25 @@ echo " lastdt= " . $lastdt;
                 return
             }
 
-            if (frm.contn.checked) {
-                dts = dateAddDel(frm.startDate.value, 1, 'd');
-                frm.startDate.value = dts;
-                frm.endDate.value = dts;
-                frm.submit();
-            } else {
+            // stopOn 
+            if (stopOn) {
                 frm.contn.checked = false;
                 return;
             }
+            if (frm.contn.checked && !stopOn) {
+                dts = dateAddDel(frm.startDate.value, 1, 'd');
+                frm.startDate.value = dts;
+                frm.endDate.value = dts;
+                setTimeout(function() {
+                    if (!stopOn) {
+                        move();
+                        frm.submit();
+                    }
+                }, 3000);
+
+
+            }
+            return;
         }
     </script>
 
@@ -139,6 +157,10 @@ echo " lastdt= " . $lastdt;
         <div style='font-size:14px; color:blue;font-weight:bold'>- 입찰정보 / 낙찰업데이트 1등정보 (입찰/낙찰 연관없음) <br>
             입찰정보(등록일시기준): DB에 없는것만 INSERT, 낙찰정보(개찰일시기준): DB에 공고번호로 업데이트 </div>
     </center>
+    <div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 60%;margin-top: -10px; margin-left: -50px; '>
+            <img src='http://uloca23.cafe24.com/g2b/loading3.gif' width='100px' height='100px'>
+    </div>
+
 
     <table class="type10" id="specData" style="text-align: left; border: 0px solid #dddddd; word-break:break-all;">
         <thead>
@@ -156,24 +178,34 @@ echo " lastdt= " . $lastdt;
 
             </tr>
         </thead>
+
+
         <tbody>
 
             <?php
 
-            function workdate($conn, $workname, $workdt, $lastdt)
+            function debug_flush($msg)
             {
-                $sql = " UPDATE workdate SET workdt='" . $workdt . "', lastdt='" . $lastdt . "'";
+                //ob_end_clean();
+                echo $msg.'<br/>';
+                echo str_pad('',256);
+                ob_flush();
+                flush();
+            }
+
+            function workdate($conn, $workname, $workdt, $endDate)
+            {
+                $sql = " UPDATE workdate SET workdt='" . $workdt . "', lastdt='" . $endDate . "'";
                 $sql .= " Where workname='" . $workname . "' ";
                 if ($conn->query($sql) <> true) {
                     echo "SQL Error: " . $sql;
                 }
             }
 
-            $workname = 'dailyDataFill';
+            for($i=1; $i<4; ++$i) {
+                debug_flush("실행완료".$i);
+                sleep(1);
+            }
 
-            $workdt = date('Y-m-d', strtotime(date("Ymd")));
-            $lastdt = date('Y-m-d', strtotime($endDate));
-
-            workdate($conn, $workname, $workdt, $lastdt);
 
             ?>

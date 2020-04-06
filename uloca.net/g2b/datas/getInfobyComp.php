@@ -181,15 +181,15 @@ $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
 </head>
 <?
 if ($mobile == "Mobile") {
-	$emaildiv_top1 = 124;
-	$emaildiv_top2 = 128;
+	$emaildiv_top1 = 120;
+	$emaildiv_top2 = 120;
 	$emaildiv_right1 = 10;
 	$emaildiv_right2 = 96;
 	$emaildiv_right3 = 182;
 	$emaildiv_right4 = 248;
 } else {
-	$emaildiv_top1 = 115;
-	$emaildiv_top2 = 115;
+	$emaildiv_top1 = 52;
+	$emaildiv_top2 = 90;
 	$emaildiv_right1 = 20;
 	$emaildiv_right2 = 105;
 	$emaildiv_right3 = 190;
@@ -227,17 +227,18 @@ if ($mobile == "Mobile") {
 	<div id='bidinfo'>
 		<div id='bidinfohead' style='font-size:14px;'>
 			<div id=summaryrec></div>
-			<div id=totalrec>total record=xx</div>
+			<center>
+			<div id=totalrec >total record=xx</div>
+			</center>
 		</div> <!-- end of bidinfohead -->
 	</div>
 	<!-- change  color from #438ad1 to #666666 -->
 	<script>
 		//document.getElementById('totalrec').innerHTML = '(<?= $tuchalrate0Cnt ?>건 제외)';
-		document.getElementById('summaryrec').innerHTML = '<font size=5><strong><?= $compname ?></strong></font>사업자번호:<?= $compno ?>, 대표:<?= $repname ?><br>';
+		document.getElementById('summaryrec').innerHTML = '<font size=5><strong><?= $compname ?></strong></font>사업자번호:<?= $compno ?>, 대표:<?= $repname ?>';
 		document.getElementById('summaryrec').innerHTML += '<a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰1순위만 검색(클릭):<?= $nakchal ?>건</strong></font></a>';
-		document.getElementById('summaryrec').innerHTML += '<br>▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
+		document.getElementById('summaryrec').innerHTML += '▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
 		document.getElementById('summaryrec').innerHTML += ', 표준편차:' + '<font color=red>' + mk + '</font>';
-		document.getElementById('summaryrec').innerHTML += ', <font color="red"> ✔[공고명] 클릭</font>하면 낙찰결과가 보입니다</font>';
 	</script>
 	<?
 	// --------------------------------------------------------------------------------------
@@ -254,8 +255,8 @@ if ($mobile == "Mobile") {
 			<thead>
 				<tr>
 					<th scope="cols" width="4%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">No.</th>
-					<th scope="cols" width="8%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고번호</th>
-					<th scope="cols" width="20%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고명</th>
+					<th scope="cols" width="8%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고번호<br>(상세보기)</th>
+					<th scope="cols" width="20%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고명<br>(낙찰결과)</th>
 					<th scope="cols" width="18%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">수요기관</th>
 					<th scope="cols" width="5%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">종류</th>
 					<th scope="cols" width="12%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">입찰금액(원)</th>
@@ -449,23 +450,10 @@ if ($mobile == "Mobile") {
 					if (i > 2) hdr2 = hdr2.substring(0, i);
 
 					msg = document.getElementById('specData').innerHTML; //json2table(data2) ; //document.getElementById('bidinfo').innerHTML;
-					//s = msg.indexOf('<a onclick=\"showhide'); //낙찰');
-					//e = msg.indexOf('표준편차',s)+10;
-					//e = msg.indexOf('</font>',e)+4;
-					/* hdr = '<html>';
-					hdr += '<head>';
-					hdr += '<title>ULOCA</title>';
-					hdr += '<meta http-equiv="Content-Type" content="text/html; charset=utf8" />';
-					hdr += '<meta name="viewport" content="width=device-width, initial-scale=1">';
-					hdr += '<meta http-equiv="X-UA-Compatible" content="IE=Edge" />';
-					hdr += '<link rel="stylesheet" type="text/css" href="http://uloca23.cafe24.com/g2b/css/g2b.css" />';
-					hdr += '</head>';
-					hdr += '<body>'; */
 					hdr = '<p><a href="http://uloca.net"><input  type="button" value="유로카 입찰정보" style="width:300px; background-color:#E9602C; height:28px; color:#ffffff; cursor:pointer; font-size:14px; font-weight: bold; text-align:center; border:solid 1px #99bbe8; border-bottom:solid 1px #99bbe8;"></a></p>';
 					//msg = msg.substr(0,s)+msg.substr(e);
 					//console.log(s+'/'+e+'/'+msg.substr(0,400));
 					frm2.message.value = hdr + hdr2 + msg;
-					//var gsWin = window.open('about:blank','new_blank','width=900,height=700,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 					frm2.submit();
 				}
 
@@ -474,8 +462,8 @@ if ($mobile == "Mobile") {
 					tr += '<thead>';
 					tr += '    <tr>';
 					tr += '        <th scope="cols" width="4%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">No.</th>';
-					tr += '		<th scope="cols" width="8%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고번호</th>';
-					tr += '		<th scope="cols" width="20%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고명</th>';
+					tr += '		<th scope="cols" width="8%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고번호<br>(상세보기)</th>';
+					tr += '		<th scope="cols" width="20%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">공고명<br>(낙찰결과)</th>';
 					tr += '        <th scope="cols" width="18%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">수요기관</th>';
 					tr += '        <th scope="cols" width="5%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">종류</th>';
 					tr += '       <th scope="cols" width="12%;" style="padding: 6px; font-weight: bold; vertical-align: top; text-align: center; color: #fff; background: #666666; margin: 2px 2px;">입찰금액(원)</th>';
@@ -573,11 +561,10 @@ if ($mobile == "Mobile") {
 				mk = mk / 10;
 				//document.getElementById('totalrec').innerHTML = '(<?= $tuchalrate0Cnt ?>건 제외)';
 				document.getElementById('summaryrec').innerHTML = '<font size=5><strong><?= $compname ?></strong></font>&nbsp&nbsp사업자번호:<?= $compno ?>, 대표:<?= $repname ?>';
-				document.getElementById('summaryrec').innerHTML += '<br><br><a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰 1순위:&nbsp <?= $nakchal ?>건(클릭)</strong></font></a>';
-				document.getElementById('summaryrec').innerHTML += '<br><font color=""> ✔ 입찰이력이 누락된 경우 해당공고의 입찰결과를 확인해보세요.</font>';
-				document.getElementById('summaryrec').innerHTML += '<br><br> ▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
+				document.getElementById('summaryrec').innerHTML += '<br><a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰 1순위:&nbsp <?= $nakchal ?>건(클릭)</strong></font></a>';
+				document.getElementById('summaryrec').innerHTML += '<br><font color=""> ✔ 입찰이력이 누락된 경우 해당공고의 낙찰결과를 확인해보세요.</font>';
+				document.getElementById('summaryrec').innerHTML += '<br>▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
 				document.getElementById('summaryrec').innerHTML += ', 표준편차:' + '<font color=red>' + mk + '</font>';
-				document.getElementById('summaryrec').innerHTML += ', <font color="red"> ✔[공고명] 클릭</font>하면 낙찰결과가 보입니다.</font>';
 			</script>
 			<!-- div class="btn_area" style='width:100% !important;' >
 				<input type=button style='height:30px; width:120px; font-size:14px; line-height:30px; color:#fff; text-align:center; padding:2px; background-color:#438ad1;; border:0;vertical-align: middle; cursor:pointer;' value="닫  기" onclick="self.close()" />

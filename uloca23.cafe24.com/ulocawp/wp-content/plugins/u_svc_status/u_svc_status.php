@@ -38,13 +38,11 @@ function u_svc_status_ShortCode() {
 
 	$sql  = "SELECT COUNT(compno) AS CNT FROM openCompany WHERE 1";
 	$sql .= "   AND DATE(modifyDT) = DATE('".$searchDate."')";
-
-	//echo $sql;
-
 	$result = $conn->query($sql);
 	if ($result){
 		$row = $result->fetch_assoc();
 		$changeCompCnt = $row["CNT"];
+		echo "searchDate=" .$_POST['searchDate'];
 	} else {
 		echo $sql;
 	}
@@ -68,10 +66,16 @@ function u_svc_status_ShortCode() {
 	<script src="/jquery/jquery.min.js"></script>
 	<script src="/jquery/jquery-ui.min.js"></script>
 	<script src="/g2b/g2b.js"></script>
+	<script src="/datas/datas.js"></script>
 	<script src="/dhtml/codebase/dhtmlx.js"></script>
 
 	<script type="text/javascript">
-	
+		function doit() {
+			move();
+			frm = document.myForm;
+			frm.submit();
+		}
+
 		//var path = window.location.pathname;
 		var request = new XMLHttpRequest();
 		function searchFunction() {
@@ -101,9 +105,17 @@ function u_svc_status_ShortCode() {
 				$("#totalCnt").text('totalCnt='+ i );
 			}
 		} //searchProcess
-		window.onload = function() {
-			searchFunction();
+		
+		function searchMailCount(){
+			url = 'test.php';
+			getAjax(url, clilent);
+
+
 		}
+
+		// window.onload = function() {
+			// searchFunction();
+		// }
 		
 		/*
 		document.getElementById("toDay").value = new Date().toISOString().substring(0, 10);
@@ -113,47 +125,54 @@ function u_svc_status_ShortCode() {
 		*/
 	</script>
 </head>
-<body>
+<body onload="javascript:searchProcess();">
 	<!-- 
 	<form method="post" action="<?php echo esc_url($curUrl); ?>" method="post" id="u_svc_status" >
 		<input type="date" name="searchDate1" id="searchDate1" onkeyup="sm()" value="<?php ?>">
 		<input type="submit" value="메일보낸수 검색" >
 	</form>
 	-->
+	<!-- <form action="u_svc_status.php" name="myForm" id="myform" method="post"> -->
 
-	<div class="container-fluid">
-		<div id='totalCnt' class="col-xs-8 col-sm-6 col-md-4 col-lg-3">
-			totalCnt=
+		<div class="container-fluid">
+			<div id='totalCnt' class="col-xs-8 col-sm-6 col-md-4 col-lg-3">
+				totalCnt=
+			</div>
+			<div id='change' >
+				이메일 보낸 갯수 = <?php echo $changeCompCnt; ?>
+			<div>
+
+			<div class="form-group row pull-right">
+					<!-- <input id="toDay" onchange="searchFunction();" type="date" value="now()"> -->
+					<input type="date" name="searchDate" id="searchDate" value="<?php echo $searchDate;?>">
+					<!-- <button class="btn-primary" onclick="doit()" type="button">검색</button> -->
+					 <button class="btn-primary" onclick="searchFunction();" type="button">검색</button> 
+			</div>
+	<!-- </form> -->
+
+			<table class="type10" style="text-align: left; border: 0px solid #dddddd; word-break:break-all;">
+				<thead>
+					<tr style="border: 1px solid #dddddd;">
+						<th   scope="cols" width="3%;">no.</th>
+						<th   scope="cols" width="12%;">date</th>
+						<th   scope="cols" width="9%;">Id</th>
+						<th   scope="cols" width="10%;">IP</th>
+						<th   scope="cols" width="26%;">rmrk</th>
+						<th  scope="cols" width="40%;">pg</th>
+					</tr>
+				</thead>
+				<tbody id="ajaxTable" style="word-break:break-all;">
+					<tr>
+						<!--  
+						<td>idx</td>
+						-->
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<div id='change' >
-			이메일 보낸 갯수 = <?php echo $changeCompCnt; ?>
-		<div>
-		<div class="form-group row pull-right">
-				<!-- <input id="toDay" onchange="searchFunction();" type="date" value="now()"> -->
-				<input type="date" name="searchDate" id="searchDate" value="<?php echo $searchDate;?>">
-				<button class="btn-primary" onclick="searchFunction();" type="button">검색</button>
-		</div>
-		<table class="type10" style="text-align: left; border: 0px solid #dddddd; word-break:break-all;">
-			<thead>
-				<tr style="border: 1px solid #dddddd;">
-					<th   scope="cols" width="3%;">no.</th>
-					<th   scope="cols" width="12%;">date</th>
-					<th   scope="cols" width="9%;">Id</th>
-					<th   scope="cols" width="10%;">IP</th>
-					<th   scope="cols" width="26%;">rmrk</th>
-					<th  scope="cols" width="40%;">pg</th>
-				</tr>
-			</thead>
-			<tbody id="ajaxTable" style="word-break:break-all;">
-			 	<tr>
-			 		<!--  
-			 		<td>idx</td>
-			 		-->
-			 	</tr>
-			</tbody>
-		</table>
-	</div>
+
 </body>
+
 </html>
 <?
 }

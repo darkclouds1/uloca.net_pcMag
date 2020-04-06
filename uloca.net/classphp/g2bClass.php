@@ -84,29 +84,40 @@ class g2bClass {
 		return $dur;
 	}
 	function getAddr($bidrdo) {
-		
+		// bidopen
 		switch ($bidrdo) {
 			
 			case 'scsbidthing':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품낙찰 (현황)
 				break;
 			case 'scsbidcnstwk':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사낙찰 (현황)
 				break;
 			case 'scsbidservc':
-				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 용역낙찰
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 용역낙찰 (현황)
 				break;
+			// 낙찰목록(물품,공사,용역) 추가 -by jsj 20200329
+			case 'openbidthing':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch'; // 물품낙찰 (목록)
+				break;
+			case 'openbidcnstwk':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoCnstwkPPSSrch'; // 공사낙찰 (목록)
+				break;
+			case 'openbidservc':
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoServcPPSSrch'; // 용역낙찰 (목록)
+				break;
+
 			case 'scsbidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch'; // 외자낙찰
 				break;
-			case 'bidthing':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰
+			case 'bidthing': 
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰 (나라장터검색조건)
 				break;
 			case 'bidcnstwk':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch'; // 공사입찰
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch'; // 공사입찰 (나라장터검색조건)
 				break;
 			case 'bidservc':
-				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰
+				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰 (나라장터검색조건)
 				break;
 			case 'bidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoFrgcptPPSSrch'; // 외자입찰
@@ -123,7 +134,7 @@ class g2bClass {
 			case 'hrcfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoFrgcptPPSSrch'; // 외자사전규격
 				break;
-			case 'bidopen':
+			case 'bidopen': // 개찰결과 openBidSeq_xxxx 에 업데이트용 -by jsj 20200401
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt'; // 개찰결과 개찰완료 목록 조회,물품, 공사, 용역, 외자 공통
 				break;
 			case 'scsbidthing1':
@@ -738,16 +749,20 @@ class g2bClass {
 	} // getCompInfo3
 	
 	/* -------------------------------------------------------------------------
-	 낙찰 조회
+	//  낙찰 조회
+	//  낙찰(목록)progrsDivCdNm (유찰, 개찰완료, 재입찰)
 	 ------------------------------------------------------------------------- */
 	function getBidRslt($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss) {
-		$inqDiv = 2; // 개찰일시
+		$inqDiv = 2; // 개찰일시 1:공고게시일시, 2:개찰일시, 3:입찰공고번호
 		$ch = curl_init();
 		global $ServiceKey;
-		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 나라장터 검색조건에 의한 낙찰된 목록 현황 용역조회
-		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사조회
-		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품
-		
+		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch';    				   // 낙찰현황 용역조회
+		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 낙찰현황 공사조회
+		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch';   // 낙찰현황 물품조회
+		if ($pss == "물품목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch';   // 낙찰목록 물품조회
+		if ($pss == "공사목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoCnstwkPPSSrch'; // 낙찰목록 공사조회
+		if ($pss == "용역목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoServcPPSSrch';  // 낙찰목록 용역조회
+
 		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); /*한 페이지 결과 수*/
 		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); /*페이지 번호*/
 		//$queryParams .= '&' . urlencode('ServiceKey') . '=' . urlencode('-'); /*공공데이터포털에서 받은 인증키*/
@@ -933,6 +948,7 @@ class g2bClass {
 	function getRsltData($bidNtceNo,$bidNtceOrd) {
 		return $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,'999','1');
 	} // getRsltData
+	
 	function getRsltDataTotalCount($bidNtceNo,$bidNtceOrd) {
 		$response = $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,'1');
 		$json1 = json_decode($response, true);
@@ -1047,7 +1063,7 @@ class g2bClass {
 		//select max(bidNtceOrd) as Ord from openBidInfo2 where bidNtceNo ='20171217933'
 	}
 	/* ---------------------------------------------------------------------------------
-	 입찰 정보 :
+	 입찰 정보 : 참조)getBidPblancListInfoServcPPSSrch (나라장터 검색조건)
 	 ------------------------------------------------------------------------------------ */
 	function getBidInfo($bidNtceNo,$bidNtceOrd,$pss) {
 		$ch = curl_init();
@@ -1675,7 +1691,7 @@ class g2bClass {
 				$tr .= '<td>'.$row['dminsttnm'].'</td>';
 				$tr .= '<td>'.$search.'</td>';
 				$tr .= '<td>'.$send.'</td>';
-				$tr .= '<td style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td style="text-align:center;">'.$row['till'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
@@ -1689,7 +1705,7 @@ class g2bClass {
 				$tr .= '<td class="even" >'.$row['dminsttnm'].'</td>';
 				$tr .= '<td class="even" >'.$search.'</td>';
 				$tr .= '<td class="even" >'.$send.'</td>';
-				$tr .= '<td class="even" style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td class="even" style="text-align:center;">'.$row['till'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
@@ -1974,38 +1990,36 @@ class g2bClass {
 		
 	}
 
-	function getFromUrl($url, $method = 'POST') {
+	function getFromUrl($url, $method = 'POST')
+	{
 		$ch = curl_init();
 		$agent = 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0)';
-		
-		switch(strtoupper($method)) {
-		case 'GET':
-			curl_setopt($ch, CURLOPT_URL, $url);
-			break;
 
-		case 'POST':
-			$info = parse_url($url);
-			$url = $info['scheme'] . '://' . $info['host'] . $info['path'];
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $info['query']);
-            break;
-		
-		default:
-			return false;
+		switch (strtoupper($method)) {
+			case 'GET':
+				curl_setopt($ch, CURLOPT_URL, $url);
+				break;
+
+			case 'POST':
+				$info = parse_url($url);
+				$url = $info['scheme'] . '://' . $info['host'] . $info['path'];
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_POST, true);
+				curl_setopt($ch, CURLOPT_POSTFIELDS, $info['query']);
+				break;
+			default:
+				return false;
 		}
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	    curl_setopt($ch, CURLOPT_HEADER, false);
-	    curl_setopt($ch, CURLOPT_REFERER, $url);
-	    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_REFERER, $url);
+		curl_setopt($ch, CURLOPT_USERAGENT, $agent);
 		$res = curl_exec($ch);
-	    curl_close($ch);
-		
+		curl_close($ch);
+
 		return $res;
 	}	//getFromUrl
 
 } 	// g2bClass
-
-?>

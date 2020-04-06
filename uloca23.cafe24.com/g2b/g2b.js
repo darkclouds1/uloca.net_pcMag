@@ -601,8 +601,7 @@ if (url.trim() == '') // || regex.test(url) === false)
 사전규격 상세정보보기
 ------------------------------------------------------------------------------------------- */
 function viewDtls(bfSpecRgstNo) {
-
-if (bfSpecRgstNo == '') // || regex.test(url) === false)
+	if (bfSpecRgstNo == '') // || regex.test(url) === false)
 	{
 		alert('등록번호가 없습니다.');
 		return;

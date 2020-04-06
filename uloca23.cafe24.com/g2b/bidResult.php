@@ -16,29 +16,24 @@ $g2bClass = new g2bClass;
 $uloca_live_test = $g2bClass->getSystem('1');
 $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
 
-/*
-if(isset($_COOKIE['resudi'])) {
-    echo "Cookie named resudi='" . $resudi . "' ";
-} else echo 'no cookie resudi';
-echo 'userid='.$_SESSION['current_user']->user_login;
-*/
 // --------------------------------- log
 $rmrk = '입찰결과창';
 $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '08'); // $_SESSION['current_user']->user_login
 // --------------------------------- log
 
-// 낙찰 결과
-$response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
+// 낙찰 결과 (개찰완료 목록조회: getOpengResultListInfoOpengCompt) -by jsj 20200401
+$response1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
 $json1 = json_decode($response1, true);
 $item1 = $json1['response']['body']['items'];
 
-// 입찰정보
+// 입찰정보(용역:getBidPblancListInfoServc)
 //echo $bidNtceNo.'/'.$bidNtceOrd.'/'.$pss;
 $response0 = $g2bClass->getBidInfo($bidNtceNo, $bidNtceOrd, $pss);
 $json0 = json_decode($response0, true);
 $item0 = $json0['response']['body']['items'];
 
 //echo "입찰정보=" ;
+//echo $pss;
 //var_dump($item0);
 
 if ($mobile == "Mobile") $mailtop = 80;
@@ -65,7 +60,7 @@ $mailintop = $mailtop + 4;	// mail address
 	<script src="/jquery/jquery.min.js"></script>
 	<script src="/jquery/jquery-ui.min.js"></script>
 	<script src="/js/common.js?version=20190203"></script>
-	<script src="/g2b/g2b.js?version=20190203"></script>
+	<script src="/g2b/g2b.js?version=20200401"></script>
 	<script src="/g2b/g2b_2019.js?version=20190203"></script>
 
 	<script>
@@ -103,27 +98,7 @@ $mailintop = $mailtop + 4;	// mail address
 			//if (i>2) hdr2 = hdr2.substring(0,i);
 
 			msg = document.getElementById('contents').outerHTML; //json2table(data2) ; //document.getElementById('bidinfo').innerHTML;
-			//s = msg.indexOf('<a onclick=\"showhide'); //낙찰');
-			//e = msg.indexOf('표준편차',s)+10;
-			//e = msg.indexOf('</font>',e)+4;
-			/* hdr = '<html>';
-			hdr += '<head>';
-			hdr += '<title>ULOCA</title>';
-			hdr += '<meta http-equiv="Content-Type" content="text/html; charset=utf8" />';
-			hdr += '<meta name="viewport" content="width=device-width, initial-scale=1">';
-			hdr += '<meta http-equiv="X-UA-Compatible" content="IE=Edge" />';
-			hdr += '<link rel="stylesheet" type="text/css" href="http://uloca23.cafe24.com/g2b/css/g2b.css" />';
-			hdr += '</head>';
-			hdr += '<body>'; */
 			hdr = '<p><a href="http://uloca.net"><input  type="button" value="유로카 입찰정보" style="width:200px; background-color:#E9602C; height:28px; color:#ffffff; cursor:pointer; font-size:14px; font-weight: bold; text-align:center; border:solid 1px #99bbe8; border-bottom:solid 1px #99bbe8;"></a></p><br>';
-			/*
-				hdr2 = '<style>table.type10 {width: 100%;border-collapse: collapse; text-align: left; line-height: 1.5;border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;';
-			    hdr2 += 'margin: 0px 0px; font-size:12px; overflow-x: auto;}';
-				hdr2 += 'table.type10 th {padding: 6px;font-weight: bold;vertical-align: top;text-align: center;color: #fff;background: #666666;margin: 2px 2px;} ';
-				hdr2 += '.grid01 th { background-color:#E9602C; height:24px; color:#fff; font-size:11px; font-family:Dotum; text-align:center; border-right:solid 1px #E9602C; border-bottom:solid 1px #E9602C; }';
-				hdr2 += '.grid01 td {  height:24px; color:#E9602C; font-size:11px; font-family:Dotum; text-align:left; border-top:solid 1px #E9602C; border-right:solid 1px #E9602C; border-bottom:solid 1px #E9602C;font-weight:bold }';
-				hdr2 += '</style>';
-			*/
 			//msg = msg.substr(0,s)+msg.substr(e);
 			//clog(msg.substr(0,2400));
 			frm2.message.value = hdr + msg;
@@ -146,9 +121,11 @@ $mailintop = $mailtop + 4;	// mail address
 				</colgroup>
 				<tbody>
 					<tr>
-						<th style='font-size:1.0em; background-color:#E9602C;color:#ffffff;border:solid 1px #E9602C;text-align:center; cursor:pointer;'><a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style="color:#ffffff">입찰공고</a></th>
-						<td style='font-size:1.0em; cursor:pointer;color:#E9602C;border:solid 1px #E9602C;'>&nbsp;
-							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#E9602C;font-weight:bold; '> <?= $item0[0]['bidNtceNo'] ?>&nbsp;/&nbsp;<?= $item0[0]['bidNtceNm'] ?></a>
+					<th style='font-size:1.0em; background-color:#E9602C;color:#ffffff;border:solid 1px #E9602C;text-align:center; cursor:pointer; '>
+							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#ffffff;'> 입찰공고 바로가기<br> (나라장터상세정보) </a></th>
+						<td style='font-size:1.0em; cursor:pointer;color:#E9602C;border:solid 1px #E9602C; '>
+							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#E9602C;font-weight:bold; '> 
+							&nbsp;&nbsp;<?= $item0[0]['bidNtceNo'] ?> &nbsp;/&nbsp; <?= $item0[0]['bidNtceNm'] ?></a>
 						</td>
 					</tr>
 				</tbody>
@@ -187,18 +164,17 @@ $mailintop = $mailtop + 4;	// mail address
 			<!--  <center><a href="/ulocawp/?page_id=1138"><img src="/img/bidResult_uloca.gif" boarder="0"></a></center>
 -->
 
-			<div id=totalrechrc>낙찰결과 (공공데이터포털 API) Total record=<?= count($item1) ?></div>
+			<div id=totalrechrc>낙찰결과 <br> (공공데이터포털 API) Total record=<?= count($item1) ?></div>
 			<div id=LinKExplain align="left">
-				<br>예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul, 4, '.', '') ?>)</font>
-				<br><br>✔︎<font color="red">[사업자번호]클릭</font>→입찰이력 <font color="red"> [업체명]클릭</font>→ 업체정보
+				예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul, 4, '.', '') ?>)</font>
 			</div>
 
 			<table class="type10" id="specData" width="100%">
 				<thead>
 					<tr>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">순위</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="20%;">업체명</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호<br>(클릭→기업의 낙찰이력)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="20%;">업체명<br>(클릭→업체정보)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">대표자</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰금액(원)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰율(%)</th>
@@ -248,21 +224,20 @@ $mailintop = $mailtop + 4;	// mail address
 					echo $tr;
 				} else {
 					foreach ($item1 as $arr) { //foreach element in $arr
-						//---------------------------
-						$k = (int) $arr["opengRank"]; //순위 - Null이 오는 경우 순서대로 순위를 매김
-						if ($k == 0) $k = $i; 			// opengRank null 오는 경우, 순서대로 순위를 매김
-						$rmrk = addslashes($arr['rmrk']);
-
-						// rmrk 에 순위와 비고 같이 들어감 -by jsj 20200318
-						if ($arr['rmrk'] == '') {  //openRank 비어있고, rmark 도 비어 있는 경우 순위만 대입
-							$Rank_rmark = (string) $k;
-						} else {
-							$Rank_rmark = $arr['rmrk'];
-						}
-
+						$rmrk = addslashes($arr['rmrk']); // 비고 - '낙찰하한선 미달' 등
+						$k = (int) $arr["opengRank"];
+						switch ($k) {
+							case 0: 
+								$k = $i;				// 낙찰미달이면 opengRank에 값이 없음
+								$Rank_rmark = $rmrk;    // 비고 대입
+								break;
+	
+							default:
+								$Rank_rmark = (string)$k; // 순위 대입
+								break;
+						} 
 						//기초금액과 투찰율 계산
 						 $bssamtrt = ( $arr['bidprcAmt'] / $bssamt1 ) * 100;
-
 						// 1순위
 						if ($k == 1) { //$i == 0) {
 							$tr = '<tr>';
@@ -270,12 +245,11 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td style="text-align: center; color:red;"><a onclick=\'compInfobyComp(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrBizno'] . '</a></td>';
 							$tr .= '<td style="color:red;"><a onclick=\'compInfo(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrNm'] . '</a></td>';
 							$tr .= '<td style="color:red;">' . $arr['prcbdrCeoNm'] . '</td>';
+
 							if ($arr['bidprcAmt'] == '') $tr .= '<td style="color:red; text-align: right;" > </td>';
 							else $tr .= '<td style="color:red; text-align: right;" >' . number_format($arr['bidprcAmt']) . '</td>'; //투찰금액
 							$tr .= '<td style="text-align: right; color:red;">' . $arr['bidprcrt'] . '</td>'; // 예정금액의 투찰율
-
 							$tr .= '<td style="text-align: right; color:red;">' . number_format($bssamtrt, 3) . '</td>'; // 기초금액의 투찰율
-
 							$tr .= '<td style="text-align: center; color:red;">' . $arr['rbidNo'] . '</td>';
 							$tr .= '<td style="color:red;">' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';
@@ -284,39 +258,29 @@ $mailintop = $mailtop + 4;	// mail address
 							//$openBidInfo 에 1순위 정보 업데이트 -by jsj 190601
 							//-------------------------------------------------
 							$sql1 = "UPDATE openBidInfo SET ";
-							$sql1 .= " 	prtcptCnum = "      . count($item1) . ", ";    			// 입찰업체수
-							$sql1 .= " 	bidwinnrNm = '"     . addslashes($arr['prcbdrNm']) . "', ";
-							$sql1 .= " 	bidwinnrBizno = '"  . $arr['prcbdrBizno'] . "', ";
-							$sql1 .= " 	sucsfbidAmt = '"    . $arr['bidprcAmt'] . "', ";
-							$sql1 .= " 	sucsfbidRate = '"   . $arr['bidprcrt'] . "', ";
-							$sql1 .= " 	rlOpengDt = '"      . $item0[0]['OpengDt']. "', ";  // 개찰정보 있음 (실개찰일시? 개찰일시를 넣고있음)
-							$sql1 .= " 	bidwinnrCeoNm = '"  . $arr['prcbdrCeoNm'] . "', ";
-							$sql1 .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  		
+							$sql1 .= " 	prtcptCnum = "      . count($item1) . ", ";    			    // 입찰업체수
+							$sql1 .= " 	bidwinnrNm = '"     . addslashes($arr['prcbdrNm']) . "', "; // 투찰업체명
+							$sql1 .= " 	bidwinnrBizno = '"  . $arr['prcbdrBizno'] . "', ";			// 사업자번호
+							$sql1 .= " 	sucsfbidAmt = '"    . $arr['bidprcAmt'] . "', ";			// 투찰금액
+							$sql1 .= " 	sucsfbidRate = '"   . $arr['bidprcrt'] . "', ";				// 투찰률
+							$sql1 .= " 	bidwinnrCeoNm = '"  . $arr['prcbdrCeoNm'] . "', ";			// 투찰대표자명
+							$sql1 .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  			 // 개찰완료
 							$sql1 .= " 	modifyDT = now()";
 							$sql1 .= " WHERE bidNtceNo ='"  . $bidNtceNo . "' ";
+				
 							// $sql1 .= "   AND bidNtceOrd ='" . $bidNtceOrd . "' ";  //차수에 관계없이 입찰결과는 업데이트
 							if ($conn->query($sql1) == false) {
 								$msg = "SQL error=" . $sql1 . "<br>";
 							}
 
-							//---------------------------------------------------
-							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
-							//---------------------------------------------------
-							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
-							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
-							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
-
-							If ($conn->query($sql) <> true) {
-								echo "Error sql=" .$sql. "<br>";
-							}
-
-						} else {
+						} else {  // 1순위와 color만 틀림 -by jsj
 
 							$tr = '<tr>';
 							$tr .= '<td scope="row" style="text-align: center;">' . $k . '</td>';
 							$tr .= '<td style="text-align: center;"><a onclick=\'compInfobyComp(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrBizno'] . '</a></td>';
 							$tr .= '<td><a onclick=\'compInfo(' . $arr['prcbdrBizno'] . ')\'>' . $arr['prcbdrNm'] . '</a></td>';
 							$tr .= '<td>' . $arr['prcbdrCeoNm'] . '</td>';
+
 							if ($arr['bidprcAmt'] == '') $tr .= '<td> </td>';
 							else  $tr .= '<td align=right>' . number_format($arr['bidprcAmt']) . '</td>';
 							$tr .= '<td style="text-align: right;">' . $arr['bidprcrt'] . '</td>';     // 예정금액의 투찰율
@@ -325,20 +289,20 @@ $mailintop = $mailtop + 4;	// mail address
 							$tr .= '<td>' . $arr['rmrk'] . '</td>';
 							$tr .= '</tr>';
 							//---------------------------------------------------
-							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
-							//---------------------------------------------------
-							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
-							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
-							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
-							If ($conn->query($sql) <> true) {
-								echo "Error sql=" .$sql. "<br>";
-							}
 						}
+						//---------------------------------------------------
+						//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
+						//---------------------------------------------------
+						$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
+						$sql .= " VALUES ( '" .$bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt']. "',";
+						$sql .= "          '" .$arr['bidprcrt']. "', '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
+						If ($conn->query($sql) <> true) {
+							echo "Error sql=" .$sql. "<br>";
+						}
+
 						echo $tr;
-						$i += 1;
-						//echo $sql;
+						$i++;
 					}
-					//echo $sql1;
 				}
 				echo '</table>';
 
@@ -354,9 +318,9 @@ $mailintop = $mailtop + 4;	// mail address
 <div style='position: fixed; top: <?= $mailtop ?>px; right: 210px;' class="btn_areas"><a onclick="mailMe3();" class="search">이메일</a></div>
 -->
 
-	<div style='position: fixed; top: 115px; right: 210px;' class="btn_areas"><a onclick="locaciotn.href='https://uloca23.cafe24.com'" class="search">통합검색</a></div>
-	<div style='position: fixed; top: 115px; right: 125px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
-	<div style='position: fixed; top: 115px; right: 40px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
+	<div style='position: fixed; top: 62px; right: 210px;' class="btn_areas"><a onclick="locaciotn.href='https://uloca23.cafe24.com'" class="search">통합검색</a></div>
+	<div style='position: fixed; top: 62px; right: 125px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
+	<div style='position: fixed; top: 62px; right: 40px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
 	<div id=mail style='visibility: hidden;display:inline;' -->
 		<form action="/g2b/sendmail2.php" name="mailForm" id="mailForm" target='new_blank' method="post" style='visibility: hidden;display:inline;'>
 			<input type="text" name="email2" id="email2" autocomplete="on" value="" />

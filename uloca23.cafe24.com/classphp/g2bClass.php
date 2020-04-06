@@ -84,7 +84,7 @@ class g2bClass {
 		return $dur;
 	}
 	function getAddr($bidrdo) {
-		
+		// bidopen
 		switch ($bidrdo) {
 			
 			case 'scsbidthing':
@@ -110,7 +110,8 @@ class g2bClass {
 			case 'scsbidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch'; // 외자낙찰
 				break;
-			case 'bidthing':
+			// ==나라장터 입찰공고 정보서비스
+			case 'bidthing': 
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰 (나라장터검색조건)
 				break;
 			case 'bidcnstwk':
@@ -119,6 +120,7 @@ class g2bClass {
 			case 'bidservc':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰 (나라장터검색조건)
 				break;
+			//-----------------------	
 			case 'bidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoFrgcptPPSSrch'; // 외자입찰
 				break;
@@ -134,7 +136,8 @@ class g2bClass {
 			case 'hrcfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoFrgcptPPSSrch'; // 외자사전규격
 				break;
-			case 'bidopen':
+			// 개찰결과 openBidSeq_xxxx 에 업데이트용 -by jsj 20200401 개찰결과 개찰완료 목록 조회
+			case 'bidopen': 
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt'; // 개찰결과 개찰완료 목록 조회,물품, 공사, 용역, 외자 공통
 				break;
 			case 'scsbidthing1':
@@ -752,8 +755,7 @@ class g2bClass {
 	//  낙찰 조회
 	//  낙찰(목록)progrsDivCdNm (유찰, 개찰완료, 재입찰)
 	 ------------------------------------------------------------------------- */
-	function 
-	getBidRslt($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss) {
+	function getBidRslt($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss) {
 		$inqDiv = 2; // 개찰일시 1:공고게시일시, 2:개찰일시, 3:입찰공고번호
 		$ch = curl_init();
 		global $ServiceKey;
@@ -949,6 +951,7 @@ class g2bClass {
 	function getRsltData($bidNtceNo,$bidNtceOrd) {
 		return $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,'999','1');
 	} // getRsltData
+	
 	function getRsltDataTotalCount($bidNtceNo,$bidNtceOrd) {
 		$response = $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,'1');
 		$json1 = json_decode($response, true);
@@ -977,9 +980,8 @@ class g2bClass {
 		
 		while ($cnt > 0) {
 			//-----------------------------------
-			// 999건 까지만 적용  -by jsj 190602
-			// openBidSeq 수집 시 에러가 남
-			break;
+			// 개별 공고번호에 대한 개찰결과는 전체 결과를 가져오도록 함 -by jsj 20200402
+			// break;
 			//-----------------------------------
 			$pageNo++;
 			$response2 = $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,$noRow,$pageNo);
@@ -1691,7 +1693,7 @@ class g2bClass {
 				$tr .= '<td>'.$row['dminsttnm'].'</td>';
 				$tr .= '<td>'.$search.'</td>';
 				$tr .= '<td>'.$send.'</td>';
-				$tr .= '<td style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td style="text-align:center;">'.$row['till'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
@@ -1705,7 +1707,7 @@ class g2bClass {
 				$tr .= '<td class="even" >'.$row['dminsttnm'].'</td>';
 				$tr .= '<td class="even" >'.$search.'</td>';
 				$tr .= '<td class="even" >'.$send.'</td>';
-				$tr .= '<td class="even" style="text-align:center;">'.$row[till].'</td>';
+				$tr .= '<td class="even" style="text-align:center;">'.$row['till'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['katalk'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['cellphone'].'</td>';
 				$tr .='<td hidden="hidden">'.$row['idx'].'</td>';
