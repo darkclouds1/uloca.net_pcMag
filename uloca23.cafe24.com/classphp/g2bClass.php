@@ -110,7 +110,6 @@ class g2bClass {
 			case 'scsbidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch'; // 외자낙찰
 				break;
-			// ==나라장터 입찰공고 정보서비스
 			case 'bidthing': 
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰 (나라장터검색조건)
 				break;
@@ -120,7 +119,6 @@ class g2bClass {
 			case 'bidservc':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch'; // 용역입찰 (나라장터검색조건)
 				break;
-			//-----------------------	
 			case 'bidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoFrgcptPPSSrch'; // 외자입찰
 				break;
@@ -136,8 +134,7 @@ class g2bClass {
 			case 'hrcfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoFrgcptPPSSrch'; // 외자사전규격
 				break;
-			// 개찰결과 openBidSeq_xxxx 에 업데이트용 -by jsj 20200401 개찰결과 개찰완료 목록 조회
-			case 'bidopen': 
+			case 'bidopen': // 개찰결과 openBidSeq_xxxx 에 업데이트용 -by jsj 20200401
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt'; // 개찰결과 개찰완료 목록 조회,물품, 공사, 용역, 외자 공통
 				break;
 			case 'scsbidthing1':
@@ -260,7 +257,7 @@ class g2bClass {
 		/*Service Key*/
 		//getSvrData($bidrdo,$startDate,$endDate,$kwd,$dminsttNm,$numOfRows,$pageNo,$inqryDiv)
 		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); /*한 페이지 결과 수*/
-		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); /*페이지 번호*/
+		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); 		/*페이지 번호*/
 		//$queryParams .= '&' . urlencode('ServiceKey') . '=' . urlencode('-'); /*공공데이터포털에서 받은 인증키*/
 		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqryDiv); /*검색하고자하는 조회구분 1:공고게시일시, 2:개찰일시, 3:입찰공고번호*/
 		if (strlen($startDate) <=10) {
@@ -976,12 +973,11 @@ class g2bClass {
 		$cnt = $totCnt - $noRow;
 		$item = $json1['response']['body']['items'];
 		//echo '<br>'.'cnt='.$cnt.' totcnt1='.$totCnt1;
-		
-		
 		while ($cnt > 0) {
 			//-----------------------------------
-			// 개별 공고번호에 대한 개찰결과는 전체 결과를 가져오도록 함 -by jsj 20200402
-			// break;
+			// 999건 까지만 적용  -by jsj 190602
+			// openBidSeq 수집 시 에러가 남
+			//break;
 			//-----------------------------------
 			$pageNo++;
 			$response2 = $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,$noRow,$pageNo);
@@ -1068,8 +1064,11 @@ class g2bClass {
 	 입찰 정보 : 참조)getBidPblancListInfoServcPPSSrch (나라장터 검색조건)
 	 ------------------------------------------------------------------------------------ */
 	function getBidInfo($bidNtceNo,$bidNtceOrd,$pss) {
-		$ch = curl_init();
+		if (mb_strlen($pss,'utf-8') == 2) {
+			$pss = "입찰" .$pss;
+		}
 		global $ServiceKey;
+		$ch = curl_init();
 		if ($pss == '입찰용역') $pg = 'BidPublicInfoService/getBidPblancListInfoServc'; // 입찰공고목록 정보에 대한 용역조회
 		else if ($pss == '입찰물품') $pg = 'BidPublicInfoService/getBidPblancListInfoThng'; // 입찰공고목록 정보에 대한 물품조회
 		else if ($pss == '입찰공사') $pg = 'BidPublicInfoService/getBidPblancListInfoCnstwk'; // 입찰공고목록 정보에 대한 공사조회
@@ -1621,8 +1620,8 @@ class g2bClass {
 	function autoRecList($login_userid) {
 		
 		
-		$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
-		//$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
+		//$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
+		$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
 		// Check connection
 		if ($conn->connect_error) {
 			die("DB Connection failed: " . $conn->connect_error);

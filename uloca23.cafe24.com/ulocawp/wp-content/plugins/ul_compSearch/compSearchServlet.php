@@ -22,9 +22,8 @@ if ($bzno == '') {
 	//$bzno = '6098164815';
 }
 
-$kedUrl_E017 = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?";
-//$kedUrl_E017 = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?";
-$kedUrl_E017 .= "user_id=ulocaonl&process=S&bzno=".$bzno."&cono=&pid_agr_yn=N&jm_no=E017";
+//$kedUrl_E017 = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=".$bzno."&cono=&pid_agr_yn=N&jm_no=E017";
+$kedUrl_E017 = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=".$bzno."&cono=&pid_agr_yn=N&jm_no=E017";
 //echo $kedUrl_E017;
 
 /*

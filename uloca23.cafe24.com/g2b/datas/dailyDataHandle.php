@@ -8,17 +8,18 @@
 
 date_default_timezone_set('Asia/Seoul');
 require($_SERVER['DOCUMENT_ROOT'].'/classphp/g2bClass.php'); //'/g2b/classPHP/g2bClass.php');
+require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php');
 
 $g2bClass = new g2bClass;
 $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
-
-require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php');
 $dbConn = new dbConn;
 $conn = $dbConn->conn();
+
 // --------------------------------- log
 $rmrk = '';
 $dbConn->logWrite($_SESSION['current_user']->user_login,$_SERVER['REQUEST_URI'],$rmrk);
 // --------------------------------- log
+$openBidSeq = $_GET['openBidSeq'];
 
 // 1 : 임시->개찰정보 :: INSERT IGNORE INTO
 $sql = '   REPLACE INTO '.$openBidSeq . ' ( `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` ) ';

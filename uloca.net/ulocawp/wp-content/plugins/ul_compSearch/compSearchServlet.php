@@ -23,17 +23,15 @@ if ($bzno == '') {
 }
 
 //$kedUrl_E017 = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?";
-$kedUrl_E017 = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?";
-$kedUrl_E017 .= "user_id=ulocaonl&process=S&bzno=".$bzno."&cono=&pid_agr_yn=N&jm_no=E017";
+$kedUrl_E017 = "https://kedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=".$bzno."&cono=&pid_agr_yn=N&jm_no=E017";
 //echo $kedUrl_E017;
 
-/*
-https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=1048126067&cono=&pid_agr_yn=N&jm_no=E017
-$xml = simplexml_load_file($url);
-echo $url."\n";
-print_r($xml);
-exit;
-*/
+// $kedUrl_E017 = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=" .$bzno. "&cono=&pid_agr_yn=N&jm_no=E017";
+// $xml = simplexml_load_file($url);
+// echo $url."\n";
+// print_r($xml);
+// exit;
+
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $kedUrl_E017);

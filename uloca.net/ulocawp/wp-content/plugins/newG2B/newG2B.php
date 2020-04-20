@@ -22,19 +22,12 @@ function g2b_newShortCode() {
 	//echo 'mobile='.$mobile;
 	if ($mobile == "Mobile") {
 		//echo $mobile;
-		//echo "<meta http-equiv='refresh' content='0; url=http://uloca23.cafe24.com/ulocawp/wp-content/plugins/g2b/m_g2b.php'>";
-		//header("Location: /datas/m_g2b.php"); //?kwd=".$kwd."&startDate=".$startDate."&endDate=".$endDate."&chkBid=".$chkBid."&chkHrc=".$chkHrc."&bidthing=".$bidthing."&bidcnstwk=".$bidcnstwk."&bidservc=".$bidservc);
-		//echo $mobile;
 		//exit();
 	}
 	
 	global $current_user;
 	$current_user = wp_get_current_user();
 	$_SESSION['current_user'] = $current_user;
-	//setcookie('resedi',$_SESSION['current_user']->user_login,time() + (86400)); // 1day
-	
-	//  $current_user = get_currentuserinfo();
-	
 	//      echo 'Username: ' . $current_user->user_login . "\n";
 	/*      echo 'User email: ' . $current_user->user_email . "\n";
 	 echo 'User level: ' . $current_user->user_level . "\n";
@@ -741,9 +734,7 @@ function copyURL(){
 	} catch(e) {
 		alert ('Error:'.e);
 	}
-	setTimeout(function() {
-		prompt('Ctrl+C를 눌러 아래의 URL을 복사하세요:', <?= gBitlyData ?>);
-	}, 1000);
+	
 }
 
 function makeTable(data) {
@@ -1422,7 +1413,8 @@ function searchajaxmore() {
 				
 		//move();
 		getAjaxPost(server,recv,parm);
- /*   $.ajax({
+ 
+		/*   $.ajax({
         type: "get",/*method type* /
 		scriptCharset: "utf-8" ,
         contentType: "application/json; charset=utf-8",

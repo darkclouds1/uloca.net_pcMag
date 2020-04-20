@@ -28,9 +28,12 @@ $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '08'); // $_SESSION[
 // --------------------------------- log
 
 // 낙찰 결과
-$response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
-$json1 = json_decode($response1, true);
-$item1 = $json1['response']['body']['items'];
+// getRstDataAll = json_decode 해서 넘김, getRstData = decode 필요
+$item1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
+//$response1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
+//$json1 = json_decode($response1, true);
+//$item1 = $json1['response']['body']['items'];
+
 
 // 입찰정보
 //echo $bidNtceNo.'/'.$bidNtceOrd.'/'.$pss;
@@ -359,7 +362,7 @@ $mailintop = $mailtop + 4;	// mail address
 <div style='position: fixed; top: <?= $mailtop ?>px; right: 210px;' class="btn_areas"><a onclick="mailMe3();" class="search">이메일</a></div>
 -->
 
-	<div style='position: fixed; top: 62px; right: 210px;' class="btn_areas"><a onclick="locaciotn.href='https://uloca23.cafe24.com'" class="search">통합검색</a></div>
+	<div style='position: fixed; top: 62px; right: 210px;' class="btn_areas"><a onclick="locaciotn.href='https://uloca.net'" class="search">통합검색</a></div>
 	<div style='position: fixed; top: 62px; right: 125px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
 	<div style='position: fixed; top: 62px; right: 40px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
 	<div id=mail style='visibility: hidden;display:inline;' -->

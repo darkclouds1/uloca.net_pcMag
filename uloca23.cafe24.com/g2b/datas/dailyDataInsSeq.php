@@ -18,16 +18,6 @@ $g2bClass = new g2bClass;
 $dbConn = new dbConn;
 $conn = $dbConn->conn();
 
-//------------------------------------------
-// prepareStatement for-loop 에 사용할 stmt
-// -by jsj 20190601
-//------------------------------------------
-/*
- $stmt_dbconn = new dbConn;
- $stmt_connn = $stmt_dbconn->conn();
- $stmt = $stmt_connn->stmt_init();
- */
-
 mysqli_set_charset($conn, 'utf8');
 if ($openBidInfo == '' || $openBidSeq == '') {
 	echo '테이블 명이 없습니다.';
@@ -46,30 +36,26 @@ if ($row = $result0->fetch_assoc()) {
 }
 
 //하루 폼메일 보낸수가 500개 이상이면 못 보냄
-$sql  = "SELECT COUNT(compno) AS CNT FROM openCompany WHERE 1";
+$sql  = "SELECT COUNT(compno) AS cnt FROM openCompany WHERE 1";
+$sql .= "   AND emailCnt > 1";
 $sql .= "   AND DATE(modifyDT) = DATE(now())";
 $result = $conn->query($sql);
-if ($result) {
-	$row = $result->fetch_assoc();
-	$sendEmailCnt = $row["CNT"];
+if ($row = $result->fetch_assoc()) {
+	$sendEmailCnt = $row["cnt"];
+} else {
+	echo ("ln46::Err sql=" .$sql. "<br>");
 }
-
 
 //사용하지 않음 -by jsj 190601
 function insertForecastInfo($conn, $bidNtceNo, $compno1, $tuchalrate1, $tuchalamt1, $compno2, $tuchalrate2, $tuchalamt2, $tuchalcnt, $pss)
 {
-
-	//$sql = 'insert into '.$openBidInfo.' (idx, bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
 	$sql = 'insert into forecastData ( bidNtceNo, compno1, tuchalrate1,tuchalamt1,compno2, tuchalrate2,tuchalamt2,tuchalcnt,pss)';
 	$sql .= "VALUES ( '" . $bidNtceNo . "', '" . $compno1 . "', '" . $tuchalrate1 . "','" . $tuchalamt1 . "', '" . $compno2 . "', '" . $tuchalrate2 . "','" . $tuchalamt2 .  "','" . $tuchalcnt .  "','" . $pss . "')";
-	//	echo($sql);
 	if ($sql != '') {
 		if ($conn->query($sql) === TRUE) {
 		}
-		//else echo 'error sql='.$sql.'<br>';
 	}
 	return true;
-	//select * from openBidInfo_2018_2 where bidNtceNo ='20180626257'
 }
 
 //------------------------------------
@@ -77,43 +63,32 @@ function insertForecastInfo($conn, $bidNtceNo, $compno1, $tuchalrate1, $tuchalam
 //------------------------------------
 function updateopenBidInfo($conn, $openBidInfo, $idx, $arr, $bidNtceNo)
 {
-	//echo '<br>'.$bidNtceNo .'/'. $arr['bidNtceNo'];
-	//if ($bidNtceNo == $arr['bidNtceNo']) return $bidNtceNo;
-	//$bidNtceNo = $arr['bidNtceNo'];
-
 	$sql = "UPDATE openBidInfo SET rsrvtnPrce = '" . $arr['plnprc'] . "', ";
 	$sql .= "bssAmt = '" . $arr['bssamt'] . "', ";
 	$sql .= "ModifyDT = now() ";
 	$sql .= " WHERE bidNtceNo='" . $bidNtceNo . "';";
-	//echo $sql.'<br>';
 	$conn->query($sql);
-
 	return $bidNtceNo; // update
 }
 
 function updateInfo($conn, $g2bClass, $bidNtceNo, $pss)
 {
-	//$bidNtceNo='20190222287';
-	//$pss='물품';
-	if ($pss == '입찰물품') $bidrdo = 'opnbidThng'; //$bsnsDivCd = '1'; // 물품
+	if      ($pss == '입찰물품') $bidrdo = 'opnbidThng';   //$bsnsDivCd = '1'; // 물품
 	else if ($pss == '입찰공사') $bidrdo = 'opnbidCnstwk'; //$bsnsDivCd = '1'; // 공사
-	else if ($pss == '입찰용역') $bidrdo = 'opnbidservc'; //$bsnsDivCd = '1'; // 용역
+	else if ($pss == '입찰용역') $bidrdo = 'opnbidservc';  //$bsnsDivCd = '1'; // 용역
 
 	$itemr = $g2bClass->getSvrDataOpn($bidrdo, $bidNtceNo); //tot_getSvrDataOpnStd($startDate,$endDate,$numOfRows,$pageNo,$bsnsDivCd);
-	//echo ($itemr);
 	$json1 = json_decode($itemr, true);
-	//$iRowCnt = $json1['response']['body']['totalCount'];
 	$items = $json1['response']['body']['items'];
 	if (count($items) > 0) {
 		foreach ($items as $arr) {
-			// ------------------------------ update
 			$bidNtceNo1 = updateopenBidInfo($conn, "", "", $arr, $bidNtceNo); // -by jsj 20190804
 		}
 	}
 }
 
 // 기업정보 전화번호, 팩스, 홈페이지, 이메일 업데이트  -by jsj 190507
-// 홈페이지에 이메일 있으면 업데이트 후 이메일 return 없으면 false
+// KED 데이터 자동 업데이트 필요 검토필요 -by jsj 20200420
 function companyInfoUpdate($conn, $g2bClass, $compno)
 {
 	//$inqryDiv = 3; // 기업검색 사업자등록번호 기준검색
@@ -128,13 +103,11 @@ function companyInfoUpdate($conn, $g2bClass, $compno)
 	$faxNo = $item0[0]['faxNo']; 	//팩스
 	$hmpgAdrs = trim($item0[0]['hmpgAdrs']);	// 기업홈페이지
 
-	//회사명이 없으면 api 데이터 없는 것으로 간주하고 return -by jsj 190518
+	// 회사명이 없으면 return -by jsj 190518
 	if ($compname = '') {
 		return false;
 	}
 
-	// $hmpgAdrs 에 "//"부터 시작하는 문자열 찾아서 '//' 제거하고 이메일 체크 함
-	// 속도를 위해 이메일이 없으면 업데이트 하지 않음
 	// 홈페이지에 '//' 있으면 // 이후로 파싱해서 이메일 체크
 	if (strpos($hmpgAdrs, '//')) {
 		$email = str_replace('//', '', strstr($hmpgAdrs, "//")); //이메일
@@ -142,6 +115,7 @@ function companyInfoUpdate($conn, $g2bClass, $compno)
 		$email = $hmpgAdrs;
 	}
 
+	// 기업정보 업데이트
 	if ($check_email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		//openCompany update - 이메일이 있는 경우에만 업데이트 -by jsj 190518
 		$sql = " UPDATE openCompany SET phone ='" . $phone . "', faxNo ='" . $faxNo . "', hmpgAdrs = '" . $hmpgAdrs . "', email = '" . $email . "', ModifyDT = now()";
@@ -285,7 +259,7 @@ $bidNtceOrd = ''; //$row['bidNtceOrd'];
 // 입찰 결과 1000건이상일 때 Time-over (or 멈춤) 발생 -by jsj 190602
 // getRsltDataAll --> 999 이상인 경우 g2bclass while 문에 break; 처리함
 //-------------------------------------------------------------
-$item1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd); // 2018-12-11
+$item1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd); // 2018-12-11
 $cnt = count($item1);
 
 //$msg .= 'idx='.$row['idx'].' 개찰일시='.$row['opengDt'].' bidNtceNo='.$bidNtceNo.' count='.$cnt.'<br>';
@@ -293,6 +267,16 @@ $ii = 1; //foreach ++ 처리건수
 echo $cnt; //입찰기업 갯수 표시
 
 if ($cnt > 0) {
+	//$compno1='';
+	//$tuchalrate1='';
+	//$tuchalamt1='';
+	//$compno2='';
+	//$tuchalrate2='';
+	//$tuchalamt2='';
+	//$tuchalcnt = $g2bClass->getRsltDataTotalCount($bidNtceNo,$bidNtceOrd); //$json1['response']['body']['totalCount']; //count($item1);
+
+	//var_dump($item1);
+	//exit;
 
 	foreach ($item1 as $arr) {
 		$rmrk = addslashes($arr['rmrk']);
@@ -305,21 +289,21 @@ if ($cnt > 0) {
 			$openRank = $ii; // opengRank 가 잘못된 경우
 		}
 
+
 		//-------------------------------------------------
 		//$openBidInfo 에 1순위 정보 추가 순위 -by jsj 190601 <== 데이터 없음
 		//-------------------------------------------------
 		if ($openRank == 1) { // openRank 1순위 or $ii = 1(첫번째) -by jsj 190601
-			// getOpengResultListInfoOpengCompt 개찰결과 개찰완료 목록 조회
-			$sql1 = "UPDATE openBidInfo SET ";
-			$sql1 .= " 	prtcptCnum = "      . count($item1) . ", ";    			    // 입찰업체수
-			$sql1 .= " 	bidwinnrNm = '"     . addslashes($arr['prcbdrNm']) . "', "; // 투찰업체명
-			$sql1 .= " 	bidwinnrBizno = '"  . $arr['prcbdrBizno'] . "', ";			// 사업자번호
-			$sql1 .= " 	sucsfbidAmt = '"    . $arr['bidprcAmt'] . "', ";			// 투찰금액
-			$sql1 .= " 	sucsfbidRate = '"   . $arr['bidprcrt'] . "', ";				// 투찰률
-			$sql1 .= " 	bidwinnrCeoNm = '"  . $arr['prcbdrCeoNm'] . "', ";			// 투찰대표자명
-			$sql1 .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  			 // 개찰완료
-			$sql1 .= " 	modifyDT = now()";
-			$sql1 .= " WHERE bidNtceNo ='"  . $bidNtceNo . "' ";
+			$sql = "UPDATE openBidInfo SET ";
+			$sql .= " prtcptCnum = '" . $cnt . "', ";								// 참가업체수
+			$sql .= " bidwinnrNm = '" . addslashes($arr['prcbdrNm']) . "', ";		// 최종낙찰업체명
+			$sql .= " bidwinnrBizno = '" . $arr['prcbdrBizno'] . "', ";				// 사업자번호
+			$sql .= " bidwinnrCeoNm = '" . $arr['bidwinnrCeoNm'] . "', ";			// 대표자명
+			$sql .= " bidwinnrTelNo = '" . $arr['bidwinnrTelNo'] . "', ";			// 업체연락처
+			$sql .= " sucsfbidAmt = '" . $arr['sucsfbidAmt'] . "', ";				// 최종낙찰금액
+			$sql .= " sucsfbidRate = '" . $arr['bidprcrt'] . "', ";					// 투찰율 = 투찰금액/예정가격
+			$sql .= " rlOpengDt = '" . $arr['rlOpengDt'] . "', ";					// 실개찰일시
+			$sql .= " WHERE bidNtceNo='" . $bidNtceNo . "';";
 			$conn->query($sql);
 		}
 
@@ -409,9 +393,9 @@ if ($cnt > 0) {
 					}
 				}
 			}
-			// ------------------------------------------------------------------
+			// ------------------------------------------------------
 			// 기업정보 없으면 기업정보 추가하고 이메일 있으면 보냄 -by jsj 190601
-			// ------------------------------------------------------------------
+			// -------------------------------------------------------
 		} else {
 			$sql =  "REPLACE INTO openCompany (compno,compname, repname, rmark, ModifyDT)";
 			$sql .= "VALUES ('" . $arr['prcbdrBizno'] . "', '" . addslashes($arr['prcbdrNm']) . "', '" . addslashes($arr['prcbdrCeoNm']) . "', '신규추가', now())";
@@ -424,8 +408,14 @@ if ($cnt > 0) {
 						if ($result = $conn->query($sql)) {
 							$msg .= '**기업추가**<br>순위[' . (string) $openRank . ']E-mail(new)[' . $check_email . ']';
 						}
+					} else {
+						$msg .= '**기업추가**<br>순위[' . (string) $openRank . ']E-mail(new) 발송실패';
 					}
+				} else {
+					$msg .= '**기업추가**<br>순위[' . (string) $openRank . ']' . $arr['prcbdrNm'] . '<br>이메일없음<br>';
 				}
+			} else {
+				$msg .= $sql . '<br>';
 			}
 		}
 		$ii++; //foreach ++

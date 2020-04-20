@@ -973,13 +973,11 @@ class g2bClass {
 		$cnt = $totCnt - $noRow;
 		$item = $json1['response']['body']['items'];
 		//echo '<br>'.'cnt='.$cnt.' totcnt1='.$totCnt1;
-		
-		
 		while ($cnt > 0) {
 			//-----------------------------------
 			// 999건 까지만 적용  -by jsj 190602
 			// openBidSeq 수집 시 에러가 남
-			break;
+			//break;
 			//-----------------------------------
 			$pageNo++;
 			$response2 = $this->getRsltDataNo($bidNtceNo,$bidNtceOrd,$noRow,$pageNo);
@@ -1066,8 +1064,11 @@ class g2bClass {
 	 입찰 정보 : 참조)getBidPblancListInfoServcPPSSrch (나라장터 검색조건)
 	 ------------------------------------------------------------------------------------ */
 	function getBidInfo($bidNtceNo,$bidNtceOrd,$pss) {
-		$ch = curl_init();
+		if (mb_strlen($pss,'utf-8') == 2) {
+			$pss = "입찰" .$pss;
+		}
 		global $ServiceKey;
+		$ch = curl_init();
 		if ($pss == '입찰용역') $pg = 'BidPublicInfoService/getBidPblancListInfoServc'; // 입찰공고목록 정보에 대한 용역조회
 		else if ($pss == '입찰물품') $pg = 'BidPublicInfoService/getBidPblancListInfoThng'; // 입찰공고목록 정보에 대한 물품조회
 		else if ($pss == '입찰공사') $pg = 'BidPublicInfoService/getBidPblancListInfoCnstwk'; // 입찰공고목록 정보에 대한 공사조회

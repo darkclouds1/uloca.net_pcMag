@@ -196,10 +196,12 @@ class dbconn {
 		$kwd1 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd1); //특수문자 없앰
 		$kwdsn = explode(' ', trim($kwd1)); 
 		for ($i=0;$i<sizeof($kwdsn);$i++) {
-			if ($kwdsn[$i] == '') continue; 							
+			if ($kwdsn[$i] == '') continue;
 			if (ctype_alnum($kwdsn[$i]) == false ) { 					// 공고명은 영문자, 숫자만 있는 것은 제외
-				$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	// 공고명   (AND=포함된 키워드가 모두 있어야 함)
+			//	$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	// 공고명   (AND=포함된 키워드가 모두 있어야 함)
 			}
+			$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	    // 공고명   (AND=포함된 키워드가 모두 있어야 함)
+			
 			if (ctype_alnum($kwdsn[$i])) { 								// 공고번호는 영문자, 숫자만 
 				$kwdN .= " bidNtceNo like '%" .$kwdsn[$i]. "%' OR  "; 	// 공고번호 (OR = 번호는 중복이 거의 없음)
 			}
@@ -231,7 +233,7 @@ class dbconn {
 		if ($dminsttNm == "" ) { 
 			if (trim($kwdd) <> '') $sql .= " AND (" .$kwdd. " ) "; // 수요기관
 			if (trim($kwds) <> '') $sql .= " AND (" .$kwds. " ) "; // 공고명
-			if (trim($kwdN) <> '') $sql .= " AND (" .$kwdN. " ) "; // 공고번호			
+			if (trim($kwdN) <> '') $sql .= " OR (" .$kwdN. " ) ";  // 공고번호
 		} else {  // 파라미터 수요기관으로 재검색
 			if (trim($kwdd) <> '') $sql .= " AND  (" .$kwdd. " ) "; // 수요기관
 			if (trim($kwds) <> '') $sql .= " AND  (" .$kwds. " ) "; // 공고명

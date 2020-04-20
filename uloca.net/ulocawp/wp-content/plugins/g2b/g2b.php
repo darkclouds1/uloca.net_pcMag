@@ -270,12 +270,12 @@ function g2bShortCode()
 								<tr>
 									<th>입찰정보</th>
 									<td>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' placeholder="ex.'정보 감리? 서울' <= 키워드 or 공고번호? 수요기관 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' autofocus placeholder="ex.'공고명 or 공고번호? [물음표] 수요기관 '" />
 									</td>
 								<tr>
 									<th>기업검색</th>
 									<td colspan=5>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="' 업체명 ' or ' 대표자명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="ex.'기업명 or 사업자번호? [물음표] 대표자명'" />
 									</td>
 									<input type="hidden" name="id" id="id" value="<?= $id ?>" />
 									<input type="hidden" name="lastStartDate" id="lastStartDate" value="<?= $lastStartDate ?>" />

@@ -1,7 +1,11 @@
 <?
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
 @extract($_POST);
 if ($pw == '1123') {
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -164,7 +168,7 @@ button:hover {
   
 </div>
 <div class="container" style='width:500px; position: fixed; top: 60px; right: 100px;'>
-  <button class="btn-1" onclick='clickme("dailyDataFill_1.php")'>날자로 입찰정보+낙찰정보 보완</button><!-- onclick='clickme("dailyDataFill.php")' -->
+  <button class="btn-1" onclick='clickme("dailyDataFill_2.php")'>날자로 입찰정보+낙찰정보 보완</button><!-- onclick='clickme("dailyDataFill.php")' -->
   <!-- dailyDataFill.php 는 해당일자의 공공번호와 낙찰공고번호와의 매치가 안되고 각가 불러옴.  -->
   <button class="btn-2" onclick='clickme("dailyDataFill2.php")'>기간,갯수로 입찰정보+낙찰정보 보완</a></button><!--  onclick='clickme("dailyDataFill2.php")' -->
   <button class="btn-3">개찰정보 보완</button><!--  onclick='clickme("dailySeqFill.php")' -->

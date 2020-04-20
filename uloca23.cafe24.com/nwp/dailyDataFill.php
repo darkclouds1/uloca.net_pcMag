@@ -244,7 +244,7 @@ echo '/ lastdt=' . $lastdt . ' / 계속 체크박스=' . $contn ;
 			}
 
 			// --------------------------------------- function insertTableBidInfo
-			function insertTableBidInfo($i, $arr, $pss, $prtcptCnum, $bidwinnrNm)
+			function insertTableBidInfo($i, $arr, $pss, $prtcptCnum, $bidwinnrNm){
 				$tr = '<tr>';
 				$tr .= '<td style="text-align: center;">' . $i . '</td>';
 

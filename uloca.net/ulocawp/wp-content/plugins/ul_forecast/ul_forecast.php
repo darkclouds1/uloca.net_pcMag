@@ -13,11 +13,9 @@ function ul_forecastShortCode() {
 @extract($_GET);
 @extract($_POST);
 
-
 //echo "기초금액=".$amt." 예가범위=".$yega." 예가갯수=".$gasu." 추첨예가=".$pred;
 if ($amt != "") {
 // 계산 로직
-
 
 }
 
@@ -35,7 +33,7 @@ if ($pred == "") $pred = 4;
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=2, user-scalable=no">
 
-	<title>유로카닷넷-입찰기초가격 예측(자동추첨)::uloca.net</title>
+	<title>유로카닷넷-가격산정 예비가격 자동추첨:: https://uloca.net</title>
 	
 	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?ver=1.3" />
 	<link rel="stylesheet" href="/jquery/jquery-ui.css">
@@ -57,14 +55,14 @@ if ($pred == "") $pred = 4;
 			//frm.submit();
 			parm = "amt="+frm.amt.value+"&yega="+frm.yega.value+"&gasu="+frm.gasu.value+"&pred="+frm.pred.value;
 			server="/forecast/calcForecast.php"; //+parm;
-			move();
+			//move();
 		//------------------------------
 		getAjaxPost(server,recv,parm);
 		//------------------------------
 	}
 
 	function recv(datas) {
-		move_stop();
+		// move_stop(); 
 		//SearchCounts ++;  //무료검색횟수 count+ -by jsj 0314
 		
 		data = datas.split('/'); //eval(datas); //JSON.parse(datas); // stringify parse
@@ -163,42 +161,48 @@ if ($pred == "") $pred = 4;
 		}
 		//clog("yebi="+data.yebi.yebi[0]+" yebiga="+data.yebi.yebiga[0]);
 		avg = sum / pred;
-		document.getElementById('avg').innerHTML = "&nbsp;&nbsp;" + number_format(sum) + " / " + pred + " = "+number_format(Math.round(avg))+ " 원";
+		saJungYul = (avg / amt) * 100; // 기초금액의 사정율
+		
+		document.getElementById('avg').innerHTML="&nbsp;&nbsp;"+ number_format(Math.round(avg))+" 원 (=" + number_format(sum)+" / "+pred+"), " + number_format(saJungYul.toFixed(3))+"%)(=기초금액의 사정률)" ;
+
 		avg1 = avg * 87.745 / 100;
-		document.getElementById('avg1').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg1)) + " 원";
 		avg2 = amt * 87.745 / 100;
-		document.getElementById('avg2').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg2))+ " 원";
+		document.getElementById('avg1').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg1)) + " 원" + " (기초금액의= " + number_format(avg2) + " 원)";
 		avg3 = avg * 86.745 / 100;
-		document.getElementById('avg3').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg3))+ " 원";
 		avg4 = amt * 86.745 / 100;
-		document.getElementById('avg4').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg4))+ " 원";
+		document.getElementById('avg3').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg3)) + " 원" + " (기초금액의= " + number_format(Math.round(avg4)) + " 원)";
+		
+		avg5 = avg * document.getElementById('txt_avg5').value / 100;
+		avg6 = amt * document.getElementById('txt_avg5').value / 100;
+		document.getElementById('avg5').innerHTML = "&nbsp;&nbsp;" + number_format(Math.round(avg5))+ " 원" + " (기초금액의= " + number_format(Math.round(avg6)) + " 원)";
 
 	}
+
 </script>
 </head>
 <body>
 <!-- ------------------------------------- processing ----------------------------------------------------- -->
-<div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 60%;margin-top: -10px; margin-left: -50px; '>
-  <img src='/g2b/loading3.gif' width='100px' height='100px'>
+<div id="loading" style="display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 60%;margin-top: -10px; margin-left: -50px; ">
+  <img src="/g2b/loading3.gif" width="100px" height="100px">
 </div>
 
 <form name="foreForm"> <!-- action="wp-content/plugins/ul_forecast.php";> ///ulocawp/?page_id=1662" -->
 <div class="detail_search" width="80%">
-<center><p style='font-size:20; font-weight:bold'>입찰기초가격 예측(자동추첨)</p></center>
+<center><p style='font-size:20; font-weight:bold'>가격산정 ( 추첨예가 입찰금액  )</p></center>
 
-<table align=center class="grid05" style="width:90%; text-align: left; border: 0px solid #dddddd; word-break:break-all;">
+<table align=center class="grid04" style="width:90%; text-align: left; border: 0px solid #dddddd; word-break:break-all;">
 	<colgroup>
 		<col style="width:20%;" /><col style="width:20%;" />
 		<col style="width:20%;" /><col style="width:20%;" /><col style="width:auto;" />
 	</colgroup>
-	입찰공고에 나와있는 기초금액 / 예가범위 / 예가갯수 / 추첨예가 갯수를 입력하세요.
+	○ 입찰공고에 나입찰공고에 나와있는 기초금액 / 예가범위 / 예가갯수 / 추첨예가 갯수를 입력하세요.
 	<tbody>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' >기초금액</th>
-			<td style='border:solid 1px #99bbe8; text-align:left;' colspan=4><input class="input_style2" type="number" name="amt" id="amt" size='32' value="<?=$amt?>" style="text-align:right;" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" placeholder="원 단위까지 입력하세요." />&nbsp 원</td>
+			<th style='text-align:center; border: 1px solid #dddddd; color:red; font-weight:bold; background:#eeeeee;' >기초금액</th>
+			<td style='border:solid 1px #99bbe8; text-align:left;' colspan=4><input class="input_style2" type="number" name="amt" id="amt" size='50' value="<?=$amt?>" style="text-align:right; width:200px; height:30px" onkeypress="if(event.keyCode==13) {calc(); return false;}" placeholder="원 단위까지 입력" />&nbsp 원</td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' >예가범위</th>
+			<th style='text-align:center; border: 1px solid #dddddd; color:black; font-weight:bold; background:#eeeeee;' >예가범위</th>
 			<td style='border:solid 1px #99bbe8; text-align:left;'>
 				<input type="radio" name="yega" id=="yega" value="2" <? if ($yega == 2) echo "checked"; ?>>&nbsp ±2%
 			</td>
@@ -213,7 +217,7 @@ if ($pred == "") $pred = 4;
 			</td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' >예가갯수</th>
+			<th style='text-align:center; border: 1px solid #dddddd; color:black; font-weight:bold; background:#eeeeee;' >예가갯수</th>
 			<td style='border:solid 1px #99bbe8; text-align:left;'>
 				<input type="radio" name="gasu" value="10"  <? if ($gasu == 10) echo "checked"; ?>>&nbsp 10개
 			</td>
@@ -228,7 +232,7 @@ if ($pred == "") $pred = 4;
 			</td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' >추첨예가</th>
+			<th style='text-align:center; border: 1px solid #dddddd; color:black; font-weight:bold; background:#eeeeee;' >추첨예가</th>
 			<td style='border:solid 1px #99bbe8; text-align:left;'>
 				<input type="radio" name="pred" value="3" <? if ($pred == 3) echo "checked"; ?>>&nbsp 3개
 			</td>
@@ -241,44 +245,40 @@ if ($pred == "") $pred = 4;
 		</tr>
 	</tbody>
 </table>
-- 위 입력한 내용으로 예비가격과 추첨예가를 임의/랜덤(시스템 난수발생)으로 추첨합니다. 
-, 실제 입찰기초금액은 사전에 누구도 알수 없으며, 여러번 계산해서 참조용으로 활용하세요.
-
+○ 추첨예가를  평균하여 <font color="red">예비가격</font>을 선정합니다. 실제 입찰 예비금액은 사전에 누구도 알수 없으며, 여러번 계산해서 참조용으로만 활용하세요.
 <div class="btn_area" id='continueSearch' >
 	<a onclick="calc();" class="search"><input type=button value="계산"></a>
 	<a onclick="prnt();" class="search"><input type=button value="인쇄"></a>
 </div>
 <br>
 
-<table align=center class="grid05" style="width:90%; text-align: left; border: 0px solid #dddddd; font-weight:normal;">
+<table align="center" class="grid04" style="width:90%; text-align: left; border: 0px solid #dddddd; font-weight:normal;">
 	<colgroup>
 		<col style="width:20%;" /><col style="width:auto;" />
 	</colgroup>
 	<tbody>
-		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue;  font-weight:normal;' >추첨예가 값</th>
-			<td style='border:solid 1px #99bbe8; left;' id=avg >&nbsp;&nbsp;</td>
+	<tr>
+		<th style="text-align:center; border: 1px solid #dddddd; color:red;  font-weight:normal; background:#eeeeee;" > 예비가격 (추첨평균)</th>
+			<td style="border:solid 1px #99bbe8; left:0%; color:red;" id=avg >&nbsp;&nbsp; </td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:normal; ' >평균금액의 87.745%</th>
-			<td style='border:solid 1px #99bbe8; left; color:red' id=avg1 >&nbsp;&nbsp;</td>
+			<th style="text-align:center; border: 1px solid #dddddd; color:black;  font-weight:normal; background:#eeeeee;" > 직접입력
+				<input type="text" style="text-align: right; padding-right: 1px; height:30px" size="5" id="txt_avg5" value="99.999" maxlength="6" 
+				onkeypress="if(event.keyCode==13) {calc(); return false;}" />%</th>
+			<td style="border:solid 1px #99bbe8; left:0%; color:black" id=avg5 >&nbsp;&nbsp;</td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:normal;' >기초금액의 87.745%</th>
-			<td style='border:solid 1px #99bbe8; left;' id=avg2 >&nbsp;&nbsp;</td>
+			<th style="text-align:center; border: 1px solid #dddddd; color:black; font-weight:normal; background:#eeeeee;" >예비가격의 87.745%</th>
+			<td style="border:solid 1px #99bbe8; left:0%;" id=avg1 >&nbsp;&nbsp;</td>
 		</tr>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:normal;' >평균금액의 86.745%</th>
-			<td style='border:solid 1px #99bbe8; left; color:red' id=avg3 >&nbsp;&nbsp;</td>
-		</tr>
-		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:normal;' >기초금액의 86.745%</th>
-			<td style='border:solid 1px #99bbe8; left;' id=avg4 >&nbsp;&nbsp;</td>
+			<th style="text-align:center; border: 1px solid #dddddd; color:black; font-weight:normal; background:#eeeeee;" >예비가격의 86.745%</th>
+			<td style="border:solid 1px #99bbe8; left:0%; color:black" id=avg3 >&nbsp;&nbsp;</td>
 		</tr>
 	</tbody>
 </table>
 
-<table align=center class="grid05" id="table1" style="text-align: left; border: 0px solid #dddddd; width:90%;">
+<table align=center class="grid04" id="table1" style="text-align: left; border: 0px solid #dddddd; width:90%;">
 	<colgroup>
 		<col style="width:5%;" /><col style="width:15%;" />
 		<col style="width:10%;" /><col style="width:5%;" /><col style="width:15%;" />
@@ -287,7 +287,7 @@ if ($pred == "") $pred = 4;
 	</colgroup>
 	<tbody>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' colspan=9>예비가격</th>
+			<th style='text-align:center; border: 1px solid #dddddd; color:black; font-weight:bold; background:#eeeeee;' colspan=9>예비가격</th>
 		</tr>
 		<tr>
 			<td style='border:solid 1px #99bbe8; text-align:center; background:#eeeeee;'>1</td>
@@ -328,7 +328,7 @@ if ($pred == "") $pred = 4;
 	</tbody>
 </table>
 
-<table align=center class="grid05" id="table2" style="text-align: left; border: 0px solid #dddddd; width:90%;">
+<table align=center class="grid04" id="table2" style="text-align: left; border: 0px solid #dddddd; width:90%;">
 	<colgroup>
 		<col style="width:5%;" /><col style="width:15%;" />
 		<col style="width:10%;" /><col style="width:5%;" /><col style="width:15%;" />
@@ -337,7 +337,7 @@ if ($pred == "") $pred = 4;
 	</colgroup>
 	<tbody>
 		<tr>
-			<th style='text-align:center; border: 1px solid #dddddd; color:blue; font-weight:bold;' colspan=9>추첨예가</th>							
+			<th style='text-align:center; border: 1px solid #dddddd; color:black; font-weight:bold; background:#eeeeee;' colspan=9>추첨예가</th>							
 		</tr>
 		<tr>
 			<td style='border:solid 1px #99bbe8; text-align:center; background:#eeeeee;'>1</td>

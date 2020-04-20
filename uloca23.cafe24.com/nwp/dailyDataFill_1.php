@@ -26,16 +26,17 @@ $openBidInfo = 'openBidInfo';
 $openBidSeq  = 'openBidSeq'. '_' .$dur;
 
 if ($_POST['startDate'] != '') {
-	$startDate = $_POST['startDate'];
-	$endDate   = $_POST['endDate'];
+	$startDate = date("Ymd", strtotime($_POST['startDate']));
+	$endDate   = date("Ymd", strtotime($_POST['endDate']));
+
 } else {
 	//최초 화면 열릴땐 startDate가 없으므로 DB의 lastdb를 가져옴
 	$sql = " SELECT workdt, lastdt FROM workdate WHERE workname = 'dailyDataFill'";
 	$result = $conn->query($sql);
 	if ($row = $result->fetch_assoc()) {
 		$workdt = $row['workdt'];
-		$startDate = $row['lastdt'];	
-		$endDate = $row['lastdt'];	
+		$startDate = date("Y-m-d", strtotime($row['lastdt']));	
+		$endDate = date("Y-m-d", strtotime($row['lastdt']));	
 	}
 	echo "db에서 가져온 startDate=" .$startDate. ", endDate=" .$endDate. ", workdt=" .$workdt. "<br>";
 }
@@ -48,8 +49,9 @@ if (isset($_POST['contn'])) {
 	$contn = 0;
 }
 
-echo " startDate=" .$_POST['startDate']. ", enddate=" .$_POST['endDate']. ", contn=" .$_POST['contn']. "<br>";
+echo " startDate=" .$startDate. ", enddate=" .$endDate. ", contn=" .$_POST['contn']. "<br>";
 var_dump ($_POST);
+
 
 
 ?>
@@ -65,7 +67,7 @@ var_dump ($_POST);
 	<!--//-by jsj 전화걸기로 링크되는 것 막음 -->
 
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190102" />
+	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190103" />
 	<link rel="stylesheet" href="/jquery/jquery-ui.css">
 
 	<script src="/jquery/jquery.min.js"></script>
@@ -119,16 +121,14 @@ var_dump ($_POST);
 						<tr>
 							<th>기간</th>
 							<td>
-							<div class="calendar">
-									<input autocomplete="off" type="text" maxlength="10" name="startDate" id="startDate" value="<?= $endDate ?>" style="width:76px;" readonly='readonly' onchange='document.getElementById("endDate").value = this.value' />
+									<input type="date" name="startDate" id="startDate" value="<?= $endDate ?>" onchange='document.getElementById("endDate").value = this.value' />
 									~
-									<input autocomplete="off" type="text" maxlength="10" name="endDate" id="endDate" value="<?= $endDate ?>" style="width:76px;" readonly='readonly' />
+									<input type="date" name="endDate" id="endDate" value="<?= $endDate ?>"  />
 
 									1주일 이내-하루
 									<input type="checkbox" name="contn" id="contn" <? if ($contn) { ?> checked=checked <? } ?>>계속
 
 									<div id="datepicker"></div>
-								</div>
 				</div>
 				</td>
 				</tr>
@@ -178,27 +178,45 @@ var_dump ($_POST);
 			{
 				global $newInfoRecord, $updateOpenBidInfo;
 				// 기존 DB 공고번호 조회
-				$sql =  " SELECT idx, bidNtceNo,  bidNtceOrd FROM " . $openBidInfo . " WHERE 1";
+				$sql =  " SELECT idx, bidNtceNo,  MAX(bidNtceOrd) FROM " . $openBidInfo . " WHERE 1";
 				$sql .= "    AND bidNtceNo = '" . $arr['bidNtceNo'] .  "' ";
 				$sql .= "    AND bidNtceOrd= '" . $arr['bidNtceOrd'] . "' ";
 				if (!($dbResult = $conn->query($sql))) echo "Error sql= " . $sql;
 
 				// 입찰정보 있으면 업데이트
-				if ($dbResult->num_rows > 1) {
-					$sql = " UPDATE openBidInfo ";
-					$sql .= "   SET bidtype = '"          .$pss . "', ";                       	// 물품,공사,용역
-					$sql .= "       reNtceYn = '"         .$arr['reNtceYn'].         "', ";		// 재공고 여부
-					$sql .= "       rgstTyNm = '"         .$arr['rgstTyNm'].         "', ";		// 등록유형명 '연계기관 공고건'
-					$sql .= "       ntceKindNm = '"       .$arr['ntceKindNm'].       "', ";		// 공고종류명 '일반','변경','취소','재입찰','연기','긴급',갱신','긴급갱신'
-					$sql .= "       bidMethdNm = '"       .$arr['bidMethdNm'].       "', ";		// 입찰방식명  ' 전자입찰',직찰, 우편,....
-					$sql .= "       sucsfbidLwltRate = '" .$arr['sucsfbidLwltRate']. "', "; 	// 낙찰하한율
-					$sql .= "       bidBeginDt =       '" .$arr['bidBeginDt'].       "', ";		// 입찰개시일자
-					$sql .= "       bidClseDt =        '" .$arr['bidClseDt'].        "', ";		// 입찰마감일자
-					$sql .= "       bfSpecRgstNo = '"     .$arr['bfSpecRgstNo'].     "'  ";		// 사전규격 등록번호
-					$sql .= " WHERE bidNtceNo = '"        .$arr['bidNtceNo'].        "'  ";
-					$sql .= "   AND bidNtceOrd = '"       .$arr['bidNtceOrd'].       "'  ";
-					if ($conn->query($sql)) $updateOpenBidInfo++;
+				if ($row = $dbResult->fetch_assoc()) {
+				 	if ($row['bidNtceOrd'] < $arr['bidNtceOrd'] || $arr['bidClseDt'] == NULL || $arr['bidClseDt'] == '') {
+					// if ($dbResult->num_rows > 1) {
+						$sql = " UPDATE openBidInfo ";
+						$sql .= "   SET bidNtceOrd ='"        .$arr['bidNtceOrd'] . "', ";
+						$sql .= "       bidtype = '"          .$pss . "', ";                       	// 물품,공사,용역
+						$sql .= "       reNtceYn = '"         .$arr['reNtceYn'].         "', ";		// 재공고 여부
+						$sql .= "       rgstTyNm = '"         .$arr['rgstTyNm'].         "', ";		// 등록유형명 '연계기관 공고건'
+						$sql .= "       ntceKindNm = '"       .$arr['ntceKindNm'].       "', ";		// 공고종류명 '일반','변경','취소','재입찰','연기','긴급',갱신','긴급갱신'
+						$sql .= "       bidNtceDt = '"        .$arr['bidNtceDt'] .       "', ";
+						$sql .= "       ntceInsttCd = '"      .$arr['ntceInsttCd'] .     "', ";
+						$sql .= "       dminsttCd = '"        .$arr['dminsttCd'] .       "', ";
+						$sql .= "       bidMethdNm = '"       .$arr['bidMethdNm'].       "', ";		// 입찰방식명  ' 전자입찰',직찰, 우편,....
+						$sql .= "       sucsfbidLwltRate = '" .$arr['sucsfbidLwltRate']. "', "; 	// 낙찰하한율
+						$sql .= "       bidBeginDt =       '" .$arr['bidBeginDt'].       "', ";		// 입찰개시일자
+						$sql .= "       bidClseDt =        '" .$arr['bidClseDt'].        "', ";		// 입찰마감일자
+						$sql .= "       presmptPrce = '"      .$arr['presmptPrce'] .     "', ";
+						$sql .= "       bidNtceDtlUrl = '"    .$arr['bidNtceDtlUrl'] .   "', ";
+						$sql .= "       bidNtceUrl = '"       .$arr['bidNtceUrl'] .      "', ";
+						$sql .= "       bfSpecRgstNo = '"     .$arr['bfSpecRgstNo'].     "', ";		// 사전규격 등록번호
+						$sql .= "       locate = '"           .$arr['prtcptLmtRgnNm'] .  "', ";
+						$sql .= "       ModifyDT = now() ";
+						$sql .= " WHERE bidNtceNo = '"        .$arr['bidNtceNo'].        "'  ";
+						$sql .= "   AND bidNtceOrd = '"       .$arr['bidNtceOrd'].       "'  ";
 
+						if ($conn->query($sql)) {
+							$updateOpenBidInfo++;
+						} else {
+							echo "ln213 error sql=" .$sql. "<br>";
+							return false;
+						}
+					}
+					return true;
 				} else {
 					// 입찰정보 없으면 신규입력 후 낙찰결과 입력
 					// - rgstTyNm 등록유형: 입찰공고가 "연계기관 공고건", "조달청 또는 나라장터 자체 공고건","'나라장터 기타 공고건"
@@ -219,15 +237,17 @@ var_dump ($_POST);
 					$sql .= "'"             .$arr['bfSpecRgstNo'].  "') ";
 					if ($conn->query($sql)) {
 						$newInfoRecord++;
+					} else {
+						echo "ln239 error sql=" .$sql. "<br>";
 					}
 				}
 				//-----------------------------
 				// 낙찰이력 SEQ 입력
 				// time-out 문제로 ajax호출필요
 				//-----------------------------
-
 				$rtf = openBidSeq_Update($g2bClass, $conn, $arr['bidNtceNo'], $arr['bidNtceOrd'], $openBidSeq);
 				return true;
+
 			}
 
 			// 낙찰SEQ 업뎃::공고번호, 공고차수로 낙찰 API call -by jsj 20200328
@@ -244,14 +264,12 @@ var_dump ($_POST);
 				$i = 1; // 전체 개찰 업체수
 				$k = 1; // 순위 저장용
 
+
 				if ($cnt == 0) return false;
+				
 				// echo "ln258 낙찰현황cnt=" .$cnt. " bidNtceNo=" .$bidNtceNo. " bidNtceOrd=" .$bidNtceOrd. "<br>"; exit;
 
 				foreach ($item1 as $arr) { //foreach element in $arr
-
-					// 속도문제 고려, 입력 순위 조정 (1순위 필수)
-					if ((int) $arr['opengRank'] == 0 ) continue;  // 순위 없음
-					if ($i > 10) continue;  					  // 10개까지만 입력
 					//---------------------------
 					$rmrk = addslashes($arr['rmrk']); // '낙찰하한선 미달' 등
 					$k = (int) $arr["opengRank"];
@@ -264,6 +282,10 @@ var_dump ($_POST);
 							break;
 					}
 
+					// 속도문제 고려, 입력 순위 조정 (1순위 필수)
+					if ((int) $arr['opengRank'] == 0 ) continue;  // 순위 없음					
+					if ($k > 1) break;  					  	// 1순위만 입력
+
 					// if ((int)$arr['opengRank'] >  999 ) continue;  // 1순위
 					// openBidInfo 에 1순위 정보 업데이트 (공고차수 전체) -by jsj 190601
 					if ((int) $arr['opengRank'] == 1) {
@@ -272,14 +294,17 @@ var_dump ($_POST);
 						$sql .= "  bidwinnrNm =    '" . addslashes($arr['prcbdrNm']) . "', ";		// 최종낙찰업체명
 						$sql .= "  bidwinnrBizno = '" . $arr['prcbdrBizno'] .          "', ";		// 사업자번호
 						$sql .= "  bidwinnrCeoNm = '" . $arr['bidwinnrCeoNm'] .        "', ";		// 대표자명
-						$sql .= "  bidwinnrTelNo = '" . $arr['bidwinnrTelNo'] .        "', ";		// 업체연락처
 						$sql .= "  sucsfbidAmt =   '" . $arr['sucsfbidAmt'] .          "', ";		// 최종낙찰금액
 						$sql .= "  sucsfbidRate =  '" . $arr['bidprcrt'] .             "', ";		// 투찰율 = 투찰금액/예정가격
+						$sql .= "  bidwinnrTelNo = '" . $arr['bidwinnrTelNo'] .        "', ";		// 업체연락처
 						$sql .= "  rlOpengDt =     '" . $arr['rlOpengDt'] .            "' ";		// 실개찰일시
+						$sql .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  			 	 // 개찰완료		
+						$sql .= "  modifyDT = now()";
 						$sql .= "  WHERE bidNtceNo='" . $bidNtceNo . "' ";
 						if (!($conn->query($sql))) echo "Error $sql=" . $sql;
 						global $updateOpenBidInfo_1th;
 						$updateOpenBidInfo_1th++;
+
 					}
 
 					// 입찰공고의 idx를 낙찰정보에(bidindx) 업데이트
@@ -295,8 +320,7 @@ var_dump ($_POST);
 					//---------------------------------------------------
 					//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
 					//---------------------------------------------------
-					$sql  = " REPLACE INTO openBidSeq_tmp ( bidNtceNo,  bidNtceOrd, rbidNo,         compno, tuchalamt, ";
-					$sql .= "                                      tuchalrate, selno,      tuchaldatetime, remark, bidIdx    )";
+					$sql  = " REPLACE INTO openBidSeq_tmp ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx )";
 					$sql .= "  VALUES ( '" .$bidNtceNo. "','"       .$bidNtceOrd. "','"     .$arr['rbidNo']. "','"    .$arr['prcbdrBizno']. "','" .$arr['bidprcAmt']. "',";
 					$sql .= "           '" .$arr['bidprcrt']. "','" .$arr['drwtNo1']. "','" .$arr['bidprcDt'] . "','" .$Rank_rmark. "',"          .$bididx . " )";
 					if (!($conn->query($sql))) echo "Error sql=" . $sql . "<br>";
@@ -353,7 +377,6 @@ var_dump ($_POST);
 			$item13 = $json13['response']['body']['items'];
 			// Sum
 			$item10 = array_merge($item11, $item12, $item13);
-			$item = count($item10);
 
 			echo "입찰정보=" . count($item10) . ", ";
 
@@ -417,6 +440,7 @@ var_dump ($_POST);
 			foreach ($item11 as $arr) {
 				$pss = '물품';
 				$tf = insertOpenBidInfo($g2bClass, $conn, $openBidInfo, $pss, $arr, $openBidSeq); //DB에 있던 공고번호 return		
+
 			}
 
 			foreach ($item12 as $arr) {
@@ -541,7 +565,7 @@ var_dump ($_POST);
 			echo "<br>---------- 결과 -----------------------------------------------------------------<br>";
 			echo " 1) 입찰공고 API 작업 <br>";
 			echo "  - 입찰정보 신규 newInfoRecord= '"      . $newInfoRecord .         "' 건 <br> ";		  // 입찰공고에 레코드 추가
-			echo "  - 입찰정보 변경 updateOpenBidInot= '"  . $updateOpenBidInfo .     "' 건 <br> ";
+			echo "  - 입찰정보 변경 updateOpenBidInfo= '"  . $updateOpenBidInfo .     "' 건 <br> ";
 			echo "  - openBidSeq_xxxx 추가 insertSeqCnt= '" . $insertSeqCnt .       "' 건 <br> ";
 			echo "  - openBidInfo (1순위 낙찰정보 업데이트) updateOpenBidInfo_1th= '" . $updateOpenBidInfo_1th . "' 건 <br> ";
 			echo " 2) 낙찰정보 API 작업 <br>";
@@ -550,15 +574,16 @@ var_dump ($_POST);
 			echo "  --> 입찰정보없음 status Cd='01'에 저장 nonNtceNoCnt= '" . $nonNtceNoCnt .                "' 건 <br> ";		  //status에 레코드 추가
 
 			// seq_temp => seq_xxxx
-			$sql = " REPLACE INTO " .$openBidSeq. " ";
-			$sql .= " SELECT * FROM openBidSeq_tmp; ";
-			if ($conn->query($sql) <> true) {
-				echo "Error sql=" .$sql;
-			}
-			
-			// seq_temp turncate
-			$sql = " TRUNCATE openBidSeq_tmp; ";
-			if ($conn->query($sql) <> true) {
+			$sql = " REPLACE INTO " .$openBidSeq ;
+			$sql .= " SELECT * FROM openBidSeq_tmp ";
+			if ($conn->query($sql)) {
+				/*
+				$sql = " TRUNCATE openBidSeq_tmp; ";
+				if ($conn->query($sql)==false) {
+					echo "Error sql=" .$sql;
+				}
+				*/
+			} else {
 				echo "Error sql=" .$sql;
 			}
 
@@ -601,9 +626,10 @@ var_dump ($_POST);
 
 			//<status상태> 결과에 openBidInfo_status 상태를 보여줌
 			echo "<br>------ openBidInfo_Status 상태정보 -------------<br>";
-			echo "SELECT statusCd, status_rs, COUNT(statusCd) as Cnt from openBidInfo_status GROUP BY statusCd, status_rs <br>";
-
 			$sql = " SELECT statusCd, status_rs, COUNT(statusCd) as Cnt from openBidInfo_status GROUP BY statusCd, status_rs ";
+
+			echo "ln629 sql=" .$sql. "<br>";
+
 			$dbRst = $conn->query($sql);
 			while ($arr = $dbRst->fetch_assoc()) {
 				switch ($arr['statusCd'] . $arr['status_rs']) {
@@ -628,7 +654,6 @@ var_dump ($_POST);
 				}
 			}
 
-
 			// endDate를 DB저장
 			$workname = 'dailyDataFill';
 			$workdt  = date('Ymd', strtotime(date("Ymd")));
@@ -638,7 +663,7 @@ var_dump ($_POST);
 			if ($workdt < $enddate){
 				$endDate = $workdt;
 			}
-
 			workdate($conn, $workname, $workdt, $endDate);
+			
 
 			?>

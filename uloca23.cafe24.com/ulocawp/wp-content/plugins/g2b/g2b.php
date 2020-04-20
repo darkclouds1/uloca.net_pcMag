@@ -189,12 +189,13 @@ function g2bShortCode()
 		</style>
 
 		<script src="/dhtml/codebase/dhtmlx.js"></script>
-		<script src="/jquery/jquery.min.js"></script>
-		<script src="/jquery/jquery-ui.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<!-- <script src="/jquery/jquery.min.js"></script> -->
+		<!-- <script src="/jquery/jquery-ui.min.js"></script> -->
 		<script src="/include/JavaScript/tableSort.js"></script>
 		<script src="/js/common.js?version=20190203"></script>
-		<script src="/g2b/g2b.js?version=20190925"></script>
-		<script src="/g2b/g2b_2019.js?version=20190203"></script>
+		<script src="/g2b/g2b.js"></script>
+		<script src="/g2b/g2b_2019.js"></script>
 
 		<script>
 			//location.replace("http://uloca23.cafe24.com/g2b/scsBid.php");
@@ -270,12 +271,12 @@ function g2bShortCode()
 								<tr>
 									<th>입찰정보</th>
 									<td>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' placeholder="ex.'정보 감리? 서울' <= 키워드 or 공고번호? 수요기관 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" size='50px' autofocus placeholder="ex.'공고명 or 공고번호? [물음표] 수요기관 '" />
 									</td>
 								<tr>
 									<th>기업검색</th>
 									<td colspan=5>&nbsp;
-										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="' 업체명 ' or ' 대표자명 '" />
+										<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='60' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;" size='50px' placeholder="ex.'기업명 or 사업자번호? [물음표] 대표자명'" />
 									</td>
 									<input type="hidden" name="id" id="id" value="<?= $id ?>" />
 									<input type="hidden" name="lastStartDate" id="lastStartDate" value="<?= $lastStartDate ?>" />
@@ -1405,7 +1406,7 @@ function g2bShortCode()
 
 				//move();		
 				getAjaxPost(server, recv, parm);
-				parm = ""; //pram 초기화가 안됨  -by jsj 190320 1356줄이 클리어하고 들어감.... by hmj
+				parm = ""; //pram 초기화가 안됨  -by jsj 190320 1356줄이 클라어하고 들어감.... by hmj
 			}
 
 			function recv(data) {

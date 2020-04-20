@@ -601,7 +601,8 @@ if (url.trim() == '') // || regex.test(url) === false)
 사전규격 상세정보보기
 ------------------------------------------------------------------------------------------- */
 function viewDtls(bfSpecRgstNo) {
-	if (bfSpecRgstNo == '') // || regex.test(url) === false)
+
+if (bfSpecRgstNo == '') // || regex.test(url) === false)
 	{
 		alert('등록번호가 없습니다.');
 		return;
@@ -1102,6 +1103,7 @@ function insertSeq2() {
 			//clog('noRow='+noRow+'/'+bidNtceNo+'/'+bididx+'/'+insIdx);
 			url = '/g2b/datas/dailyDataInsSeq.php?bidNtceNo='+bidNtceNo+'&openBidInfo='+openBidInfo + '&openBidSeq='+openBidSeq_tmp+'&bididx='+bididx+'&pss='+pss;
 			//alert(url);
+			clog ("ln1106::url=" + url);
 			getAjax(url,searchDaily3);
 	}
 }
@@ -1163,7 +1165,7 @@ function getAjax(server,client) {
 		alert('Time-out Error...');
 		return;
     } else {
-		alert ("Error" + xhttp.status);
+		//alert ("Error" + xhttp.status);
 	}
   };
   xhttp.open("GET", server, true);
@@ -1180,7 +1182,7 @@ function getAjaxPost(server,client,parm) {
 			alert('Time-out Error...');
 			return;
 		} else {
-			alert ("Error" + xhttp.status);
+			//alert ("Error" + xhttp.status);
 		}
 	  };
 	xhr.open("POST", server, true);

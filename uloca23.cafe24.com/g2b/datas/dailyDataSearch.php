@@ -29,7 +29,7 @@ $endDate1 = $endDate;
 $endDate = $g2bClass->changeDateFormat($endDate);
 
 if ($openBidInfo == '' || $openBidSeq == '') {
-	echo '테이블 명이 없습니다.';
+	echo 'ln32 테이블 명이 없습니다.';
 	exit;
 }
 $openBidInfo = 'openBidInfo';
@@ -241,7 +241,7 @@ $countItem = count($item1) + count($item2) + count($item3);
 		$sql = 'select count(idx) idx from ' . $openBidInfo;
 		$result = $conn->query($sql);
 		if ($row = $result->fetch_assoc()) {
-			$cnt = $row[idx];
+			$cnt = $row['idx'];
 		}
 
 		$i = 0;
@@ -249,7 +249,7 @@ $countItem = count($item1) + count($item2) + count($item3);
 		$sql = 'select max(idx) idx from ' . $openBidInfo;
 		$result = $conn->query($sql);
 		if ($row = $result->fetch_assoc()) {
-			$idx = $row[idx];
+			$idx = $row['idx'];
 			if ($idx == 'NULL') $idx = 0;
 		}
 		// --------------------------------------- check openBidInfo
@@ -292,15 +292,15 @@ $countItem = count($item1) + count($item2) + count($item3);
 			if ($row = $result->fetch_assoc()) {
 				if ($row['bidNtceOrd'] < $arr['bidNtceOrd'] || $arr['bidClseDt'] == NULL || $arr['bidClseDt'] == '') {
 					$sql = "update " . $openBidInfo . " set bidNtceOrd ='" . $arr['bidNtceOrd'] . "', ";
-					$sql .= "reNtceYn = '" . $arr['reNtceYn'] . "', rgstTyNm = '" . $arr['rgstTyNm'] . "', ";
-					$sql .= "ntceKindNm = '" . $arr['ntceKindNm'] . "', bidNtceDt = '" . $arr['bidNtceDt'] . "', ";
-					$sql .= "ntceInsttCd = '" . $arr['ntceInsttCd'] . "', dminsttCd = '" . $arr['dminsttCd'] . "', ";
-					$sql .= "bidBeginDt = '" . $arr['bidBeginDt'] . "', bidClseDt = '" . $arr['bidClseDt'] . "', ";
-					$sql .= "presmptPrce = '" . $arr['presmptPrce'] . "', bidNtceDtlUrl = '" . $arr['bidNtceDtlUrl'] . "', ";
-					$sql .= "bidNtceUrl = '" . $arr['bidNtceUrl'] . "', sucsfbidLwltRate = '" . $arr['sucsfbidLwltRate'] . "', ";
+					$sql .= "reNtceYn = '"     . $arr['reNtceYn'] . "',      rgstTyNm = '"         . $arr['rgstTyNm'] . "', ";
+					$sql .= "ntceKindNm = '"   . $arr['ntceKindNm'] . "',    bidNtceDt = '"        . $arr['bidNtceDt'] . "', ";
+					$sql .= "ntceInsttCd = '"  . $arr['ntceInsttCd'] . "',   dminsttCd = '"        . $arr['dminsttCd'] . "', ";
+					$sql .= "bidBeginDt = '"   . $arr['bidBeginDt'] . "',    bidClseDt = '"        . $arr['bidClseDt'] . "', ";
+					$sql .= "presmptPrce = '"  . $arr['presmptPrce'] . "',   bidNtceDtlUrl = '"    . $arr['bidNtceDtlUrl'] . "', ";
+					$sql .= "bidNtceUrl = '"   . $arr['bidNtceUrl'] . "',    sucsfbidLwltRate = '" . $arr['sucsfbidLwltRate'] . "', ";
 					$sql .= "bfSpecRgstNo = '" . $arr['bfSpecRgstNo'] . "', ";
-					$sql .= "lcnsLmtNm = '" . $lcnsLmtNm . "', ";
-					$sql .= "locate = '" . $arr['prtcptLmtRgnNm'] . "', ";
+					$sql .= "lcnsLmtNm = '"    . $lcnsLmtNm . "', ";
+					$sql .= "locate = '"       . $arr['prtcptLmtRgnNm'] . "', ";
 					$sql .= "ModifyDT = now() ";
 					$sql .= " where bidNtceNo='" . $arr['bidNtceNo'] . "';";
 					$conn->query($sql);
@@ -309,8 +309,8 @@ $countItem = count($item1) + count($item2) + count($item3);
 			} else {
 
 				//$sql = 'insert into '.$openBidInfo.' (idx, bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
-				$sql = 'insert into ' . $openBidInfo . ' ( bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
-				$sql .= 'reNtceYn,rgstTyNm,ntceKindNm,bidNtceDt,ntceInsttCd,dminsttCd,bidBeginDt,bidClseDt,';
+				$sql =  'INSERT INTO ' . $openBidInfo . ' ( bidNtceNo, bidNtceOrd, bidNtceNm,  ntceInsttNm, dminsttNm,   opengDt,   bidtype,';
+				$sql .= 'reNtceYn,  rgstTyNm,   ntceKindNm, bidNtceDt,   ntceInsttCd, dminsttCd, bidBeginDt, bidClseDt,';
 				$sql .= 'presmptPrce,bidNtceDtlUrl,bidNtceUrl,sucsfbidLwltRate,bfSpecRgstNo,lcnsLmtNm,locate,ModifyDT)';
 				// $sql .= 'prtcptCnum,bidwinnrNm,bidwinnrBizno,sucsfbidAmt,sucsfbidRate,rlOpengDt,bidwinnrCeoNm) '; 
 				$sql .= "VALUES ( '" . $arr['bidNtceNo'] . "', '" . $arr['bidNtceOrd'] . "', '" . addslashes($arr['bidNtceNm']) . "','" . addslashes($arr['ntceInsttNm']) . "','" . addslashes($arr['dminsttNm']) . "',";
@@ -381,7 +381,6 @@ $countItem = count($item1) + count($item2) + count($item3);
 			//select * from openBidInfo_2018_2 where bidNtceNo ='20180626257'
 		}
 		// --------------------------------------- function insertopenBidInfo
-		// --------------------------------------- function insertTableBidInfo
 		function insertTableBidInfo($i, $idx, $arr, $pss)
 		{
 			//echo('pss='+$pss+'/arr count'+count($arr));
