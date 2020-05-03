@@ -128,15 +128,19 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 					bidSeqOn = false;
 					frm.bidSeq.checked = false;
 					alert ("오늘까지 완료하였습니다!");
+					move_stop();
 					return;
 				}	
 				frm.startDate.value = dts;
 				frm.endDate.value = dts;
+				frm.openBidSeq.value = "openBidSeq_" + dts.substr(0,4);				
+				move_stop();
 				setTimeout(function() {
 					move();
 					searchDaily_Fill();	// 자료수집시작
 				}, 5000);				// 5초간 delay
 			}
+			move_stop();
 			return;
 		}
 
@@ -213,9 +217,10 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 			if (insTable == null) return;
 
 			//테이블 Row 갯수 확인  
-			rowCount = insTable.rows.length; clog("data = "+ rowCount);
+			rowCount = insTable.rows.length; 
+			clog("data = "+ rowCount -1);
 			if (rowCount < 2) {
-				move_stop(); clog("data가 없습니다.");
+				clog("data가 없습니다.");
 				// 다음날 계속
 				donextday();				
 			}
@@ -249,13 +254,16 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 		// dailyDataInsSeq.php에서 받은  Data를 Grid에 표시 
 		//---------------------------------------------
 		function searchDaily3_Fill(data) {
+			var frm = document.myForm;
+			var openBidSeq = frm.openBidSeq.value;
+
 			// 응찰건수 컬럼
 			if (data == '') data = 0;
 			insTable.rows[insIdx].cells[8].innerHTML = data;
 			
 			//noSeq += eval(data); // msg 전달하면 에러나서 삭제 -by jsj 
 			document.getElementById('proccnt').value = insIdx;
-			document.getElementById('seqcnt').value = data.substr(4);
+			document.getElementById('seqcnt').value = data;
 
 			// table 목록 수 만큼 반복
 			insIdx++;
@@ -265,14 +273,18 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 			} else {
 				rowCount--;
 				clog('입찰정보= ' + rowCount + ' 건이 수집되었습니다.');
-				
-				//openBidSeq_tmp  임시테이블 옮기기
-				url = '/g2b/datas/dailyDataHandle.php?&openBidInfo=openBidInfo&openBidSeq='+openBidSeq+'&openBidSeq_tmp=openBidSeq_tmp';
+				//openBidSeq_Fill  임시테이블 옮기기
+				url = '/g2b/datas/dailyDataHandle.php?&openBidInfo=openBidInfo&openBidSeq='+openBidSeq+'&openBidSeq_tmp=openBidSeq_Fill';
 				getAjax(url,moved_tmp);
-				move_stop();
-				// 다음날 계속 수집
-				donextday(); // 계속
 			}
+		}
+
+		function moved_tmp(data) {
+			clog('moved_tmp '+data);
+			move_stop();
+			setTimeout( function() { 
+				donextday(); 
+			}, 10000);				// 20초간 delay
 		}
 
 		// sumit 시작
@@ -323,28 +335,25 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 
 	</form>
 	<div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 50%;margin-top: -10px; margin-left: -50px; '>
-		<img src='http://uloca.net/g2b/loading5.gif' width='100px' height='100px'>
+		<img src='http://uloca23.cafe24.com/g2b/loading3.gif' width='100px' height='100px'>
 	</div>
-	<div style='font-size:14px ;font-weight:bold'>- 입찰공고 / 낙찰현황 / 낙찰목록 API  <br>
+	<div style='font-size:12px;font-weight:bold;'>- 입찰공고 / 낙찰현황 / 낙찰목록 API  <br>
 		1) 입찰정보(등록일 기준): 입찰공고 UPDATE, 없으면 REPLACE, 개찰결과가 없거나 신규입력을 화면에 보여줌, 개찰일시 > 오늘날짜(-1 day) 제외  <br/>
 		2) 낙찰목록(개찰일 기준): 낙찰사업자번호가 없으면 ★ 진행구분(progrsDivCdNm) UPDATE, 공고가 없으면 openBidSeq_status '01'에 진행구분 REPLACE <br/>
 		3) 낙찰현황(개찰일 기준); 낙찰1순위 정보 UPDATE, 공고없으면 openBidSeq_status '01' 에 ★ 낙찰현황정보 및 진행구분(progrsDivCdNm)='개찰완료' REPLACE <br/>
 	</div>
-
-
 	<div id='totalRecords'>total records=<?= $countItem ?> </div>
 	<!-- 공고목록 테이블 헤드 -->
 	<table class='type10' id='specData'>
 
 	<?
-
 	// ------------------------------------------------------
 	// 결과표시 -by jsj 20200328
 	// ------------------------------------------------------
 	$sql = " REPLACE INTO " .$openBidSeq;
-	$sql .= " SELECT * FROM openBidSeq_tmp ";
+	$sql .= " SELECT * FROM openBidSeq_Fill ";
 	if ($conn->query($sql)) {
-		$sql = " TRUNCATE openBidSeq_tmp ";
+		$sql = " TRUNCATE openBidSeq_Fill ";
 		if ($conn->query($sql) == false) {
 			echo "ln354::Error sql=" . $sql;
 		}
@@ -378,26 +387,18 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	$sql .= " WHERE status_rs = 'N' ";
 	$sql .= "   AND bidNtceNo IN ( ";
 	$sql .= "       SELECT bidNtceNo FROM openBidInfo where 1 ";
-	$sql .= "          AND bidwinnrBizno <> '' ";    		   				   // 낙찰결과있음
+	$sql .= "          AND bidwinnrBizno <> '' ";    		   				   // 낙찰결과 있음
 	$sql .= "           OR ntceKindNm IN ('취소', '재입찰', '연기') ";			//  일반, < 변경, 취소, 재입찰, 연기>,  긴급, 갱신, 긴급갱신
 	$sql .= "           OR bidMethdNm NOT IN ('전자입찰' )";    			    // 입찰방식이 '전자입찰' 이 아니면 낙찰결과가 없음
 	$sql .= "           OR progrsDivCdNm IN ('유찰', '개찰완료', '재입찰') ";   //  유찰, 개찰완료, 재입찰
 	$sql .= "           OR rgstTyNm = '연계기관 공고건' )";    					// 연계기관 공고건
 	if ($conn->query($sql) <> true) echo "Error (openBidInfo_Status):" . $sql;
-		
-	// openBidInfo 낙찰 사업자번호가 있으면, 진행구분 progrsDivCdNm='개찰완료'로 변경
-	$sql = " UPDATE openBidInfo SET progrsDivCdNm = '개찰완료' "; 
-	$sql .= "  WHERE bidwinnrBizno <> '' ";
-	$sql .= "    AND progrsDivCdNm =  '' ";
-	if ($conn->query($sql) <> true) echo "ln344::Err: " . $sql;
 
-
-	
 	// 업데이트 완료된 건은 삭제 함
 	// $sql = " DELETE FROM openBidInfo_status WHERE status_rs = 'Y' ";
 	// if ($conn->query($sql) <> true) echo "SQL error= " . $sql . "<br>";
 	// <status상태> 결과에 openBidInfo_status 상태를 보여줌
-	echo "<br>------ openBidInfo_Status 상태정보 -------------<br>";
+	echo "------ openBidInfo_Status 상태정보 -------------<br>";
 	$sql = " SELECT statusCd, status_rs, COUNT(statusCd) as Cnt from openBidInfo_status GROUP BY statusCd, status_rs ";
 	echo "ln629 sql=' " . $sql . " '<br>";
 
@@ -405,22 +406,22 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	while ($arr = $dbRst->fetch_assoc()) {
 		switch ($arr['statusCd'] . $arr['status_rs']) {
 			case "01N":
-				echo " (01)낙찰목록비교 공고번호없고, 진행구분-확보= " . $arr['Cnt'] . "건,";
+				echo " (01)낙찰목록비교 공고번호 없음, 진행구분-확보= " . $arr['Cnt'] . "건,";
 				break;
 			case "01Y":
-				echo " (완료)낙찰목록비교 공고번호없고, 완료= " . $arr['Cnt'] . "건, <br>";
+				echo " (완)낙찰목록비교 공고번호 확인 완료= " . $arr['Cnt'] . "건, <br>";
 				break;
 			case "02N":
-				echo " (02)입찰정보비교 낙찰정보없음=" . $arr['Cnt'] . "건, ";
+				echo " (02)입찰정보비교 낙찰정보 없음=" . $arr['Cnt'] . "건, ";
 				break;
 			case "02Y":
-				echo " (완료)입찰정보비교 낙찰정보없음, 완료=" . $arr['Cnt'] . "건, <br>";
+				echo " (완)입찰정보비교 낙찰정보 확인 완료=" . $arr['Cnt'] . "건, <br>";
 				break;
 			case "03N":
-				echo " (03)입찰정보비교 공고신규입력=" . $arr['Cnt'] . "건, ";
+				echo " (03)입찰정보비교 공고신규입력 필요=" . $arr['Cnt'] . "건, ";
 				break;
 			case "03Y":
-				echo " (완료)입찰정보비교 공고신규입력, 완료=" . $arr['Cnt'] . "건, <br>";
+				echo " (완)입찰정보비교 공고신규입력 완료=" . $arr['Cnt'] . "건, <br>";
 				break;
 		}
 	}

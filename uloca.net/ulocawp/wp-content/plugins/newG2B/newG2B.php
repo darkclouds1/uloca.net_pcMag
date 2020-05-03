@@ -642,10 +642,10 @@ function chkAllFunc(obj) {
 }
 var table1;
 // 입찰정보 -----------------------------------------------
-var col = ["번호","구분","공고번호","공고명","추정가격","공고일","수요기관","개찰일시"]; //,"구분"];
-var col2 = [ '','pss','bidNtceNo', 'bidNtceNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'opengDt']; //, 'pss' ];
-var col3 = [ 'c','c','c', 'l', 'r', 'd', 'l', 'd']; //,'c' ];
-var colw = [ '5%','10%','10%', '25%', '10%', '15%', '15%', '10%'] ; //, '10%' ]; // width
+var col = ["번호", "구분", "공고번호<br/>(→입찰공고)", "공고명", "추정가격", "공고일", "수요기관", "낙찰기업명<br/>(→응찰기록)","개찰일시<br/>(→개찰순위)" ];
+var col2 = ['', 'pss', 'bidNtceNo', 'bidNtceNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidwinnrNm', 'opengDt']; //, 'pss' ];
+var col3 = ['c', 'c', 'c', 'l', 'r', 'd', 'l', 'c', 'd']; //,'c' ];
+var colw = ['5%', '6%', '10%', '29%', '8%', '7%', '13%', '11%','11%']; //, '10%' ]; // width
 
 var colp = ["번호","구분","공사관리번호","사업명","발주금액","발주월","발주기관","게시일시"]; //,"구분"];
 var colp2 = [ '','pss','cnstwkMngNo', 'bizNm', 'orderContrctAmt', 'orderMnth', 'orderInsttNm', 'nticeDt']; //, 'pss' ];
@@ -665,10 +665,11 @@ var colsx3 = [ 'c','c', 'l', 'r', 'd', 'l', 'd']; //,'c' ];
 var colsxw = [ '10%','10%', '25%', '10%', '15%', '15%', '15%']; //, '10%' ]; // width
 
 // 기업검색 -----------------------------------------------
-var colc = ["번호","사업자등록번호","업체명","대표자"]; //,"응찰건수"];
-var colc2 = [ '','compno', 'compname', 'repname']; //, 'cnt' ];
-var colc3 = [ 'c','c', 'l', 'c']; //, 'r' ];
-var colcw = [ '15%','15%','50%', '20%'] //, '10%' ]; // width
+var colc = ["번호", "사업자등록번호<br>(→ 응찰기록)", "업체명 (→ 기업정보)", "대표자"]; //,"응찰건수"];
+var colc2 = ['', 'compno', 'compname', 'repname']; //, 'cnt' ];
+var colc3 = ['c', 'c', 'l', 'c']; //, 'r' ];
+var colcw = ['15%', '15%', '50%', '20%'] //, '10%' ]; // width
+
 
 var durationatonce = [3,5,30,30,30,30,30,30,30,30,60,60];
 var durationIndex = 0;
@@ -792,13 +793,14 @@ function makeTable(data) {
 	//total record 뒤에 검색 URL표시 입찰정보 : searchType=1 -by jsj 190320 
 	//searchUrl = searchUrl_path + '?page_id=1134&searchType=1&' + parm;			
 	parm = '&searchType=1&' + parm; //copyURL() 사용 -by jsj 190320
-	//alert( 'val='+val);
 	if (mobile == "Computer")
 	{
 	
 		if (val == 'bid') { // 입찰정보
 			makeTableHead(col,col2,col3,colw);
 			makeTabletr(data);
+			// clog ("ln803::data=" + data); // debug
+
 		} else if (val == 'pln')
 		{
 			makeTableHead(col,col2,col3,colw); //colp,colp2,colp3,colpw);
@@ -911,6 +913,7 @@ function makeTabletr(datas) {
 				tabCells.innerHTML = idx;
 				tabCells.setAttribute('style', 'text-align:center;');
 				for (var j = 1; j < col.length; j++) {
+
 					var tabCell = tr.insertCell(-1);
 					//if (j == 999) tabCell.innerHTML = '<input id=chk2 name=chk2 type="checkbox" />';
 					//else        tabCell.innerHTML = items[i][col2[j]];
@@ -927,8 +930,10 @@ function makeTabletr(datas) {
 						if (tabCell != null && tabCell.innerHTML.length > 10) tabCell.innerHTML = tabCell.innerHTML.substr(0,10);
 					}
 					tabCell.setAttribute('style', attr);
+
 					if (col2[j] == 'bidNtceNo') tabCell.innerHTML += '-' + items[i]['bidNtceOrd'];
 					if (!(val=='pln' && j==1)) tabCell.innerHTML = setLink(items,i,j,tabCell);
+
 				}
 				
 			}
@@ -939,8 +944,10 @@ function makeTabletr(datas) {
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
         var divContainer = document.getElementById("tables");
         //divContainer.innerHTML = "";
-        divContainer.appendChild(table1);
+		divContainer.appendChild(table1);
+	
 }	
+
 function makeTablePln(datas) {
 	// ADD JSON DATA TO THE TABLE AS ROWS.
 	//json_result =  jdata.js_result[0]["rows"];
@@ -1143,39 +1150,61 @@ function getPSS() {
 	return pss;
 }
 
-function setLink(items,i,j,cell) {
+function setLink(items, i, j, cell) {
 	//if (i<2) console.log('j='+j+'/'+cell.innerHTML);
-	var sel = document.getElementById("kind1");
-	var val = sel.options[sel.selectedIndex].value;
-	
-	if (val != 'pln' && j == 1 ) {
-		//$arr['bidNtceDtlUrl'] 가 없는 경우 viewDtl에 링크 삽입  -by jsj 20181129 
-		if (items[i]['bidNtceDtlUrl'] == '') {
-			items[i]['bidNtceDtlUrl'] = 'http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='+items[i]['bidNtceNo']+'&bidseq='+items[i]['bidNtceOrd']+'&releaseYn=Y&taskClCd=5';
-		}
 
-		//cell.innerHTML = '<a href="http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='+items[i]['bidNtceNo']+'&bidseq='+items[i]['bidNtceOrd']+'&releaseYn=Y&taskClCd=5" target="_blank">' + cell.innerHTML + '</a>';
-		cell.innerHTML = '<a onclick=\'viewDtl("'+ items[i]['bidNtceDtlUrl']+'")\'>' + cell.innerHTML + '</a>';
-	} else if (j == 6)
-	{
-		eDate = new Date().toISOString().slice(0,10);
-		sDate = dateAddDel(eDate, -1, 'y');
-		//cell.innerHTML = '<a href="http://uloca23.cafe24.com/g2b/getBid.php?kwd=&dminsttNm='+items[i]['dminsttNm']+'&inqryBgnDt='+sDate+'&inqryEndDt='+eDate+'" target="_blank">' + cell.innerHTML + '</a>';
-		cell.innerHTML = '<a onclick=\'viewscs("'+ items[i]['dminsttNm']+'")\'>' + cell.innerHTML + '</a>';
-	}
-	else if (j == 7)
-	{
-		if (today<=items[i]['opengDt'].substr(0,10)) return cell.innerHTML;
+	switch (j) {
+		case 2:	// 공고번호
+			//$arr['bidNtceDtlUrl'] 가 없는 경우 viewDtl에 링크 삽입  -by jsj 20181129 
+			if (items[i]['bidNtceNo'].length == 6) {// 사전규격
+				cell.innerHTML = '<a onclick=\'viewDtls("' + items[i]['bidNtceNo'] + '")\'>' + cell.innerHTML.substr(0, 6) + '</a>';
+				return cell.innerHTML;
+			}
+			if (items[i]['bidNtceDtlUrl'] == '') {	// 공고번호
+				items[i]['bidNtceDtlUrl'] = 'http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=' + items[i]['bidNtceNo'] + '&bidseq=' + items[i]['bidNtceOrd'] + '&releaseYn=Y&taskClCd=5';
+			}
+			//clog('setlink '+ (items[i]['pss'].substr(0,2)));
+			if (items[i]['pss'].substr(0, 2) != '계획')
+				cell.innerHTML = '<a onclick=\'viewDtl("' + items[i]['bidNtceDtlUrl'] + '")\'>' + cell.innerHTML + '</a>';
+			else cell.innerHTML = '<a onclick=\'viewBalju(' + i + ')\'>' + cell.innerHTML + '</a>';
+			break;
 
-		pss = getPSS();
+		case 6:	// 수요기관으로 재검색
+			cell.innerHTML = '<a onclick=\'viewscs("' + items[i]['dminsttNm'] + '")\'>' + cell.innerHTML + '</a>';
+			break;
 
-		cell.innerHTML = '<a onclick=\'viewRslt("'+items[i]['bidNtceNo']+'","'+items[i]['bidNtceOrd']+'","'+items[i]['opengDt']+'","'+pss+'","'+resudi+'")\'>'+ cell.innerHTML + '</a>';
-		
-	}
-	
+		case 7: // 낙찰기업 link bidwinnerBizno
+			pss = items[i]['pss']; 					// getPSS(); 사전규격
+			if (items[i]['pss'].substr(0, 2) == '사전') {
+				return "사전공개일→";
+			}	
+			if (items[i]['progrsDivCdNm'] == '개찰완료') {
+				bidwinnrNm = items[i]['bidwinnrNm'];
+				bidwinnrNm = bidwinnrNm.replace("주식회사","");
+				cell.innerHTML = '<a onclick=\'compInfobyComp("' + items[i]['bidwinnrBizno'] + '")\'>' + bidwinnrNm + '</a>';
+			} else {
+				bidwinnrNm = items[i]['progrsDivCdNm'];	// 유찰 or 재입찰 외
+				if (bidwinnrNm == '0' || bidwinnrNm == '') bidwinnrNm = '-';
+				return bidwinnrNm;
+			}
+			break;
 
+		case 8: // 개찰일시 
+			if (today < items[i]['opengDt'].substr(0, 10)) return cell.innerHTML;
+			bidwinnrNm = items[i]['progrsDivCdNm'];	// 유찰 or 재입찰 외
+			pss = items[i]['pss']; 					// getPSS(); 사전규격
+			if (items[i]['pss'].substr(0, 2) == '사전') {
+				return cell.innerHTML;
+			} else if ( bidwinnrNm == '유찰'){
+				return cell.innerHTML;
+			} else {	// 개찰결과 링크
+				cell.innerHTML = '<a onclick=\'viewRslt("' + items[i]['bidNtceNo'] + '","' + items[i]['bidNtceOrd'] + '","' + items[i]['opengDt'] + '","' + pss + '","' + resudi + '")\'>' + cell.innerHTML + '</a>';
+			}
+			break;					
+	}	// switch
 	return cell.innerHTML;
 }
+
 
 function setLinksx(items,i,j,cell) {  // 사전규격
 	//if (i<2) clog('j='+j+'/'+cell.innerHTML);

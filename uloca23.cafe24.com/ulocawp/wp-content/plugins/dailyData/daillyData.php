@@ -181,7 +181,6 @@ function dtvalue(obj) {
 	else if (obj.value == 24) edt.value = edt.value.substr(0,10)+' 23:59';
 
 }
-
 function dataGether() {
 	form = document.myForm;
 	form.submit();
@@ -195,7 +194,9 @@ var daily_func='';
 function searchDaily_tmp(func) {
 	frm = document.myForm;
 	daily_func = func;
+	openBidInfo = frm.openBidInfo.value;
 	openBidSeq = frm.openBidSeq.value;
+	openBidSeq_tmp = frm.openBidSeq_tmp.value;
 	if (openBidInfo == '')
 	{
 		alert('입찰정보 테이블 명이 없습니다.');
@@ -212,7 +213,7 @@ function searchDaily_tmp(func) {
 		return;
 	}
 	// 임시테이블 처리 
-	url = '/g2b/datas/dailyDataHandle.php?func='+func+'&openBidInfo=openBidInfo&openBidSeq='+openBidSeq + '&openBidSeq_tmp=openBidSeq_tmp';
+	url = '/g2b/datas/dailyDataHandle.php?func='+func+'&openBidInfo='+openBidInfo + '&openBidSeq='+openBidSeq + '&openBidSeq_tmp='+openBidSeq_tmp;
 	move();
 	
 	getAjax(url,moved_tmp);

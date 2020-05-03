@@ -75,7 +75,7 @@ class dbconn {
 		$kwd2 = substr($kwd2,0,strlen($kwd2)-4);
 		$dminsttNms = substr($dminsttNms,0,strlen($dminsttNms)-4);
 
-		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl, bidtype as pss, opengDt, locate "; 
+		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt, bidNtceDtlUrl, bidtype as pss, opengDt, locate, bidwinnrNm, bidwinnrBizno, progrsDivCdNm "; 
 		$sql .= " FROM openBidInfo ";
 		$sql .= "WHERE 1=1 "; //and substr(bidNtceNo,1,2) = '20' ";
 		if ($pss != '') $sql .= "AND bidtype = '".$pss."' ";
@@ -165,7 +165,6 @@ class dbconn {
 	// 입찰정보 통합검색 -by jsj 20200326
 	//-------------------------------------
 	function getSvrDataDB4($conn,$kwd,$dminsttNm,$curStart,$cntonce) {
-		// 등록번호, 품명, 배정예산금액, 등록일시, 실수요기관명, 의견등록마감일시, 입찰공고번호목록
 		//"?" 뒤는 수요기관으로 검색 -by jsj 20200326
 		$kwd1 = ''; // 1번째 문자열 (공고명, 공고번호)
 		$kwd2 = ''; // 2번째 문자열 (수요기관)
@@ -177,16 +176,6 @@ class dbconn {
 				$kwd2 .= " ".$kwd[$i]. " "; // 수요기관 문자열
 			}
 		}
-		
-		/* strpos 에서 특수문자 삭제가 잘 안됨
-		if (strpos($kwd, "?")) { 
-			// \? 특수문자 삭제
-			$kwd1 = substr($kwd, 0, strpos($kwd, "\?") - 1); 
-			$kwd2 = strstr($kwd, "?"); 
-		} else {
-			$kwd1 = $kwd;
-		}
-		*/
 
 		$kwds = ''; // 공고명 SQL
 		$kwdN = ''; // 공고번호 SQL
@@ -211,7 +200,7 @@ class dbconn {
 		$kwddd = explode(' ', trim($kwd2));
 		for ($i=0;$i<sizeof($kwddd);$i++) {		
 			if ($kwddd[$i] == '') continue;
-			$kwdd .= " dminsttNm like '%" .$kwddd[$i].  "%' AND "; // 수요기관
+			$kwdd .= " dminsttNm like '%" .$kwddd[$i].  "%' OR "; // 수요기관
 		}
 
 		// SQL보완 마지막 4문자 "and " 삭제해서 SQL 보완
@@ -219,7 +208,7 @@ class dbconn {
 		$kwdN = substr($kwdN,0,strlen($kwdN)-4);  // 공고번호
 		$kwdd = substr($kwdd,0,strlen($kwdd)-4);  // 수요기관
 
-		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt,bidNtceDtlUrl, ";
+		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt, bidNtceDtlUrl, bidwinnrNm, bidwinnrBizno, progrsDivCdNm, ";
 		$sql .= "		CASE WHEN bidtype = '물품' THEN '입찰물품' ";
 		$sql .= "			 WHEN bidtype = '용역' THEN '입찰용역' ";
 		$sql .= "			 WHEN bidtype = '공사' THEN '입찰공사' ";
@@ -239,9 +228,6 @@ class dbconn {
 			if (trim($kwds) <> '') $sql .= " AND  (" .$kwds. " ) "; // 공고명
 		}
 		$sql .= "ORDER BY bidNtceDt desc limit ".$curStart.",".$cntonce." ";
-
-		// debug -by jsj 20200327 SQL Debug
-		// return $sql;
 
 		$stmt = $conn->stmt_init();
 		$stmt = $conn->prepare($sql);
@@ -408,6 +394,7 @@ class dbconn {
 		$sql .= "(SELECT IF ((u2.PayFreeCD = 99),1,0) ";
 		$sql .= "FROM wp_users u, PayUser01M u2  ";
 		$sql .= "WHERE 1  ";
+		$sql .= "AND u2.termDate >= str_to_date(now(), '%Y-%m-%d') ";
 		$sql .= "AND u.user_login = u2.user_login  ";
 		$sql .= "AND u.user_login = '".$userid."') = 1, 1,0) ) as log ";
 		$sql .= "FROM DUAL ";

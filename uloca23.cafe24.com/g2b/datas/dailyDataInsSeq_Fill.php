@@ -37,18 +37,22 @@ if ($bidNtceNo == '') {
 // ----------------------------------------------------
 // 누락된 입찰공고 INSERT 해야 함
 // ----------------------------------------------------
-$sql  = " SELECT bidNtceNo, bidNtceOrd FROM openBidInfo WHERE 1 ";
+$sql  = " SELECT bidNtceNo, bidNtceOrd, rgstTyNm FROM openBidInfo WHERE 1 ";
 $sql .= "    AND bidNtceNo =  '" .$bidNtceNo. "' ";
 $sql .= "    AND bidNtceOrd = '" .$bidNtceOrd. "' ";
 $dbResult = $conn->query($sql);
-$rowCount = $dbResult->num_rows;
+if ($row = $dbResult->fetch_assoc()) {
+	$rgstTyNm = $row['rgstTyNm'];	// 연계기관 공고건 확인필요
+}
 
+$rowCount = $dbResult->num_rows;
 $startDate = '';
 $endDate   = '';
 $kwd       = '';
 $dminsttNm = '';
 $numOfRows = 999;
 $pageNo = 1;
+
 if ($rowCount == 0){ 	// 공고가 DB에 없음
 	$response = $g2bClass->getBidInfo($bidNtceNo, $bidNtcOrd, $bidrdo);
 	$json = json_decode($response, true);
@@ -69,7 +73,9 @@ if ($rowCount == 0){ 	// 공고가 DB에 없음
 		$sql .= "'"             .$arr['bidNtceUrl'].    "', '" .$arr['sucsfbidLwltRate']. "', ";
 		$sql .= "'"             .$arr['bfSpecRgstNo'].  "' ) ";
 		if (!($conn->query($sql))) echo "ln83 error sql=" . $sql . "<br>";
+		$rgstTyNm = $arr['rgstTyNm'];	// 연계기관 공고건 확인필요
 	}
+
 	$msg = "공고추가:" .$bidNtceNo. "-" .$bidNtcOrd. "<br>";
 }
 
@@ -78,9 +84,7 @@ $idx++; //openbidSeq max(id)
 //예정가격, 기초금액 업데이트
 updateInfo($conn, $g2bClass, $bidNtceNo, $pss);
 //---------------------------------------------------------
-$start = 0;
 $cnt   = 0;
-$tCnt  = 0;
 
 //-----------------------------------------------------------------
 // 낙찰이력 가져옴 getRsltDataAll --> 999건 이상
@@ -125,35 +129,50 @@ if ($cnt > 0) {
 			$sql .= "       sucsfbidAmt = '"   .$arr['sucsfbidAmt'].          "', ";		// 최종낙찰금액
 			$sql .= "       sucsfbidRate = '"  .$arr['bidprcrt'].             "', ";		// 투찰율 = 투찰금액/예정가격
 			$sql .= "       rlOpengDt = '"     .$arr['rlOpengDt'].            "', ";		// 실개찰일시
-			$sql .= "       progrsDivCdNm = '" .$arr['progrsDivCdNm'].		  "', ";  		// 진행구분 - '개찰완료', '유찰'				
+			$sql .= "       progrsDivCdNm =    '개찰완료', ";  								 // 진행구분 - '개찰완료'로 표시 (API 데이터가 안오는 경우가 있으므로 직접입력)
 			$sql .= " 	    modifyDT = now()";
 			$sql .= " WHERE bidNtceNo= '"      .$bidNtceNo. 				  "'  ";
 			// $sql .= "   AND bidNtceOrd= '"     .$bidNtceOrd.                  "'  ";
 			if (!($conn->query($sql)))  $msg .= ("ln99::Err Sql=" .$sql. ", <br>");
 		}
 		//----------------------------------------------------------------
-		// openBidSeq_tmp 에 key ==> unique(bdidNtceNo, bidNtceOrd, compno)
+		// openBidSeq_Fill 에 key ==> unique(bdidNtceNo, bidNtceOrd, compno)
 		//----------------------------------------------------------------
-		$sql  = " REPLACE INTO openBidSeq_tmp ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx )";
+		$sql  = " REPLACE INTO openBidSeq_Fill ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx )";
 		$sql .= "  VALUES ( '" .$arr['bidNtceNo']. "','" .$arr['bidNtceOrd']. "','" .$arr['rbidNo'].   "','" .$arr['prcbdrBizno'] . "','" .$arr['bidprcAmt'] . "', ";
-		$sql .= "           '" .$arr['bidprcrt'].  "','" .$arr['drwtNo1'].    "','" .$arr['bidprcDt']. "','" .$Rank_rmark.          "',"  .$bidIdx. ")";
+		$sql .= "           '" .$arr['bidprcrt'].  "','" .$arr['drwtNo1'].    "','" .$arr['bidprcDt']. "','" .trim($Rank_rmark).          "',"  .$bidIdx. ")";
 		if (!($conn->query($sql))) $msg .= ("ln140::Err Sql=" .$sql. ", <br>");
 		$i++;
 	}
-} else {  // 낙찰건수가 없으면 개찰일시(-1 day)와 비교해서 '유찰'로 업데이트
-	$sql  = "UPDATE openBidInfo SET ";
-	$sql .= "       progrsDivCdNm = '유찰'";
-	$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
-	$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
-	$sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -1 day)  ";
+} else {  // 낙찰건수가 없으면 개찰일시(-1 day)와 비교해서 '유찰' 또는 '연계기관 공고건' 업데이트
+
+		$sql  = "UPDATE openBidInfo SET ";
+		if ($rgstTyNm == '연계기관 공고건') {
+			$sql .= "       progrsDivCdNm = '연계기관'";
+		} else {
+			$sql .= "       progrsDivCdNm = '유찰'";
+		}
+		$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
+		$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
+		$sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -1 day)  ";
+
 	if (!($conn->query($sql))) $msg .= ("ln150::Err Sql=" .$sql. ", <br>");	
-	$youchalCnt++;
+	if ($rgstTyNm == '연계기관 공고건') {
+		$msg .= "연계기관";
+	} else {
+		$youchalCnt++;
+	}
 }	// end if ($cnt>0)
 
 // =======================================================================
 // 업데이트 결과 - 개찰일시(opengDt)가 지나고 건수=0 이면 '유찰'로 업데이트 함
 // =======================================================================
-$msg .= "<br>건수=".$cnt. ", 유찰건수=" .$youchalCnt; // 처리건수 return
+if ($youchalCnt == 1 ) {
+	$msg .= "유찰";
+} else {
+	$msg .= "건수=" .$cnt; 
+}
+
 echo $msg;
 // ============================================
 

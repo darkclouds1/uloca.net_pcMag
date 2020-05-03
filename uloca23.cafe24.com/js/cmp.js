@@ -97,23 +97,23 @@ function setDate(sDate,sep) {
 		// type = 5 100만원 단위 반올림
 		// type = 6 년도
 		// type = func
-		//clog("type="+type);
+		// clog("ln100::type="+type + ", field[0]=" + field[0]);
 		var val = "";
 		try
 		{
 			if (E017.getElementsByTagName(field)[0] == "undefined") return "";
 			if (type == 1) val = E017.getElementsByTagName(field)[0].textContent;
-			else if (type == 2) val = E017.getElementsByTagName(field)[0].innerHTML;
-			else if (type == 3) val = setDate(E017.getElementsByTagName(field)[0].innerHTML,"-");
-			else if (type == 4) val = number_format(E017.getElementsByTagName(field)[0].innerHTML);
-			else if (type == 5) val = Math.round(eval(E017.getElementsByTagName(field)[0].innerHTML)/1000000); // 100만원
-			else if (type == 6) val = E017.getElementsByTagName(field)[0].innerHTML.substr(0,4); // year
-			else val = E017.getElementsByTagName(field)[0].innerHTML + " " + type(E017.getElementsByTagName(field)[0].innerHTML);
+			else if (type == 2) val = E017.getElementsByTagName(field)[0].textContent;
+			else if (type == 3) val = setDate(E017.getElementsByTagName(field)[0].textContent,"-");
+			else if (type == 4) val = number_format(E017.getElementsByTagName(field)[0].textContent);
+			else if (type == 5) val = Math.round(eval(E017.getElementsByTagName(field)[0].textContent)/1000000); // 100만원
+			else if (type == 6) val = E017.getElementsByTagName(field)[0].textContent.substr(0,4); // year
+			else val = E017.getElementsByTagName(field)[0].textContent + " " + type(E017.getElementsByTagName(field)[0].textContent);
 			return val;
 		}
 		catch (e)
 		{
-			clog(field+" "+type+" e="+e.message);
+			// clog(field+" "+type+" e="+e.message);
 			return "";
 		}
 		
@@ -121,11 +121,10 @@ function setDate(sDate,sep) {
 	}
 
 	function make_basic(E017) {
-			document.getElementById("bzno").innerHTML = '&nbsp'+xmlText(E017,'bzno',1);//bzno;
-			document.getElementById("enp_nm").innerHTML = '&nbsp'+xmlText(E017,'enp_nm',1);//enp_nm; //decode_utf8(enp_nm);
-			document.getElementById("estb_dt").innerHTML = '&nbsp'+setDate(E017.getElementsByTagName('estb_dt')[0].textContent,'-');
-			document.getElementById("cono_pid").innerHTML = '&nbsp'+xmlText(E017,'sttl_base_dt',2); //E017.getElementsByTagName('cono_pid')[0].textContent;
-			document.getElementById("eng_enp_nm").innerHTML = '&nbsp'+E017.getElementsByTagName('eng_enp_nm')[0].textContent;
+			document.getElementById("bzno").innerHTML = '&nbsp'+xmlText(E017,'bzno',1);	// bzno;
+			document.getElementById("enp_nm").innerHTML = '&nbsp'+xmlText(E017,'enp_nm',1);	//enp_nm; //decode_utf8(enp_nm);
+			document.getElementById("cono_pid").innerHTML = '&nbsp'+ E017.getElementsByTagName('cono_pid')[0].textContent;
+			document.getElementById("eng_enp_nm").innerHTML = '&nbsp'+E017.getElementsByTagName('eng_enp_nm')[0].textContent;	// 영문명
 			document.getElementById("reper_nm").innerHTML = '&nbsp'+E017.getElementsByTagName('reper_nm')[0].textContent;
 			document.getElementById("enp_fcd").innerHTML = '&nbsp'+E017.getElementsByTagName('enp_fcd')[0].textContent + CC_enp_fcd(E017.getElementsByTagName('enp_fcd')[0].textContent);
 			document.getElementById("ipo_cd").innerHTML = '&nbsp'+E017.getElementsByTagName('ipo_cd')[0].textContent + CC_ipo_cd(E017.getElementsByTagName('ipo_cd')[0].textContent);
@@ -143,10 +142,12 @@ function setDate(sDate,sep) {
 			document.getElementById("hpage_url").innerHTML = '&nbsp'+E017.getElementsByTagName('hpage_url')[0].textContent;
 			document.getElementById("email").innerHTML = '&nbsp'+E017.getElementsByTagName('email')[0].textContent;
 			document.getElementById("major_pd").innerHTML = '&nbsp'+E017.getElementsByTagName('major_pd')[0].textContent;
-			document.getElementById("mtx_bnk_nm").innerHTML = '&nbsp'+E017.getElementsByTagName('mtx_bnk_nm')[0].textContent;
-			document.getElementById("enp_scd").innerHTML = '&nbsp'+xmlText(E017,'enp_scd',CC_enp_scd); //E017.getElementsByTagName('enp_scd')[0].textContent + CC_enp_scd(E017.getElementsByTagName('enp_scd')[0].textContent);
-			document.getElementById("enp_scd_chg_dt").innerHTML = '&nbsp'+setDate(E017.getElementsByTagName('enp_scd_chg_dt')[0].textContent,'-');
-			document.getElementById("enp_sze").innerHTML = '&nbsp'+xmlText(E017,'enp_sze',CC_enp_sze); //E017.getElementsByTagName('enp_sze')[0].textContent +  CC_enp_sze(E017.getElementsByTagName('enp_sze')[0].textContent);
+			document.getElementById("mtx_bnk_nm").innerHTML = '&nbsp'+E017.getElementsByTagName('mtx_bnk_nm')[0].textContent;	// 주거래은행
+			// document.getElementById("enp_scd").innerHTML = '&nbsp'+xmlText(E017,'enp_scd',CC_enp_scd); //E017.getElementsByTagName('enp_scd')[0].textContent + CC_enp_scd(E017.getElementsByTagName('enp_scd')[0].textContent);
+			document.getElementById("enp_scd").innerHTML = '&nbsp'+E017.getElementsByTagName('enp_scd')[0].textContent + CC_enp_scd(E017.getElementsByTagName('enp_scd')[0].textContent); // 기업상태
+			document.getElementById("enp_scd_chg_dt").innerHTML = '&nbsp'+setDate(E017.getElementsByTagName('enp_scd_chg_dt')[0].textContent,'-'); // 기업상태 변경일
+			// document.getElementById("enp_sze").innerHTML = '&nbsp'+xmlText(E017,'enp_sze',CC_enp_sze); //E017.getElementsByTagName('enp_sze')[0].textContent +  CC_enp_sze(E017.getElementsByTagName('enp_sze')[0].textContent);
+			document.getElementById("enp_sze").innerHTML = '&nbsp'+E017.getElementsByTagName('enp_sze')[0].textContent +  CC_enp_sze(E017.getElementsByTagName('enp_sze')[0].textContent); // 기업규모
 			document.getElementById("std_dt").innerHTML = '&nbsp'+setDate(E017.getElementsByTagName('std_dt')[0].textContent,'-');
 			
 			// 신용등급은 표시하지 않음 - 기업데이터와 협의 함 -by jsj 20191119
@@ -154,26 +155,28 @@ function setDate(sDate,sep) {
 			//document.getElementById("cr_grd_dtl").innerHTML = '&nbsp'+E017.getElementsByTagName('cr_grd_dtl')[0].textContent;
 			//document.getElementById("grd_cls").innerHTML = '&nbsp'+E017.getElementsByTagName('grd_cls')[0].textContent+ CC_grd_cls(E017.getElementsByTagName('grd_cls')[0].textContent);
 			
-			document.getElementById("evl_dt").innerHTML = '&nbsp'+xmlText(E017,'evl_dt',3); //setDate(E017.getElementsByTagName('evl_dt')[0].textContent,'-');
-			document.getElementById("sttl_base_dt").innerHTML = '&nbsp'+xmlText(E017,'sttl_base_dt',3); //setDate(E017.getElementsByTagName('sttl_base_dt')[0].innerHTML,'-');
+			// document.getElementById("evl_dt").innerHTML = '&nbsp'+xmlText(E017,'evl_dt',3); //setDate(E017.getElementsByTagName('evl_dt')[0].textContent,'-');
+			// document.getElementById("sttl_base_dt").innerHTML = '&nbsp'+xmlText(E017,'sttl_base_dt',3); //setDate(E017.getElementsByTagName('sttl_base_dt')[0].innerHTML,'-');
+			document.getElementById("evl_dt").innerHTML = '&nbsp'+ setDate(E017.getElementsByTagName('evl_dt')[0].textContent,'-');
+			document.getElementById("sttl_base_dt").innerHTML = '&nbsp'+ setDate(E017.getElementsByTagName('sttl_base_dt')[0].textContent,'-');
 
 		}
 		function make_etc(E017) { // 기타
-			clog("기타");
+			// clog("기타");
 			E017_sth = E017.getElementsByTagName('sth')[0];
-			document.getElementById("sth_nm1").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm1',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt1',2)+")"; 
-			document.getElementById("sth_nm2").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm2',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt2',2)+")";
-			document.getElementById("sth_nm3").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm3',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt3',2)+")";
+			document.getElementById("sth_nm1").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm1',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt1',1)+")"; 
+			document.getElementById("sth_nm2").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm2',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt2',1)+")";
+			document.getElementById("sth_nm3").innerHTML = '&nbsp'+xmlText(E017_sth,'sth_nm3',1)+'&nbsp('+xmlText(E017_sth,'sth_eqrt3',1)+")";
 
 			E017_renp = E017.getElementsByTagName('renp')[0];
-			document.getElementById("renp_nm1").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm1',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt1',2)+")"; 
-			document.getElementById("renp_nm2").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm2',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt2',2)+")";
-			document.getElementById("renp_nm3").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm3',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt3',2)+")";
+			document.getElementById("renp_nm1").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm1',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt1',1)+")"; 
+			document.getElementById("renp_nm2").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm2',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt2',1)+")";
+			document.getElementById("renp_nm3").innerHTML = '&nbsp'+xmlText(E017_renp,'renp_nm3',1)+'&nbsp('+xmlText(E017_renp,'renp_eqrt3',1)+")";
 
 			E017_customer = E017.getElementsByTagName('customer')[0];
-			document.getElementById("customer_nm1").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm1',1)+'&nbsp('+xmlText(E017_customer,'customer_rt1',2)+")"; 
-			document.getElementById("customer_nm2").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm2',1)+'&nbsp('+xmlText(E017_customer,'customer_rt2',2)+")";
-			document.getElementById("customer_nm3").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm3',1)+'&nbsp('+xmlText(E017_customer,'customer_rt3',2)+")";
+			document.getElementById("customer_nm1").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm1',1)+'&nbsp('+xmlText(E017_customer,'customer_rt1',1)+")"; 
+			document.getElementById("customer_nm2").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm2',1)+'&nbsp('+xmlText(E017_customer,'customer_rt2',1)+")";
+			document.getElementById("customer_nm3").innerHTML = '&nbsp'+xmlText(E017_customer,'customer_nm3',1)+'&nbsp('+xmlText(E017_customer,'customer_rt3',1)+")";
 			
 			E017_supplier = E017.getElementsByTagName('supplier')[0];
 			document.getElementById("supplier_nm1").innerHTML = '&nbsp'+xmlText(E017_supplier,'supplier_nm1',1)+'&nbsp('+xmlText(E017_supplier,'supplier_rt1',1)+")"; 
@@ -186,7 +189,7 @@ function setDate(sDate,sep) {
 			document.getElementById("opnn_sales").innerHTML = '&nbsp'+xmlText(E017_opnn,'opnn_sales',1);
 		}
 		function make_fs_summ(E017) { // 요약재무제표
-			clog("요약재무제표");
+			// clog("요약재무제표");
 			E017_fs_summ = E017.getElementsByTagName('fs_summ')[0];
 			document.getElementById("fs_acct_dt").innerHTML = '&nbsp'+xmlText(E017_fs_summ,'fs_acct_dt',3);
 			document.getElementById("fs1_acct_dt").innerHTML = '&nbsp'+xmlText(E017_fs_summ,'fs1_acct_dt',3);
@@ -246,7 +249,7 @@ function setDate(sDate,sep) {
 		
 
 		function make_fr_summ(E017) { // 요약재무비율
-			clog("요약재무비율");
+			// clog("요약재무비율");
 			E017_fr_summ = E017.getElementsByTagName('fr_summ')[0];
 			document.getElementById("fr_acct_dt").innerHTML = '&nbsp'+xmlText(E017_fr_summ,'fr_acct_dt',3)+'&nbsp(%)';
 			document.getElementById("fr1_acct_dt").innerHTML = '&nbsp'+xmlText(E017_fr_summ,'fr1_acct_dt',3)+'&nbsp(%)';
@@ -291,7 +294,7 @@ function setDate(sDate,sep) {
 			document.getElementById("fr2_val12").innerHTML = '&nbsp'+xmlText(E017_fr_summ,'fr2_val12',2);
 		}
 		function make_cf_anal_summ(E017) { // 요약현금흐름분석
-			clog("요약현금흐름분석");
+			// clog("요약현금흐름분석");
 			E017_anal_summ = E017.getElementsByTagName('cf_anal_summ')[0];
 			document.getElementById("cf_acct_dt").innerHTML = '&nbsp'+xmlText(E017_anal_summ,'cf_acct_dt',3);
 			document.getElementById("cf1_acct_dt").innerHTML = '&nbsp'+xmlText(E017_anal_summ,'cf1_acct_dt',3);
@@ -318,7 +321,7 @@ function setDate(sDate,sep) {
 			//fs_summ_json = []
 			// 단위 100만원
 			var text = '';
-			if (eval(E017_fs.getElementsByTagName('fs_val3')[0].innerHTML) > 10000000)
+			if (eval(E017_fs.getElementsByTagName('fs_val3')[0].textContent) > 10000000)
 			{	// 1000만원 이상
 			text = ' [' +
 				'{ "fs_val3":"'+xmlText(E017_fs,'fs_val3',5)+'", "fs_val6":"'+xmlText(E017_fs,'fs_val6',5)+'", "fs_val8":"'+xmlText(E017_fs,'fs_val8',5)+'", "fs_val9":"'+xmlText(E017_fs,'fs_val9',5)+'", "fs_val10":"'+xmlText(E017_fs,'fs_val10',5)+'", "fs_val16":"'+xmlText(E017_fs,'fs_val16',5)+'", "fs_acct_dt":"'+xmlText(E017_fs,'fs_acct_dt',6)+'" },' +
@@ -336,13 +339,11 @@ function setDate(sDate,sep) {
 			}
 			fs_summ_json = JSON.parse(text);
 
-			clog("fs_acct_dt="+fs_summ_json[0].fs_acct_dt+" fs_val3="+fs_summ_json[0].fs_val3);
-			clog("fs_acct_dt="+fs_summ_json[1].fs_acct_dt+" fs_val3="+fs_summ_json[1].fs_val3);
-			//clog("fs_acct_dt="+fs_summ_json.fs_val[1].fs_acct_dt+" fs_val3="+fs_summ_json.fs_val[1].fs_val3);
-			//clog("fs_acct_dt="+fs_summ_json.fs_val[2].fs_acct_dt+" fs_val3="+fs_summ_json.fs_val[2].fs_val3);
-			clog(text);
-
-
+			// clog("fs_acct_dt="+fs_summ_json[0].fs_acct_dt+" fs_val3="+fs_summ_json[0].fs_val3);
+			// clog("fs_acct_dt="+fs_summ_json[1].fs_acct_dt+" fs_val3="+fs_summ_json[1].fs_val3);
+			// clog("fs_acct_dt="+fs_summ_json.fs_val[1].fs_acct_dt+" fs_val3="+fs_summ_json.fs_val[1].fs_val3);
+			// clog("fs_acct_dt="+fs_summ_json.fs_val[2].fs_acct_dt+" fs_val3="+fs_summ_json.fs_val[2].fs_val3);
+			// clog(text);
 
 		}
 
@@ -435,7 +436,7 @@ function mydrawChart(E017) {
 	chartbox = document.getElementById("chartbox"); 
 	chartbox.innerHTML = '';
 	max = getMaxno(fs_summ_json);
-	if (eval(E017_fs.getElementsByTagName('fs_val3')[0].innerHTML) > 10000000) {
+	if (eval(E017_fs.getElementsByTagName('fs_val3')[0].textContent) > 10000000) {
 		xx = '금액(10억)';
 	} else xx= '금액(천원)';
 	half = maxvalue/2;

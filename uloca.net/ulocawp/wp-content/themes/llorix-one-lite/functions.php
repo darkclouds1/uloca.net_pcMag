@@ -825,3 +825,12 @@ function my_logout_redirect()
 // 로그아웃 시 리디렉션될 URL 반환
 return 'https://uloca.net/ulocawp/?page_id=1134';
 }
+
+// 관리자 외 어드민바 없애기
+add_filter('show_admin_bar', 'my_show_admin_bar');
+function my_show_admin_bar() {
+	if(current_user_can('activate_plugins')){
+		return true;
+	}
+	return false;
+}

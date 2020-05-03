@@ -6,10 +6,12 @@ $g2bClass = new g2bClass;
 $dbConn = new dbConn;
 $conn = $dbConn->conn();
 
+
+$testPost = $_GET['testPost'];
+echo "ln11::test=" .$testPost. "<br>";
 // --------------------------------------------------------------
 // date 비교
 // --------------------------------------------------------------
-$cnt=0;
 $sql  = "SELECT COUNT(compno) AS CNT FROM openCompany WHERE 1";
 $sql .= "   AND DATE(modifyDT) < DATE(now())";
 $result = $conn->query($sql);
@@ -17,7 +19,7 @@ if ($result) {
 	$row = $result->fetch_assoc();
 	$sendEmailCnt = $row["CNT"];
 }
-echo ("ln20::CNT=" .$CNT. "<br>");
+echo ("ln20::CNT=" .$sendEmailCnt. "<br>");
 //-----------------------------------------------
 
 
@@ -46,10 +48,10 @@ if ($row = $dbResult->fetch_assoc()) {
     echo $row['bidNtceOrd'];
 
     $opengDt = $row['opengDt'];
-    $timestamp = strtotime("-2 days"); // 개찰일시 > 오늘날짜-2일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
+    $timestamp = strtotime("-1 days"); // 개찰일시 > 오늘날짜-2일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
     $timestamp = date("Y-m-d", $timestamp);
     $opengDt   = date("Y-m-d", strtotime($opengDt));
-    echo ("<br>ln37::timestamp=" .$timestamp. ", opengDt=" .$opengDt);
+    echo ("<br>ln54::timestamp=" .$timestamp. ",     opengDt=" .$opengDt);
 
     if ($opengDt > $timestamp ) {
         echo "개찰일시가 도래하지 않았습니다.";

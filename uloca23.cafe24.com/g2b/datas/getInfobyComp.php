@@ -70,22 +70,16 @@ $json_rs = $g2bClass->rs2Json2($result); //,$colArray) ;
 
 $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
 ?>
+
 <!DOCTYPE html>
 <html>
-
 <head>
 	<title>입찰기록><?= $compname ?></title>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+	<META http-equiv=Content-Type content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta name="format-detection" content="telephone=no">
 	<!--//-by jsj 전화걸기로 링크되는 것 막음 -->
-	<style>
-		input {
-			-webkit-appearance: none;
-			-webkit-border-radius: 0;
-		}
-	</style>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="/ulocawp/wp-content/themes/one-edge/style.css" />
 	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css" />
@@ -105,11 +99,6 @@ $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
 			} catch (e) {
 				alert('Error:'.e);
 			}
-			/*
-			setTimeout(function() {
-				prompt('Ctrl+C를 눌러 아래의 URL을 복사하세요:', <?= gBitlyData ?>);
-			}, 1000);
-			*/
 		}
 
 		var mobile = '<?= $mobile ?>'; // "Mobile" : "Computer"
@@ -210,12 +199,6 @@ if ($mobile == "Mobile") {
 	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right2 ?>px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
 	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right1 ?>px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
 
-	<!-- 입찰 결과 
-	<div id='monolithdiv' style="overflow:auto; width:98%; height:250px; padding:10px; background-color:#eeeeee;">
- 	<canvas id="monolithCanvas" width="900" height="200"></canvas>
-	</div>
-	-->
-
 	<form name="popForm">
 		<input type="hidden" name="bidNtceNo" value="" />
 		<input type="hidden" name="bidNtceOrd" />
@@ -233,13 +216,6 @@ if ($mobile == "Mobile") {
 		</div> <!-- end of bidinfohead -->
 	</div>
 	<!-- change  color from #438ad1 to #666666 -->
-	<script>
-		//document.getElementById('totalrec').innerHTML = '(<?= $tuchalrate0Cnt ?>건 제외)';
-		document.getElementById('summaryrec').innerHTML = '<font size=5><strong><?= $compname ?></strong></font>사업자번호:<?= $compno ?>, 대표:<?= $repname ?>';
-		document.getElementById('summaryrec').innerHTML += '<a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰1순위만 검색(클릭):<?= $nakchal ?>건</strong></font></a>';
-		document.getElementById('summaryrec').innerHTML += '▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
-		document.getElementById('summaryrec').innerHTML += ', 표준편차:' + '<font color=red>' + mk + '</font>';
-	</script>
 	<?
 	// --------------------------------------------------------------------------------------
 	mysqli_data_seek($result, 0); // 처음으로
@@ -286,9 +262,7 @@ if ($mobile == "Mobile") {
 
 				$tr = '<tr>';
 				$tr .= '<td style="text-align: center;">' . $i . '</td>';
-				//$tr .= '<td ><a href="http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='.$row['bidNtceNo'].'&bidseq='.$row['bidNtceOrd'].'&releaseYn=Y&taskClCd=5">'.$row['bidNtceNo'].'-'.$row['bidNtceOrd'].'</a></td>';
-				$tr .= '<td ><a onclick=
-			"viewBid(\'' . $row['bidNtceNo'] . '\',\'' . $row['bidNtceOrd'] . '\')" />' . $row['bidNtceNo'] . '-' . $row['bidNtceOrd'] . '</a></td>';
+				$tr .= '<td ><a onclick="viewBid(\'' . $row['bidNtceNo'] . '\',\'' . $row['bidNtceOrd'] . '\')" >' . $row['bidNtceNo'] . '-' . $row['bidNtceOrd'] . '</a></td>';
 				$tr .= '<td ><a onclick="viewRslt(\'' . $row['bidNtceNo'] . '\',\'' . $row['bidNtceOrd'] . '\',\'' . $row['opengDt'] . '\',\'' . $row['pss'] . '\')">' . $row['bidNtceNm'] . '</a></td>';
 				$tr .= '<td>' . $row['dminsttNm'] . '</td>';
 				$tr .= '<td style="text-align: center;">' . $row['pss'] . '</td>';
@@ -303,7 +277,7 @@ if ($mobile == "Mobile") {
 				echo $tr;
 				$i += 1;
 			}
-			echo '</tbody></table></div>';
+			echo '</tbody></table>';
 
 			$i--;
 			if ($ilevel > 0) $tuchalrateAvg = $tuchalrateSum / $ilevel;
@@ -367,42 +341,10 @@ if ($mobile == "Mobile") {
 			<div style="overflow:auto; width:98%; height:600px; padding:10px; background-color:#eeeeee;">
 				<div id="chartbox" style="width:2400px;height:600px;border:1px solid #c0c0c0;"></div>
 			</div>
-			<!-- CHART -->
-
-			<!-- </div> 
-			<!-- end of bidinfo -->
-
-			<div id=mail style='visibility: hidden;'>
-				<form action="/g2b/sendmail2.php" name="mailForm" id="mailForm" target='new_blank' method="post">
-					<input type="text" name="email2" id="email2" autocomplete="on" value="" />
-					<input type="text" name="subject" id="subject" value="입찰 기록" />
-					<input type="text" name="message" id="message" value="" />
-					<input type="hidden" name="resudi" value="<?= $resudi ?>" />
-
-				</form>
-				<form name="compInfoForm" style='visibility: hidden;display:inline;'>
-					<input type="hidden" name="resudi" value="<?= $id ?>" />
-					<input type="hidden" name="id" value="<?= $id ?>" />
-					<input type="hidden" name="compno" />
-					<input type="hidden" name="opengDt" />
-				</form>
-			</div><!-- end mail -->
 
 			<script>
 				var data2 = '<?= $json_string ?>';
-				//clog(data2);
-				/*
-				bidNtceNm: "가축질병검사실(BL3) 설비공사(기계)"
-				bidNtceNo: "20180732738"
-				bidNtceOrd: "00"
-				bidtype: "공사"
-				dminsttNm: "세종특별자치시"
-				opengDt: "2018-08-10 11:00:00"
-				rank: "1"
-				tuchalamt: "615333900"
-				tuchaldatetime: "2018-08-09 21:24:35"
-				tuchalrate: "88.886"
-				*/
+
 				function openButton(idx) {
 					if (document.getElementById("link" + idx).style.display == 'inline') {
 						document.getElementById("link" + idx).style.display = 'none';
@@ -560,12 +502,11 @@ if ($mobile == "Mobile") {
 				mk = Math.floor(Math.sqrt(mk) * 10);
 				mk = mk / 10;
 				//document.getElementById('totalrec').innerHTML = '(<?= $tuchalrate0Cnt ?>건 제외)';
-				document.getElementById('summaryrec').innerHTML = '<font size=5><strong><?= $compname ?></strong></font>&nbsp&nbsp사업자번호:<?= $compno ?>, 대표:<?= $repname ?>';
-				document.getElementById('summaryrec').innerHTML += '<br><a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰 1순위:&nbsp <?= $nakchal ?>건(클릭)</strong></font></a>';
+				// detailCompany(compno)
+				//<a onclick="detailCompany('<?=$item0[0]['bizno']?>')" class="search" style='width:140px'>KED 상세검색</a> <a onclick="self.close()" class="search">닫기</a>
+				document.getElementById('summaryrec').innerHTML = '<font size=4><strong> <a onclick=\"detailCompany(\'<?=$compno ?>\')"> <?= $compname ?></a> </strong></font>&nbsp&nbsp사업자번호:<?= $compno ?>, 대표:<?= $repname ?>';
 				document.getElementById('summaryrec').innerHTML += '<br><font color=""> ✔ 입찰이력이 누락된 경우 해당공고의 낙찰결과를 확인해보세요.</font>';
+				document.getElementById('summaryrec').innerHTML += '<br><a onclick="showhide()" style="cursor:pointer"><font size=3><strong>▷낙찰 1순위:&nbsp <?= $nakchal ?>건(클릭)</strong></font></a>';
 				document.getElementById('summaryrec').innerHTML += '<br>▷평균투찰율:<font color=red><?= round($tuchalrateAvg, 1) ?></font>';
 				document.getElementById('summaryrec').innerHTML += ', 표준편차:' + '<font color=red>' + mk + '</font>';
 			</script>
-			<!-- div class="btn_area" style='width:100% !important;' >
-				<input type=button style='height:30px; width:120px; font-size:14px; line-height:30px; color:#fff; text-align:center; padding:2px; background-color:#438ad1;; border:0;vertical-align: middle; cursor:pointer;' value="닫  기" onclick="self.close()" />
-			</div -->

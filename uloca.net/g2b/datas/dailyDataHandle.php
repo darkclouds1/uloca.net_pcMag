@@ -4,38 +4,37 @@
 @extract($_GET);
 @extract($_POST);
 @extract($_SERVER);
-// g2b/datas/dailyDataHandle.php
+// g2b/datas/dailyDataHandle.php?func='+func+'&openBidInfo='+openBidInfo + '&openBidSeq='+openBidSeq + '&openBidSeq_tmp='+openBidSeq_tmp;
 
 date_default_timezone_set('Asia/Seoul');
 require($_SERVER['DOCUMENT_ROOT'].'/classphp/g2bClass.php'); //'/g2b/classPHP/g2bClass.php');
+require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php');
 
 $g2bClass = new g2bClass;
 $mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
-
-require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php');
 $dbConn = new dbConn;
 $conn = $dbConn->conn();
+
 // --------------------------------- log
 $rmrk = '';
 $dbConn->logWrite($_SESSION['current_user']->user_login,$_SERVER['REQUEST_URI'],$rmrk);
 // --------------------------------- log
 
+$openBidSeq     = $_GET['openBidSeq'];
+$openBidSeq_tmp = $_GET['openBidSeq_tmp'];
+
 // 1 : 임시->개찰정보 :: INSERT IGNORE INTO
-$sql = '   REPLACE INTO '.$openBidSeq . ' ( `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` ) ';
-$sql .= ' (SELECT `bidNtceNo`, `bidNtceOrd`, `compno`, `tuchalamt`, `tuchalrate`, `selno`, `tuchaldatetime`, `remark`, `bidIdx` ' ;
-$sql .= '    FROM openBidSeq_tmp ) ';
+$sql = " REPLACE INTO " .$openBidSeq ;
+$sql .= "      SELECT * FROM " .$openBidSeq_tmp;
+if ($conn->query($sql)) {
+    $sql = " TRUNCATE " .$openBidSeq_tmp;
+    if ($conn->query($sql) == false) {
+        echo "ln32::Error sql=" . $sql;
+    }
+} else {
+    echo "ln359::Error sql=" .$sql;
+}
 
-$stmt = $conn->stmt_init();
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-echo '1 임시->개찰정보 ok ';
-
-// 2 : 임시개찰정보 비우기
-$sql = 'truncate table  openBidSeq_tmp';
-$stmt = $conn->stmt_init();
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-echo $sql;
-echo '2 임시개찰정보 비우기 ok';
+echo "ln::38 임시개찰정보 비우기 openBidSeq=" .$openBidSeq. ", openBidSeq_tmp=" .$openBidSeq_tmp. " , sql=" .$sql;
 
 ?>

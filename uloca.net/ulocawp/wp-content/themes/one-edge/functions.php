@@ -59,14 +59,3 @@ function my_kboard_list_where($where, $board_id){
 	}
 	return $where; 
 }
-
-// wpadmin_bar 관리자만 보이게
-/*
-add_filter('show_admin_bar', 'my_show_admin_bar');
-function my_show_admin_bar(){
-	if(current_user_can('activate_plugins')){
-		return true;
-	}
-	return false;
-}
-*/

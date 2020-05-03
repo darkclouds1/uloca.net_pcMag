@@ -282,7 +282,7 @@ echo ($tag);
 
 function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $openBidSeq)
 {
-	global $bidSeqOn; //개찰결과 입력on :: 목록에 있는것은 개찰결과가 없는 거임 // 개찰완료, 유찰 또는 연계기관 공고건은 제외
+	global $bidSeqOn; //개찰결과 입력on :: 개찰결과 없는공고 화면표시 // 개찰완료, 유찰 또는 연계기관 공고건은 제외
 	
 	// 공고는 있고 입찰결과 없는 공고목록 표시
 	$sql = "SELECT idx, bidwinnrBizNo, opengDt, rgstTyNm, ntceKindNm, bidMethdNm, progrsDivCdNm FROM openBidInfo WHERE 1";
@@ -310,8 +310,8 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 		$sql .="   AND bidNtceOrd= '" .$arr['bidNtceOrd']. "' ";
 		if (!($conn->query($sql))) echo "ln308 error sql=" . $sql . "<br>";
 
-	} else { // 입찰공고가 없으면 추가
-		// 입찰공고는 항상 업데이트 - '취소'인 경우 업데이트해야 함.
+	} else { 
+		// 입찰공고가 없으면 추가
 		$sql = 'REPLACE INTO ' . $openBidInfo . ' (bidNtceNo, bidNtceOrd, bidNtceNm, ntceInsttNm, dminsttNm, opengDt, bidtype,';
 		$sql .= '                                  reNtceYn, rgstTyNm, ntceKindNm, bidMethdNm, bidNtceDt, ntceInsttCd, dminsttCd, bidBeginDt, bidClseDt,';
 		$sql .= '                                  presmptPrce, bidNtceDtlUrl, bidNtceUrl, sucsfbidLwltRate, bfSpecRgstNo)';
@@ -327,14 +327,14 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 		$sql .= "'"             .$arr['bfSpecRgstNo'].  "') ";
 		if (!($conn->query($sql))) echo "ln325:Err sql=" . $sql . "<br>";
 
-		// 입찰공고 신규 입력
+		// 입찰공고 신규 idx 확인
 		$sql = "SELECT idx, bidwinnrBizNo, opengDt, rgstTyNm, ntceKindNm, bidMethdNm, progrsDivCdNm FROM openBidInfo WHERE 1";
 		$sql .= "  AND bidNtceNo  = '" .$arr['bidNtceNo'].  "' ";
 		$sql .= "  AND bidNtceOrd = '" .$arr['bidNtceOrd']. "' ";
 		if (!($dbResult = $conn->query($sql))) echo "ln331 Err sql=" .$sql. "<br>";
 		if ($row = $dbResult->fetch_assoc()){
 			$idx = $row['idx'];
-			$bidwinnrBizNo = $row['bidwinnrBizNo'];
+			$bidwinnrBizNo = $row['bidwinnrBizNo'];			// 1순위 사업자번호가 있어도 개발SEQ 없을수 있으므로 체크안함
 			$opengDt       = $row['opengDt'];				// 개찰일시
 			$rgstTyNm      = trim($row['rgstTyNm']);		// 연계기관 공고건 제외
 			$ntceKindNm    = trim($row['ntceKindNm']);		// 취소, 연기공고  제외
@@ -343,11 +343,11 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 		}
 	}
 	// 개찰결과가 없거나 신규공고를을 화면에 보여줌, 개찰결과가 도래하지 않으면 목록 제외
-	$timestamp = strtotime("-2 days"); // 개찰일시 > 오늘날짜-2일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
+	$timestamp = strtotime("-1 days"); // 개찰일시 > 오늘날짜-1일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
     $timestamp = date("Y-m-d", $timestamp);
     $opengDt   = date("Y-m-d", strtotime($opengDt));   
-	if (($bidwinnrBizNo == '')  && ($rgstTyNm <> '연계기관 공고건') && ($ntceKindNm <> '취소')        && ($ntceKindNm <> '연기') && 
-	    ($bidMethdNm <> '직찰') && ($progrsDivCdNm <> '유찰')      && ($progrsDivCdNm <> '개찰완료')  && ($opengDt < $timestamp )) {
+	if (($progrsDivCdNm <> '개찰완료')  && ($rgstTyNm <> '연계기관 공고건') && ($ntceKindNm <> '취소')        && ($ntceKindNm <> '연기') && 
+	    ($bidMethdNm <> '직찰') && ($progrsDivCdNm <> '유찰')      && ($opengDt < $timestamp )) {
 		// 기존에 입찰현황이 있고, 개찰결과가 없는것만 표시
 		displayBidInfo($i, $arr, $pss, $idx);		// 개찰결과가 없는 경우 표시, Fill 이후 신규로 되어 있는 경우는 나타남
 	}

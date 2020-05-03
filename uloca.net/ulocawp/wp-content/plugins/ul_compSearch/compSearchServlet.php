@@ -15,7 +15,7 @@ date_default_timezone_set('Asia/Seoul');
 // KED(한국기업데이터) 전문 E017 -by jsj 20190824
 //$name = $_GET["username"]; //post 파라미터
 
-$bzno = $userName; 
+$bzno = trim($userName); 
 if ($bzno == '') {
 	
 	return ("사업자번호를 입력하세요!") ;
@@ -58,57 +58,5 @@ $dbConn->cmpCfsum01M_1($conn,$xml);	//	요약현금흐름분석 cf_anal_summ //
 //==============================================
 //$json_string = json_encode($xml);    
 print_r($res);
-//var_dump($res);
-//$xml = new XMLParser($res);
-//$xml->Parse();
-//echo $xml->CONTENTS->E017->enp_nm . "<br>";
-//echo ("=============<br>");
-//echo '<br><br>';
-//echo $xml->HEADER->user_id;
-exit;
-
-
-//$library = simplexml_load_string($xml) or die ("Error: Cannot creae object");
-/*
-foreach ($library->children() as $child){
-    echo $child->getName();
-    // Get attributes of this elemen
-    foreach ($child->attributes() as $attr){
-        echo ' ' . $attr->getName() . ': ' . $attr;
-    }
-    // Get children
-    foreach ($child->children() as $subchild){
-        echo ' ' . $subchild->getName() . ': ' . $subchild;
-    }
-}
-*/
-
-
-//$user_login = $_POST["user_login"]; //Get 파라미터
-//$name = $_POST["name"]; //post 파라미터
-//getJSon($name);
-
-function getJSon($name){
-	if($name == null) $name = "";
-
-	$result = "";
-	$result = "{\"result\":[";
-	$compDAO = new classDAO;
-	$list = array();
-	$list = $compDAO->searchDAO($name);
-	
-	foreach ($list as $key=>$value) {
-		$result .= "[{\"value\":\"" . $value->_idx ."\"},";
-		$result .= "{\"value\":\"" . $value->_user_login ."\"},";
-		$result .= "{\"value\":\"" . $value->_name ."\"},";
-		$result .= "{\"value\":\"" . $value->_user_email ."\"},";
-		$result .= "{\"value\":\"" . $value->_payFreeCD ."\"},";
-		$result .= "{\"value\":\"" . $value->_modifyDT ."\"}],";
-	}
-	$result .= "]}";
-	
-	//$result = json_encode($result);
-	echo($result);
-}
 
 ?>

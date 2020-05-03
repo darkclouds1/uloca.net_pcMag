@@ -133,9 +133,10 @@ function searchajax000() {	  	// 상세검색 (통합검색은 g2b_2019.js)
 		exit;
 	}
 	else if (loginSW == 0 && (SearchCounts > (searchCountMax + searchLoginPlus))) {
-		alert(String(SearchCounts) + '::회비 납부 기간이 지났습니다.[구매결제]' ); //+SearchCounts);
-		location.href='/ulocawp/?page_id=1352'; //구매결제로 이동 -by jsj 0312 
-		exit;
+		alert(String(SearchCounts) + 'ln136[구매결제]회비 납부 기간이 지났습니다. 서비스운영을 위한 구독료 or Donation이 필요합니다.^^');
+		
+		// location.href='/ulocawp/?page_id=1352'; //구매결제로 이동 -by jsj 0312 
+		// exit;
 	}
 	
 	if (searchType==1 && form.kwd.value.trim() == '' && form.dminsttNm.value.trim() == '')
@@ -197,7 +198,6 @@ function searchajax000() {	  	// 상세검색 (통합검색은 g2b_2019.js)
 		if (form.kind23.checked) parm +='&bidservc=1'; 
 		if (searchType==2) parm +='&compinfo=1';
 		else parm +='&bidinfo=1';
-		
 		
 		var sel = document.getElementById("kind1");
 		var val = sel.options[sel.selectedIndex].value;
@@ -363,7 +363,7 @@ function searchajax3() {
 		
 }
 /* --------------------------------------------------------------------------------
-	스크롤바의 현제 위치 %
+	스크롤바의 현재 위치 %
 --------------------------------------------------------------------------------- */
 var sHeight = '';
 function viewScroll() {
@@ -535,20 +535,21 @@ function domCheck() {
 	//x= document.getElementById("bidData").rows[1].cells;
 	var table = document.getElementById('bidData');
 
-var rowLength = table.rows.length;
-chkst = document.getElementsByName('chk');
-for(var i=0; i<rowLength; i+=1){
-  var row = table.rows[i];
-  //clog('i='+i+' '+chkst[i].checked );
-  
-  var cellLength = row.cells.length;
-  for(var y=0; y<cellLength; y+=1){
-    var cell = row.cells[y];
-	//clog('i='+i+' '+' y='+y+' ' +row.cells[y].innerHTML);
-    
-  } 
+	var rowLength = table.rows.length;
+	chkst = document.getElementsByName('chk');
+	for(var i=0; i<rowLength; i+=1){
+		var row = table.rows[i];
+		//clog('i='+i+' '+chkst[i].checked );
+		
+		var cellLength = row.cells.length;
+		for(var y=0; y<cellLength; y+=1){
+			var cell = row.cells[y];
+			//clog('i='+i+' '+' y='+y+' ' +row.cells[y].innerHTML);
+			
+		} 
+	}
 }
-}
+
 function chkTable() {
 	//x= document.getElementById("bidData").rows[1].cells;
 	var table = document.getElementById('bidData');
@@ -628,7 +629,7 @@ if (bfSpecRgstNo == '') // || regex.test(url) === false)
 /* ------------------------------------------------------------------------------------------
 입찰 결과 상세정보보기
 ------------------------------------------------------------------------------------------- */
-function viewRslt(bidNtceNo,bidNtceOrd,dt,pss) {
+function viewRslt(bidNtceNo,bidNtceOrd, dt, pss) {
 	//clog(bidNtceNo+'/'+bidNtceOrd+'/'+dt+'/'+pss);
 	if (dt == '')
 	{
@@ -647,9 +648,9 @@ function viewRslt(bidNtceNo,bidNtceOrd,dt,pss) {
 		return;
 	}
 	frm = document.compInfoForm;
-	id = frm.id.value;
+	//id = frm.id.value;
 	url = '/g2b/bidResult.php?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	url += '&id='+id;
+	//url += '&id='+id;
 	//clog('function viewRslt '+url);
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 	popupWindow.focus();
@@ -758,27 +759,39 @@ function viewComp(bidNtceNo,bidNtceOrd,dt) {
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
-var detailsw = false;
 /* ------------------------------------------------------------------------------------------
 낙찰정보보기
 ------------------------------------------------------------------------------------------- */
-function viewscs(dminsttNm) {
+var detailsw = false;
+function viewscs(dminsttNm, kwd) {
+	// kwd 디폴트 '' 으로 셋팅 -by jsj 20200423
+	kwd = typeof kwd == 'undefined' ? kwd : '';
+
 	if (dminsttNm == '') // || regex.test(url) === false)
 		{
 			alert('수요기관이 없습니다.');
 			return;
 		}
-	
 	frm = document.getElementById('myForm');
+	// ----------------------------------------------------------
+	// 수요기관 재검색 시 수요기관은 "?" 뒤에 표시 -by jsj 20200423
+	// ----------------------------------------------------------
+	kwd = frm.kwd.value;
+	// ? 부터 재검색 시 지움
+	if (kwd.indexOf('?') !== -1) {
+		kwd = kwd.substr(0, kwd.indexOf('?'));
+	}
 	frm.dminsttNm.value = dminsttNm;
+
 	idx=0;
 	duridx = -1;
 	curStart = 0;
-	clog('viewscs detailsw='+detailsw+' frm.dminsttNm.value='+frm.dminsttNm.value+' frm.kwd.value='+frm.kwd.value+' dminsttNm='+dminsttNm);
-	if (detailsw == true)
-	{
-		searchajax000(); // 검색 버튼 상세
-	} else  searchajax0_1(); // 검색 버튼 통합
+	if (detailsw == true){
+		searchajax000(); 							// 상세검색
+	} else {
+		frm.kwd.value = kwd + '? ' + dminsttNm;		// 통합검색은 ? 뒤에 수요기관
+		searchajax0_1(); 							// 통합검색 
+	}  
 	
 }
 
@@ -884,7 +897,6 @@ function compInfo(compno) {
 	frm = document.compInfoForm;
 	frm.compno.value = compno;
 
-
 	//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
 	//url = '/g2b/datas/bidResult.php'; //?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
 	//alert(window.location.hostname);
@@ -899,6 +911,7 @@ function compInfo(compno) {
 	popupWindow = window.open(url);
 
 }
+
 // KED 상세 검색 --------------------------------
 function detailCompany(compno) {
 	clog ("detailCompany compno="+compno);
@@ -1102,7 +1115,8 @@ function insertSeq2() {
 			pss = insTable.rows[insIdx].cells[6].innerHTML;
 			//clog('noRow='+noRow+'/'+bidNtceNo+'/'+bididx+'/'+insIdx);
 			url = '/g2b/datas/dailyDataInsSeq.php?bidNtceNo='+bidNtceNo+'&openBidInfo='+openBidInfo + '&openBidSeq='+openBidSeq_tmp+'&bididx='+bididx+'&pss='+pss;
-			//alert(url);
+
+			// clog ("ln1106::url=" + url);
 			getAjax(url,searchDaily3);
 	}
 }
@@ -1180,15 +1194,11 @@ function getAjaxPost(server,client,parm) {
 		} else if (this.status == 504) {
 			alert('Time-out Error...');
 			return;
-		} else {
-			//alert ("Error" + xhttp.status);
 		}
 	  };
 	xhr.open("POST", server, true);
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8"); 
 	xhr.send(parm);
-
-	// xhttp.send("fname=Henry&lname=Ford");
 }
 
 /* ------------------------------------------------------------------------------------------
@@ -1346,11 +1356,11 @@ var trs = "";
 var tbl = document.getElementById(tblnm); //.rows[0]
 //clog(tbl.innerHTML);
 var chk = document.getElementsByName(chk); // 체크박스객체를 담는다 []
-var len = chk.length;    //체크박스의 전체 개수
+var len = chk.length;   //체크박스의 전체 개수
 var checkRow = '';      //체크된 체크박스의 value를 담기위한 변수
-var checkCnt = 0;        //체크된 체크박스의 개수
-var checkLast = '';      //체크된 체크박스 중 마지막 체크박스의 인덱스를 담기위한 변수
-var rowid = '';             //체크된 체크박스의 모든 value 값을 담는다
+var checkCnt = 0;       //체크된 체크박스의 개수
+var checkLast = '';     //체크된 체크박스 중 마지막 체크박스의 인덱스를 담기위한 변수
+var rowid = '';         //체크된 체크박스의 모든 value 값을 담는다
 var cnt = 0; 
 
 for(var i=0; i<len; i++){
@@ -1373,13 +1383,13 @@ for(var i=0; i<len; i++){
 	if(chk[i].checked == true){  //체크가 되어있는 값 구분
 		checkRow = chk[i].value;
 
-		if(checkCnt == 1){                            //체크된 체크박스의 개수가 한 개 일때,
-			rowid += "'"+checkRow+"'";        //'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
-		}else{                                            //체크된 체크박스의 개수가 여러 개 일때,
-			if(i == checkLast){                     //체크된 체크박스 중 마지막 체크박스일 때,
-			rowid += "'"+checkRow+"'";  //'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
+		if(checkCnt == 1){                  //체크된 체크박스의 개수가 한 개 일때,
+			rowid += "'"+checkRow+"'";      //'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
+		}else{                              //체크된 체크박스의 개수가 여러 개 일때,
+			if(i == checkLast){             //체크된 체크박스 중 마지막 체크박스일 때,
+			rowid += "'"+checkRow+"'";  	//'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
 			}else{
-			rowid += "'"+checkRow+"',";	 //'value',의 형태 (뒤에 ,(콤마)가 붙게)         			
+			rowid += "'"+checkRow+"',";	 	//'value',의 형태 (뒤에 ,(콤마)가 붙게)         			
 			}
 		}
 	cnt++;

@@ -74,7 +74,7 @@ if ($pred == "") $pred = 4;
 		}
 		catch (e)
 		{
-			alert('데이타에 에러가 있는것 같습니다. 관리자에게 문의하세요.'+e.message);
+			alert('데이타에 에러가 있는것 같습니다. IE-Web Browser 일부 지원하지 않습니다..'+e.message);
 			clog(datas);
 		}
 	}

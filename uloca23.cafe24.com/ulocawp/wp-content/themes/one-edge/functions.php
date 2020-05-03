@@ -10,7 +10,6 @@ function one_edge_enqueue_styles()
 
 function one_edge_setup()
 {
-
 	/* Set the image size by cropping the image */
 	add_image_size('one-edge-post-thumbnail-big', 340, 340, true);
 	add_image_size('one_edge-post-thumbnail-mobile', 233, 233, true);
@@ -26,17 +25,11 @@ function wpbox_redirect_after_logout()
 	exit();
 }
 
-// 우커머스 확인없이 로그아웃 하기
-function wpbox_bypass_logout_confirmation()
+// 로그아웃 시 리디렉션될 URL 반환
+function my_login_redirect()
 {
-	global $wp;
-	if (isset($wp->query_vars['customer-logout'])) {
-		wp_redirect(str_replace('&amp;', '&', wp_logout_url(wc_get_page_permalink('myaccount'))));
-		exit();
-	}
+return 'http://uloca23.cafe24.com/ulocawp/?page_id=1134';
 }
-add_action('template_redirect', 'wpbox_bypass_logout_confirmation');
-
 
 // MY유로카 메뉴 클릭시 특정페이지로 이동 -by jsj 20200312
 add_action('template_redirect', 'redirect_to_specific_page');
@@ -52,6 +45,7 @@ function redirect_to_specific_page()
 		wp_redirect('http://uloca23.cafe24.com/ulocawp/?page_id=1134');
 		exit();
 	}
+	
 }
 
 // 문의하기(ID=1), 결제문의 (ID=4) - 자신의 쓴글만, 관리자는 전체
@@ -65,27 +59,17 @@ function my_kboard_list_where($where, $board_id)
 	return $where;
 }
 
-// 로그인 후 전면페이지로 이동 (백엔드 페이지로 가지 않도록)
-function redirect_after_login{
-	global $redirect_to;
-	if (!isset($_GET['redirect_to'])){
-		$redirect_to = get_option('http://uloca23.cafe24.com/ulocawp/?page_id=1134');
-	}
-}
-add_action('login_form','redirect_after_login');
-
 function loginpage_custom_link(){
-	return get_option('http://uloca23.cafe24.com/ulocawp/?page_id=1134');
+	return get_option('https://uloca23.cafe24.com/ulocawp/?page_id=1134');
 }
 add_filter('login_headerurl','loginpage_custom_link');
 
 // wpadmin_bar 관리자만 보이게
-/*
-add_filter('show_admin_bar', 'my_show_admin_bar');
 function my_show_admin_bar(){
 	if(current_user_can('activate_plugins')){
 		return true;
 	}
 	return false;
 }
-*/
+add_filter('show_admin_bar', 'my_show_admin_bar');
+

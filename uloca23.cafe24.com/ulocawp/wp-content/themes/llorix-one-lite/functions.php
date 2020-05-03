@@ -807,21 +807,68 @@ add_action( 'customize_register', 'llorix_one_lite_customize_register_notificati
 /**
  * Notice in admin dashboard to announce the theme is not maintained anymore
  */
+/*
 function llorix_one_lite_admin_notice() {
 	global $pagenow;
 	if ( is_admin() && ( 'themes.php' == $pagenow ) && isset( $_GET['activated'] ) ) {
 		echo '<div class="updated notice is-dismissible"><p>';
-		printf( /* translators: link to the recommended theme */ __( 'This theme is not maintained anymore, check-out our latest free one-page theme: %1$s.', 'llorix-one-lite' ), sprintf( '<a href="' . admin_url( 'theme-install.php?theme=hestia' ) . '">%s</a>', 'Hestia' ) );
+		printf( __( 'This theme is not maintained anymore, check-out our latest free one-page theme: %1$s.', 'llorix-one-lite' ), sprintf( '<a href="' . admin_url( 'theme-install.php?theme=hestia' ) . '">%s</a>', 'Hestia' ) );
 		echo '</p></div>';
 	}
 }
 add_action( 'admin_notices', 'llorix_one_lite_admin_notice', 99 );
+*/
 
-
+// 로그아웃 시 리디렉션될 URL 반환
 add_filter( 'wpmem_logout_redirect', 'my_logout_redirect' );
-
 function my_logout_redirect()
 {
-// 로그아웃 시 리디렉션될 URL 반환
 return 'http://uloca23.cafe24.com/ulocawp/?page_id=1134';
 }
+
+// 관리자 외 어드민바 없애기
+add_filter('show_admin_bar', 'my_show_admin_bar');
+function my_show_admin_bar() {
+	if(current_user_can('activate_plugins')){
+		return true;
+	}
+	return false;
+}
+
+// 로그아웃 시 사용자를 원하는 페이지로 보내기 -by jsj 20181214
+add_action('wp_logout','wpbox_redirect_after_logout');
+function wpbox_redirect_after_logout(){
+	//아래의 url을 원하는 페이지로 변경합니다
+	wp_redirect( 'https://uloca23.cafe24.com/ulocawp/?page_id=1134' );	//통합검색 
+	exit();
+}
+
+// 우커머스 확인없이 로그아웃 하기
+function wpbox_bypass_logout_confirmation() {
+	global $wp;
+	if ( isset( $wp->query_vars['customer-logout'] ) ) {
+		wp_redirect( str_replace( '&amp;', '&', wp_logout_url( wc_get_page_permalink( 'myaccount' ) ) ) );
+		exit();
+	}
+}
+add_action( 'template_redirect', 'wpbox_bypass_logout_confirmation' );
+
+// Redirects normal users (non-administrators) to homepage after login
+// Redirects adminstrators to Dashboard
+function acme_login_redirect( $redirect_to, $request, $user  ) {
+	return ( is_array( $user->roles ) && in_array( 'administrator', $user->roles ) ) ? admin_url() : site_url();
+}
+add_filter( 'login_redirect', 'acme_login_redirect', 10, 3 );
+
+// 로그인 시 특정페이지로 이동
+function custom_login_redirect( $url, $request, $user ) {
+    if ( $user && is_object( $user ) && is_a( $user, 'WP_User' ) ) {
+        if ( $user->has_cap( 'administrator') or $user->has_cap( 'author')) {
+            $url = admin_url();
+        } else {
+            $url = home_url('https://uloca23.cafe24.com/ulocawp/?page_id=1134');
+        }
+    }
+    return $url;
+}
+add_filter( 'login_redirect', 'custom_login_redirect', 10, 3 );

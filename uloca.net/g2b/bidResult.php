@@ -28,12 +28,9 @@ $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '08'); // $_SESSION[
 // --------------------------------- log
 
 // 낙찰 결과
-// getRstDataAll = json_decode 해서 넘김, getRstData = decode 필요
-$item1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
-//$response1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
-//$json1 = json_decode($response1, true);
-//$item1 = $json1['response']['body']['items'];
-
+$response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
+$json1 = json_decode($response1, true);
+$item1 = $json1['response']['body']['items'];
 
 // 입찰정보
 //echo $bidNtceNo.'/'.$bidNtceOrd.'/'.$pss;
@@ -65,8 +62,8 @@ $mailintop = $mailtop + 4;	// mail address
 	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190102" />
 	<link rel="stylesheet" href="/jquery/jquery-ui.css">
 
-	<script src="/jquery/jquery.min.js"></script>
-	<script src="/jquery/jquery-ui.min.js"></script>
+	<script src="/jquery/jquery.min.js">
+	</script><script src="/jquery/jquery-ui.min.js"></script>
 	<script src="/js/common.js?version=20190203"></script>
 	<script src="/g2b/g2b.js?version=20200401"></script>
 	<script src="/g2b/g2b_2019.js?version=20190203"></script>
@@ -101,34 +98,9 @@ $mailintop = $mailtop + 4;	// mail address
 			emaildiv.style.visibility = 'hidden';
 			frm2 = document.mailForm;
 			frm2.email2.value = emailid.value;
-			//hdr2 = document.getElementById('bidinfohead').innerHTML;
-			//i = hdr2.indexOf('<a ');
-			//if (i>2) hdr2 = hdr2.substring(0,i);
 
 			msg = document.getElementById('contents').outerHTML; //json2table(data2) ; //document.getElementById('bidinfo').innerHTML;
-			//s = msg.indexOf('<a onclick=\"showhide'); //낙찰');
-			//e = msg.indexOf('표준편차',s)+10;
-			//e = msg.indexOf('</font>',e)+4;
-			/* hdr = '<html>';
-			hdr += '<head>';
-			hdr += '<title>ULOCA</title>';
-			hdr += '<meta http-equiv="Content-Type" content="text/html; charset=utf8" />';
-			hdr += '<meta name="viewport" content="width=device-width, initial-scale=1">';
-			hdr += '<meta http-equiv="X-UA-Compatible" content="IE=Edge" />';
-			hdr += '<link rel="stylesheet" type="text/css" href="http://uloca23.cafe24.com/g2b/css/g2b.css" />';
-			hdr += '</head>';
-			hdr += '<body>'; */
 			hdr = '<p><a href="http://uloca.net"><input  type="button" value="유로카 입찰정보" style="width:200px; background-color:#E9602C; height:28px; color:#ffffff; cursor:pointer; font-size:14px; font-weight: bold; text-align:center; border:solid 1px #99bbe8; border-bottom:solid 1px #99bbe8;"></a></p><br>';
-			/*
-				hdr2 = '<style>table.type10 {width: 100%;border-collapse: collapse; text-align: left; line-height: 1.5;border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;';
-			    hdr2 += 'margin: 0px 0px; font-size:12px; overflow-x: auto;}';
-				hdr2 += 'table.type10 th {padding: 6px;font-weight: bold;vertical-align: top;text-align: center;color: #fff;background: #666666;margin: 2px 2px;} ';
-				hdr2 += '.grid01 th { background-color:#E9602C; height:24px; color:#fff; font-size:11px; font-family:Dotum; text-align:center; border-right:solid 1px #E9602C; border-bottom:solid 1px #E9602C; }';
-				hdr2 += '.grid01 td {  height:24px; color:#E9602C; font-size:11px; font-family:Dotum; text-align:left; border-top:solid 1px #E9602C; border-right:solid 1px #E9602C; border-bottom:solid 1px #E9602C;font-weight:bold }';
-				hdr2 += '</style>';
-			*/
-			//msg = msg.substr(0,s)+msg.substr(e);
-			//clog(msg.substr(0,2400));
 			frm2.message.value = hdr + msg;
 			//var gsWin = window.open('about:blank','new_blank','width=900,height=700,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 			frm2.submit();
@@ -175,22 +147,17 @@ $mailintop = $mailtop + 4;	// mail address
 			$items = $json1['response']['body']['items'];
 			if (count($items) > 0) {
 				foreach ($items as $arr) {
-					$plnprc = $arr['plnprc'];
-					$bssamt = $arr['bssamt'];
-					$bssamt1 = $arr['bssamt'];  //기초금액의 사정율 계산을 위한 변수
+					$plnprc           = $arr['plnprc'];
+					$bssamt           = $arr['bssamt'];
+					$bssamt1          = $arr['bssamt'];  //기초금액의 사정율 계산을 위한 변수
+					$sucsfbidLwltRate = $ietm0['sucsfbidLwltRate']; // 낙찰하한율 (안나옴)
 					if ($bssamt != '' && $bssamt != 0) $sasungyul = $plnprc / $bssamt ; // 사정율 = 예정가격 / 기초금액
 				}
 			}
 			if ($plnprc != '') $plnprc = number_format($plnprc);
 			if ($bssamt != '') $bssamt = number_format($bssamt);
 
-
 			?>
-
-			<!-- 입찰 결과 -->
-			<!-- <div style='font-size:14px; color:blue;font-weight:bold'>- 낙찰 결과 data.go.kr API -</center> //이미지로 바 -by jsj 190320 -->
-			<!--  <center><a href="/ulocawp/?page_id=1138"><img src="/img/bidResult_uloca.gif" boarder="0"></a></center>
--->
 
 			<div id=totalrechrc>낙찰결과 <br> (공공데이터포털 API) Total record=<?= count($item1) ?></div>
 			<div id=LinKExplain align="left">
@@ -232,20 +199,34 @@ $mailintop = $mailtop + 4;	// mail address
 				//-----------------------------------------------------------------
 				// openBidInfo idx 찾아서 openBidSeq_xxxx의 bidIdx -by jsj 20190731 
 				//-----------------------------------------------------------------
-				$sql = " SELECT idx";
+				$sql = " SELECT idx, rgstTyNm";
 				$sql .= "  FROM openBidInfo ";
 				$sql .= " WHERE bidNtceNo ='" . $bidNtceNo . "'";
 				$sql .= "   AND bidNtceOrd ='" . $bidNtceOrd . "'";
 				$result0 = $conn->query($sql);
 				if ($row = $result0->fetch_assoc()) {
-					$bididx = $row['idx'];
-				}
+					$bidIdx = $row['idx'];
+					$rgstTyNm = $row['resgTyNm'];
+				} 
 				$openBidSeq_xxxx = "openBidSeq_" . date("Y");
 
 				//echo $opengDt;
 				$i = 1;
 				$k = 1;
 				if (count($item1) == 0) {
+					// 진행구분에 유찰로 업데이트 (개찰일시가 오늘날짜-1일 과 비교)
+					$sql  = "UPDATE openBidInfo SET ";
+					if ($rgstTyNm == '연계기관 공고건'){
+						$sql .= "       progrsDivCdNm = '연계기관'";
+					} else {
+						$sql .= "       progrsDivCdNm = '유찰'";
+					}
+					$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
+					$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
+					$sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -1 day)  ";
+					if (!($conn->query($sql))) echo ("ln150::Err Sql=" .$sql. ", <br>");	
+
+					// 유찰 메시지 출력
 					$tr = "<tr>";
 					$tr .= '<td colspan=7  style="text-align: center; color:red;"><br>DATA가 없습니다. 개찰이 안되었거나, 유찰이 되었을수 있습니다.<br><br></td>';
 					$tr .= "</tr>";
@@ -255,7 +236,6 @@ $mailintop = $mailtop + 4;	// mail address
 						//---------------------------
 						$rmrk = addslashes($arr['rmrk']); // 비고 - '낙찰하한선 미달' 등
 						$k = (int) $arr["opengRank"];
-
 
 						switch ($k) {
 							case 0: 
@@ -291,31 +271,33 @@ $mailintop = $mailtop + 4;	// mail address
 							//-------------------------------------------------
 							//$openBidInfo 에 1순위 정보 업데이트 -by jsj 190601
 							//-------------------------------------------------
-							$sql1 = "UPDATE openBidInfo SET ";
-							$sql1 .= " 	prtcptCnum = "      . count($item1) . ", ";    			// 입찰업체수
-							$sql1 .= " 	bidwinnrNm = '"     . addslashes($arr['prcbdrNm']) . "', ";
-							$sql1 .= " 	bidwinnrBizno = '"  . $arr['prcbdrBizno'] . "', ";
-							$sql1 .= " 	sucsfbidAmt = '"    . $arr['bidprcAmt'] . "', ";
-							$sql1 .= " 	sucsfbidRate = '"   . $arr['bidprcrt'] . "', ";
-							$sql1 .= " 	rlOpengDt = '"      . $item0[0]['OpengDt']. "', ";  // 개찰정보 있음 (실개찰일시? 개찰일시를 넣고있음)
-							$sql1 .= " 	bidwinnrCeoNm = '"  . $arr['prcbdrCeoNm'] . "', ";
-							$sql1 .= "  progrsDivCdNm = '"  . "개찰완료" . "', ";  		  		
-							$sql1 .= " 	modifyDT = now()";
-							$sql1 .= " WHERE bidNtceNo ='"  . $bidNtceNo . "' ";
+							$sql  = "UPDATE openBidInfo SET ";
+							$sql .= "     	prtcptCnum = "     .count($item1). ", ";    			// 입찰업체수
+							$sql .= "       bidwinnrNm = '"    .addslashes($arr['prcbdrNm']). "', ";		// 최종낙찰업체명
+							$sql .= "       bidwinnrBizno = '" .$arr['prcbdrBizno'].          "', ";		// 사업자번호
+							$sql .= "       bidwinnrCeoNm = '" .$arr['bidwinnrCeoNm'].        "', ";		// 대표자명
+							$sql .= "       bidwinnrTelNo = '" .$arr['bidwinnrTelNo'].        "', ";		// 업체연락처
+							$sql .= "       sucsfbidAmt = '"   .$arr['sucsfbidAmt'].          "', ";		// 최종낙찰금액
+							$sql .= "       sucsfbidRate = '"  .$arr['bidprcrt'].             "', ";		// 투찰율 = 투찰금액/예정가격
+							$sql .= "       rlOpengDt = '"     .$arr['rlOpengDt'].            "', ";		// 실개찰일시
+							$sql .= "       progrsDivCdNm =    '개찰완료', ";  								 // 진행구분 - '개찰완료'로 표시 (API 데이터가 안오는 경우가 있으므로 직접입력)
+							$sql .= " 	    modifyDT = now()";
+							$sql .= " WHERE bidNtceNo= '"      .$bidNtceNo. 				  "'  ";
+
 							// $sql1 .= "   AND bidNtceOrd ='" . $bidNtceOrd . "' ";  //차수에 관계없이 입찰결과는 업데이트
-							if ($conn->query($sql1) == false) {
-								$msg = "SQL error=" . $sql1 . "<br>";
+							if ($conn->query($sql) == false) {
+								$msg = "SQL error=" . $sql . "<br>";
 							}
 
 							//---------------------------------------------------
 							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
 							//---------------------------------------------------
-							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
-							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
-							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
+							$sql  = " REPLACE INTO " .$openBidSeq_xxxx. " ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx )";
+							$sql .= "  VALUES ( '" .$arr['bidNtceNo']. "','" .$arr['bidNtceOrd']. "','" .$arr['rbidNo'].   "','" .$arr['prcbdrBizno'] . "','" .$arr['bidprcAmt'] . "', ";
+							$sql .= "           '" .$arr['bidprcrt'].  "','" .$arr['drwtNo1'].    "','" .$arr['bidprcDt']. "','" .trim($Rank_rmark).          "',"  .$bidIdx. ")";
 
-							If ($conn->query($sql) <> true) {
-								echo "Error sql=" .$sql. "<br>";
+							if ($conn->query($sql) <> true) {
+								echo "ln325::Err sql=" .$sql. "<br>";
 							}
 
 						} else {
@@ -335,13 +317,14 @@ $mailintop = $mailtop + 4;	// mail address
 							//---------------------------------------------------
 							//$openBidSeq_xxxx 에 입찰이력 입력 -by jsj 190601
 							//---------------------------------------------------
-							$sql  = ' REPLACE INTO ' . $openBidSeq_xxxx . ' ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx)';
-							$sql .= " VALUES ( '" . $bidNtceNo . "', '" . $bidNtceOrd . "', '" . $arr['rbidNo'] . "', '" . $arr['prcbdrBizno'] . "','" . $arr['bidprcAmt'] . "','" . $arr['bidprcrt'] . "',";
-							$sql .= " '" . $arr['drwtNo1'] . "', '" . $arr['bidprcDt'] . "', '" . $Rank_rmark . "','" . $bididx . "')";
-							If ($conn->query($sql) <> true) {
-								echo "Error sql=" .$sql. "<br>";
+							$sql  = " REPLACE INTO " .$openBidSeq_xxxx. " ( bidNtceNo, bidNtceOrd, rbidNo, compno, tuchalamt, tuchalrate, selno, tuchaldatetime, remark, bidIdx )";
+							$sql .= "  VALUES ( '" .$arr['bidNtceNo']. "','" .$arr['bidNtceOrd']. "','" .$arr['rbidNo'].   "','" .$arr['prcbdrBizno'] . "','" .$arr['bidprcAmt'] . "', ";
+							$sql .= "           '" .$arr['bidprcrt'].  "','" .$arr['drwtNo1'].    "','" .$arr['bidprcDt']. "','" .trim($Rank_rmark).          "',"  .$bidIdx. ")";
+							if ($conn->query($sql) <> true) {
+								echo "ln349::Err sql=" .$sql. "<br>";
 							}
 						}
+
 						echo $tr;
 						$i++;
 						//echo $sql;
@@ -352,9 +335,7 @@ $mailintop = $mailtop + 4;	// mail address
 
 				?>
 	</div>
-	<!-- div class="btn_area" style='width:100% !important;' >
-	<input type=button style='height:30px; width:120px; font-size:14px; line-height:30px; color:#fff; text-align:center; padding:2px; background-color:#438ad1;; border:0;vertical-align: middle; cursor:pointer;' value="닫  기" onclick="self.close()" />
-</div -->
+
 	<div id='emaildiv' style='visibility:hidden;position: fixed; top: <?= $mailintop ?>px; right: 298px; '>
 		<input type="text" style='border:1px solid #000;width:200px' name="emailid" id="emailid" autocomplete="on" placeholder="email 주소" onkeypress="if(event.keyCode==13) {mailMe3(); return false;}" value="<?= $current_user->user_email ?>" />
 	</div>

@@ -672,14 +672,13 @@ class g2bClass {
 		$queryParams .= '&' . urlencode('inqryEndDt') . '=' . '';
 		$queryParams .= '&' . urlencode('corpNm') . '=' . ''; // 검색하고자 하는 업체명 조회구분 1,2인 경우 선택
 		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqryDiv); /*검색하고자하는 조회구분 입력 1: 등록일기준 검색, 2: 변경일기준검색, 3: 사업자등록번호 기준검색 */
-		$queryParams .= '&' . urlencode('bizno') . '=' . urlencode($bizno); // 사업자등록번호
-		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); /*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
+		$queryParams .= '&' . urlencode('bizno') . '=' . urlencode($bizno); 		// 사업자등록번호
+		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); 			/*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
 		
 		//echo ('queryParams='.$queryParams);
 		
 		$queryParams .= '&' . urlencode('ServiceKey') . '=' .
 				'BT4h3Pd5ovl0%2BOWmcIGClMw42vc%2F%2B9Asx6MAg%2Fa4xt1jg%2BF4q9ZfU9Tm8qlo09bZWZjSlcr3Uf062qMVG56vpA%3D%3D';
-		
 		
 		curl_setopt($ch, CURLOPT_URL, $url . $queryParams);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);

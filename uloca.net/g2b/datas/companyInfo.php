@@ -71,18 +71,21 @@ $response1 = $g2bClass->getCompInfo(1,1,$inqryDiv,$compno);
 $json1 = json_decode($response1, true);
 $item0 = $json1['response']['body']['items'];
 //var_dump($response1);
+if (count($item0) > 0) {
+	// 업체정보창 열면 openCompany Table에 업뎃 -by jsj 20190502
+	$compname = $item0[0]['corpNm']; //회사
+	$repname = $item0[0]['ceoNm'];	//대표자
+	$phone = $item0[0]['telNo']; 	//전번
+	$faxNo = $item0[0]['faxNo']; 	//팩스
 
-// 업체정보창 열면 openCompany Table에 업뎃 -by jsj 20190502
-$compname = $item0[0]['corpNm']; //회사
-$repname = $item0[0]['ceoNm'];	//대표자
-$phone = $item0[0]['telNo']; 	//전번
-$faxNo = $item0[0]['faxNo']; 	//팩스
-
-// 업체명, 대표자, 전번, 팩스 업데이트 ==> 무조건 업데이트 
-$sql = "REPLACE openCompany SET compName='".$compname."', repName='".$repname."', phone ='".$phone."', faxNo ='".$faxNo."', hmpgAdrs = '".$hmpgAdrs."', ModifyDT = now()";
-$sql .= " WHERE compno = '".$compno."'";
-$conn->query($sql);
-
+	// 업체명, 대표자, 전번, 팩스 업데이트 ==> 무조건 업데이트 
+	$sql = "REPLACE openCompany SET compName='".$compname."', repName='".$repname."', phone ='".$phone."', faxNo ='".$faxNo."', hmpgAdrs = '".$hmpgAdrs."', ModifyDT = now()";
+	$sql .= " WHERE compno = '".$compno."'";
+	$conn->query($sql);
+	echo ("ln85::기업정보update...");
+} else {
+	echo ("ln87::나라장터 기업정보 실패,  Error= 다시한번 조회해 보세요.");
+}
 ?>
 <!DOCTYPE html>
 <html>

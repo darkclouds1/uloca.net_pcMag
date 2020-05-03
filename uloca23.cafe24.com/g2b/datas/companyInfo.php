@@ -101,18 +101,14 @@ $conn->query($sql);
 
 <center>
 <!-- 입찰정보 -->
-
 <div id="contents">
-
 <div class="detail_search" >
-
 	<? if ($from != 'getBid') { ?>
 		<div class="btn_area">
 		<a onclick="detailCompany('<?=$item0[0]['bizno']?>')" class="search" style='width:140px'>KED 상세검색</a> <a onclick="self.close()" class="search">닫기</a>
 		</div>
 		<br>
 	<? } ?>
-
 	<table border="1" align=center cellpadding="0" cellspacing="0" width="100%" class="grid05">
 		<tr>
 			<th style='text-align:center;'>업체명</th>

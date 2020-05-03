@@ -215,9 +215,7 @@ $countItem = count($item1) + count($item2) + count($item3);
 <script src="http://uloca.net/g2b/g2b.js"></script>
 -->
 <!-- 입찰 결과 -->
-<center>
-	<div style='font-size:14px; color:blue;font-weight:bold'>- 개찰 정보 -</div>
-</center>
+<center><div style='font-size:14px; color:blue;font-weight:bold'>- 개찰 정보 -</div></center>
 <div id='totalRecords'>total records=<?= $countItem ?> (사전규격은 미포함)</div>
 
 <table class="type10" id="specData">
