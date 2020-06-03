@@ -2,10 +2,8 @@
 	/*
 		db conn for uloca & uloca23
 		2018/06/20 by HMJ
-
 	*/
 class dbconn {
-
 	function conn_live() {
 		$conn = new mysqli('localhost', 'uloca22', 'w3m69p21!@', 'uloca22');
 		return $conn;
@@ -16,7 +14,7 @@ class dbconn {
 	}
 	function conn() {
 		$conn = $this->conn_test();	//-by jsj 0313 DBConn
-		//$conn = $this->conn_live();	//-by jsj 0313 DBConn
+		// $conn = $this->conn_live();	//-by jsj 0313 DBConn
 
 		if ($conn->connect_error) {
 			die("DB Connection failed: " . $conn->connect_error);
@@ -24,6 +22,7 @@ class dbconn {
 		mysqli_set_charset($conn, 'utf8');
 		return $conn;
 	}
+
 	function countLog($conn,$ip) { //$_SERVER['REMOTE_ADDR']
 		$today = date('Y-m-d');
 		$sql = "select count(*) cnt from logdb where ip='".$ip."' and substr(dt,1,10) = '".$today."' ";
@@ -34,6 +33,7 @@ class dbconn {
 		//echo ' cnt='.$cnt;
 		return $cnt;
 	}
+	
 	function countLogdt($conn,$id,$dt1,$dt2) { //from-to
 		//$today = date('Y-m-d');
 		$sql = "select count(*) cnt from logdb where id='".$id."' and substr(dt,1,10) >= '".$dt1."' and substr(dt,1,10) <= '".$dt2."' ";
@@ -60,11 +60,20 @@ class dbconn {
 		$kwd1 = explode(' ',$kwd);
 		$kwds = '';
 		$kwd2 = ''; 
-		// 공고번호로 조회 추가 -by jsj 20200324
+
+		// 공고명 및 공고번호로 조회  -by jsj 20200324
+
 		for ($i=0;$i<sizeof($kwd1);$i++) {
-			$kwds .= " bidNtceNm like '%".$kwd1[$i]."%' AND "; // 공고명, or->and 로 바꿈 20190223
+			// 공고명 [-]마이너스는 미포함
+			if (strpos($kwd1[$i],'-') !== false) {
+				$kwdTmp2 = str_replace('-', '', $kwd1[$i]);
+				$kwds .= " bidNtceNm NOT LIKE '%" .$kwdTmp2.  "%' AND "; // [-]미포함
+			} else {
+				$kwds .= " bidNtceNm LIKE '%" .$kwd1[$i].  "%'  AND ";    // 공고명   (AND=포함된 키워드가 모두 있어야 함)
+			}
 			$kwd2 .= " bidNtceNo like '%".$kwd1[$i]."%' AND "; // 공고번호, 
 		}
+		
 		$dminsttNm1 = explode(' ',$dminsttNm);
 		$dminsttNms = ''; // dminsttNm
 		for ($i=0;$i<sizeof($dminsttNm1);$i++) {
@@ -75,7 +84,9 @@ class dbconn {
 		$kwd2 = substr($kwd2,0,strlen($kwd2)-4);
 		$dminsttNms = substr($dminsttNms,0,strlen($dminsttNms)-4);
 
-		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt, bidNtceDtlUrl, bidtype as pss, opengDt, locate, bidwinnrNm, bidwinnrBizno, progrsDivCdNm "; 
+		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm,     presmptPrce,    bidNtceDt, ";
+		$sql .= "      dminsttNm, bidClseDt,  bidNtceDtlUrl, bidtype as pss, opengDt,   ";
+		$sql .= "      locate,    bidwinnrNm, bidwinnrBizno, progrsDivCdNm,  cntrctCnclsMthdNm, nobidRsn"; 
 		$sql .= " FROM openBidInfo ";
 		$sql .= "WHERE 1=1 "; //and substr(bidNtceNo,1,2) = '20' ";
 		if ($pss != '') $sql .= "AND bidtype = '".$pss."' ";
@@ -167,48 +178,89 @@ class dbconn {
 	function getSvrDataDB4($conn,$kwd,$dminsttNm,$curStart,$cntonce) {
 		//"?" 뒤는 수요기관으로 검색 -by jsj 20200326
 		$kwd1 = ''; // 1번째 문자열 (공고명, 공고번호)
-		$kwd2 = ''; // 2번째 문자열 (수요기관)
-		$kwd = explode('?', $kwd); 
-		for ($i=0;$i<sizeof($kwd);$i++) {
-			if ($i == 0 ) {
-				$kwd1 .= " ".$kwd[$i]. " "; // 공고명 문자열은 ? 포함된 1번째열
-			} else {
-				$kwd2 .= " ".$kwd[$i]. " "; // 수요기관 문자열
+		$kwd2 = ''; // 2번째 문자열 (수요기관) ? 수요기관
+		$kwd3 = ''; // 2번째 문자열 (계약방법) ?? 계약방법
+
+		// ?? 계약방법으로 검색
+		if (strpos($kwd,'??')) {
+			$kwd = explode('??', $kwd);
+			for ($i=0;$i<sizeof($kwd);$i++) {
+				if ($i == 0 ) {
+					$kwd1 .= " ".$kwd[$i]. " "; // 공고명 문자열은 ? 포함된 1번째열
+				} else {
+					$kwd3 .= " ".$kwd[$i]. " "; // 계약방법 문자열
+				}
+			}
+		} else {
+			// 문자열에 '?? 계약방법' 없음
+			$kwd = explode('?', $kwd);
+			for ($i=0;$i<sizeof($kwd);$i++) {
+				if ($i == 0 ) {
+					$kwd1 .= " ".$kwd[$i]. " "; // 공고명 문자열은 ? 포함된 1번째열
+				} else {
+					$kwd2 .= " ".$kwd[$i]. " "; // 수요기관 문자열
+				}
 			}
 		}
 
 		$kwds = ''; // 공고명 SQL
 		$kwdN = ''; // 공고번호 SQL
 		$kwdd = ''; // 수요기관 SQL
+		$kwdM = ''; // 계약방법 SQL 
 
 		// 공고명, 공고번호 SQL 작성
-		$kwd1 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd1); //특수문자 없앰
-		$kwdsn = explode(' ', trim($kwd1)); 
-		for ($i=0;$i<sizeof($kwdsn);$i++) {
-			if ($kwdsn[$i] == '') continue;
-			if (ctype_alnum($kwdsn[$i]) == false ) { 					// 공고명은 영문자, 숫자만 있는 것은 제외
-			//	$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	// 공고명   (AND=포함된 키워드가 모두 있어야 함)
+		$kwd1 = preg_replace("/[#\&\+\%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd1); //특수문자 없앰
+		$kwdTmp = explode(' ', trim($kwd1)); 
+		for ($i=0;$i<sizeof($kwdTmp);$i++) {
+			if ($kwdTmp[$i] == '') continue;
+
+			// 공고명 [-]마이너스는 미포함
+			if (strpos($kwdTmp[$i],'-') !== false) {
+				$kwdTmp2 = str_replace('-', '', $kwdTmp[$i]);
+				$kwds .= " bidNtceNm NOT LIKE '%" .$kwdTmp2.  "%' AND "; // [-]미포함
+			} else {
+				$kwds .= " bidNtceNm LIKE '%" .$kwdTmp[$i].  "%'  AND ";    // 공고명   (AND=포함된 키워드가 모두 있어야 함)
 			}
-			$kwds .= " bidNtceNm like '%" .$kwdsn[$i]. "%' AND "; 	    // 공고명   (AND=포함된 키워드가 모두 있어야 함)
-			
-			if (ctype_alnum($kwdsn[$i])) { 								// 공고번호는 영문자, 숫자만 
-				$kwdN .= " bidNtceNo like '%" .$kwdsn[$i]. "%' OR  "; 	// 공고번호 (OR = 번호는 중복이 거의 없음)
+
+			// 공고번호는 영문자, 숫자만
+			if (ctype_alnum($kwdTmp[$i])) { 							
+				$kwdN .= " bidNtceNo like '" .$kwdTmp[$i]. "' OR  "; 	// 공고번호 (OR = 번호는 중복이 거의 없음)
 			}
-		}
-		//수요기관 SQL 작성 
-		$kwd2 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd2); //특수문자 없앰
-		$kwddd = explode(' ', trim($kwd2));
-		for ($i=0;$i<sizeof($kwddd);$i++) {		
-			if ($kwddd[$i] == '') continue;
-			$kwdd .= " dminsttNm like '%" .$kwddd[$i].  "%' OR "; // 수요기관
 		}
 
+		// 수요기관 SQL 작성 
+		$kwd2 = preg_replace("/[#\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd2); //특수문자 없앰
+		$kwdTmp = explode(' ', trim($kwd2));
+		for ($i=0;$i<sizeof($kwdTmp);$i++) {		
+			if ($kwdTmp[$i] == '') continue;
+
+			$kwdd .= " dminsttNm like '%" .$kwdTmp[$i].  "%' OR  "; // 수요기관
+		}
+
+		// 계약방법 SQL 작성 
+		$kwd3 = preg_replace("/[#\&\+%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>\[\]\{\}]/i", "", $kwd3); //특수문자 없앰 - 계약방법에는 '-'없애지 않음
+		$kwdTmp = explode(' ', trim($kwd3));
+		for ($i=0;$i<sizeof($kwdTmp);$i++) {		
+			if ($kwdTmp[$i] == '') continue;
+
+			// '-' 제외 단어 ex. -협상 = 협상단어를 포함하지 않는거 Not Like
+			if (strpos($kwdTmp[$i],'-') !== false) {
+				$kwdTmp2 = str_replace('-', '', $kwdTmp[$i]);
+				$kwdM .= " cntrctCnclsMthdNm NOT LIKE '%" .$kwdTmp2.  "%' AND "; // 계약방법 미포함
+			} else {
+				$kwdM .= " cntrctCnclsMthdNm LIKE '%" .$kwdTmp[$i].  "%' OR  ";    // 계약방법
+			}
+		}
+		
 		// SQL보완 마지막 4문자 "and " 삭제해서 SQL 보완
 		$kwds = substr($kwds,0,strlen($kwds)-4);  // 공고명
 		$kwdN = substr($kwdN,0,strlen($kwdN)-4);  // 공고번호
 		$kwdd = substr($kwdd,0,strlen($kwdd)-4);  // 수요기관
+		$kwdM = substr($kwdM,0,strlen($kwdM)-4);  // 계약방법
 
-		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm, presmptPrce, bidNtceDt, dminsttNm, bidClseDt, bidNtceDtlUrl, bidwinnrNm, bidwinnrBizno, progrsDivCdNm, ";
+		$sql = "SELECT bidNtceNo, bidNtceOrd, bidNtceNm,     presmptPrce, bidNtceDt, ";
+		$sql .="       dminsttNm, bidClseDt,  bidNtceDtlUrl, bidwinnrNm,  bidwinnrBizno, ";
+		$sql .="       progrsDivCdNm, cntrctCnclsMthdNm, nobidRsn, ";				// 진행구분, 계약방법, 유찰사유
 		$sql .= "		CASE WHEN bidtype = '물품' THEN '입찰물품' ";
 		$sql .= "			 WHEN bidtype = '용역' THEN '입찰용역' ";
 		$sql .= "			 WHEN bidtype = '공사' THEN '입찰공사' ";
@@ -221,6 +273,7 @@ class dbconn {
 		$sql .= "WHERE 1 ";
 		if ($dminsttNm == "" ) { 
 			if (trim($kwdd) <> '') $sql .= " AND (" .$kwdd. " ) "; // 수요기관
+			if (trim($kwdM) <> '') $sql .= " AND (" .$kwdM. " ) "; // 계약방법
 			if (trim($kwds) <> '') $sql .= " AND (" .$kwds. " ) "; // 공고명
 			if (trim($kwdN) <> '') $sql .= " OR (" .$kwdN. " ) ";  // 공고번호
 		} else {  // 파라미터 수요기관으로 재검색
@@ -228,7 +281,6 @@ class dbconn {
 			if (trim($kwds) <> '') $sql .= " AND  (" .$kwds. " ) "; // 공고명
 		}
 		$sql .= "ORDER BY bidNtceDt desc limit ".$curStart.",".$cntonce." ";
-
 		$stmt = $conn->stmt_init();
 		$stmt = $conn->prepare($sql);
 		$stmt->execute();
@@ -379,6 +431,7 @@ class dbconn {
 	}
 	
 	//결제여부 및 프리패스 여부 확인 -by jsj 190317
+	// 1: login & 유료회원 & 프리패스 , 0: not login
 	function getMemberFee($conn,$userid) {
 		if ($userid == '') return 0; // not login
 	
@@ -426,7 +479,7 @@ class dbconn {
 		$pgd = urldecode($pg); //decodeURIComponent($pg);
 		$sql  = "INSERT INTO logdb (pg,id,ip,rmrk,pgDtlCD,keyDtlCD) VALUES ('".$pgd."','".$id."','".$_SERVER['REMOTE_ADDR']."','".$rmrk."','".$pss."','".$key."')";
 		$conn->query($sql);
-		$this->addlog($conn,$id);
+		// $this->addlog($conn,$id);
 	}
 	function addlog($conn,$id) {
 		if (trim($id) == '') return;
@@ -583,7 +636,6 @@ class dbconn {
 		$conn->query($sql); 
 	}
 
-
 	// 결산 내역 cmpFrsum01M
 	function cmpFssum01M_1($conn,$xml) {
 		$this->cmpFssum01M($conn,$xml);
@@ -686,7 +738,6 @@ class dbconn {
 
 	//기업데이터 코드명 찾기 -by jsj 20190912
 	function KedCdNmSearch($conn, $codeEle = '%', $CodeCd = '%'){
-
 		$SQL = " SELECT codeEle, codeEleNm, codeCd, codeCdNm FROM cmpKedCd";
 		//$SQL = " SELECT codeEleNm, codeCdNm FROM cmpKedCd";
 		$SQL .= " WHERE codeEle like ? AND CodeCd like ?";
@@ -697,9 +748,7 @@ class dbconn {
 		$stmt->bind_param('ss', $codeEle, $CodeCd);
 		if ($stmt->execute()) {
 			$fields = bindAll($stmt);
-			
 			$list = array();
-
 			while (	$row = fetchRowAssoc($stmt,$fields)) {
 				// User Class
 				$code = new KedCd;
@@ -718,14 +767,13 @@ class dbconn {
 		return $list;
 	}
 
-	// 코드집 ->코드명 가져오기 -by jsj 20190913
-	// $codeBook: KedCdNmSearch의 코드집 배열
+	// 코드집 ->코드명 가져오기 -by jsj 2020530
+	// $codeBook: KedCdNmSearch 의 코드집 배열
 	// $codeEle: 코드대분류 (ex. enp_scd)
 	// $codeCd: 코드
 	// return: 코드명
 	function codeCdNm ($codeBook, $codeEle, $codeCd ){
-		$i = 0;
-		while ($value = each($codeBook)) {
+		foreach ($codeBook as $i) {
 			if ($codeBook[$i]->_codeEle == $codeEle && $codeBook[$i]->_codeCd == $codeCd) {
 				break;
 			}
@@ -741,7 +789,6 @@ class dbconn {
  *  $fields = bindAll($stmt);
  *  $ row = $ stmt-> get_result (); ==> $row = fetchRowAssoc($stmt, $fields);
  */
-
 function bindAll($stmt) {
 	$meta = $stmt->result_metadata();
 	$fields = array();
@@ -751,7 +798,6 @@ function bindAll($stmt) {
 		$fields[$field->name] = "";
 		$fieldRefs[] = &$fields[$field->name];
 	}
-	
 	call_user_func_array(array($stmt, 'bind_result'), $fieldRefs);
 	$stmt->store_result();
 	//var_dump($fields);
@@ -765,6 +811,9 @@ function fetchRowAssoc($stmt, &$fields) {
 	return false;
 }
 
+function clog($data){
+    echo "<script>console.log( 'PHP_Console: " . $data . "' );</script>";
+}
 
 //기업데이터 코드명 클래스
 class KedCd {

@@ -76,9 +76,11 @@ while ($row = $result->fetch_assoc()) {
 	$bididx = $row['idx'];
 	
 	// 입찰 결과
-	$response1 = $g2bClass->getRsltData($bidNtceNo,$bidNtceOrd); 
-	$json1 = json_decode($response1, true);
-	$item1 = $json1['response']['body']['items'];
+	$response1 = $g2bClass->getRsltDataAll($bidNtceNo,$bidNtceOrd);
+	$item1 = $response1;
+	// $response1 = $g2bClass->getRsltData($bidNtceNo,$bidNtceOrd); 
+	// $json1 = json_decode($response1, true);
+	// $item1 = $json1['response']['body']['items'];
 	$cnt = count($item1);
 	//var_dump($response1);
 	//echo 'idx='.$row['idx'].' 개찰일시='.$row['opengDt'].' bidNtceNo='.$bidNtceNo.' bidNtceOrd='.$bidNtceOrd.' count='.$cnt.'<br>';

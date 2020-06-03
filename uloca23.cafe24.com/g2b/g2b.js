@@ -1,13 +1,112 @@
 //상세검색::uloca23 
 //var ServerAddr = '<?=$_SESSION["ServerAddr"]?>';
+
+var searchDt        = ''; 
+var searchCount     = 0;
+var detailsw        = false;
 var agent = navigator.userAgent.toLowerCase();
 var brswer = '';
-//clog("agent="+agent);
-//agent.indexOf("chrome")
+
+function searchajax000() {	  	// 상세검색 (통합검색은 g2b_2019.js) 
+	detailsw = true;
+	//var form = document.historyForm;
+	var form = document.myForm;
+	if (form.id.value == '' && (SearchCounts > searchCountMax))	{
+		alert (String(SearchCounts)+'::무료 검색 횟수가 초과 했습니다. 로그인 하십시요. '); //-by jsj 0312
+		location.href='/ulocawp/?page_id=325';	//로그인메뉴로 이동 
+		exit;
+	}
+	else if (loginSW == 0 && (SearchCounts > (searchCountMax + searchLoginPlus))) {
+		alert(String(SearchCounts) + 'ln136[구매결제]회비 납부 기간이 지났습니다. 서비스운영을 위한 구독료 or Donation이 필요합니다.^^');
+		
+		// location.href='/ulocawp/?page_id=1352'; //구매결제로 이동 -by jsj 0312 
+		// exit;
+	}
+	
+	if (searchType==1 && form.kwd.value.trim() == '' && form.dminsttNm.value.trim() == '')
+		{
+			alert('입찰정보 검색에 공고명이나 수요기관 하나는 입력하세요.');
+			form.kwd.focus();
+			return;
+		}
+		/*
+		if (form.kwd.value == '' && form.dminsttNm.value == '')
+		{
+			alert('검색 키워드를 입력 하세요.');
+			form.kwd.focus();
+			return;
+			//form.kwd.value = ' ';
+		} */
+	if (searchType==2 && form.compname.value.trim() == '')
+	{
+		alert('기업정보 검색에 입찰기업명이 없습니다.');
+		form.compname.focus();
+		return;
+	}
+		
+	document.getElementById('tables').innerHTML = '';
+	document.getElementById('totalrec').innerHTML = '';
+	durationIndex = 0;
+	var today = getToday('-'); //new Date().toJSON().slice(0,10);
+	//alert(utc);
+	form.endDate.value = today;
+	eDate1 = form.endDate.value;
+	durationIndex = 0;
+	ddur = 0 - durationatonce[durationIndex];
+	//clog('durationIndex='+durationIndex+' durationatonce='+durationatonce[durationIndex]+' ddur='+ddur+' eDate1='+eDate1);
+	sDate1 = dateAddDel(eDate1, ddur, 'd');
+	endSw = false;
+	if (sDate1 <= form.startDate.value)
+	{
+		sDate1 = form.startDate.value;
+		endSw = true;
+	}
+	lastStartDate = form.lastStartDate.value;
+	idx = 0;
+	ajaxCnt = 0;
+	curStart = 0;
+	//clog('ajax 1 sDate1='+sDate1+' eDate1='+eDate1+' endSw ='+ endSw+' durationIndex='+durationIndex+' ddur='+ddur+' ajaxCnt='+ajaxCnt);
+
+	parm = 'kwd='+encodeURIComponent(form.kwd.value.trim()); //+'&startDate='+encodeURIComponent(sDate1)+'&endDate='+eDate1;
+	parm +='&dminsttNm='+encodeURIComponent(form.dminsttNm.value.trim());
+	parm +='&compname='+encodeURIComponent(form.compname.value.trim());
+	//parm +='&searchDt1='+searchDt1;
+	//parm +='&searchDt2='+searchDt2;
+	//parm +='&searchDt3='+searchDt3;
+	//parm +='&searchDt4='+searchDt4;
+	//parm +='&searchDt5='+searchDt5;
+	//parm +='&searchDt6='+searchDt6;
+	parm += '&curStart='+curStart+'&cntonce='+cntonce;
+	if (form.kind21.checked) parm +='&bidthing=1';
+	if (form.kind22.checked) parm +='&bidcnstwk=1';
+	if (form.kind23.checked) parm +='&bidservc=1'; 
+	if (searchType==2) parm +='&compinfo=1';
+	else parm +='&bidinfo=1';
+	
+	var sel = document.getElementById("kind1");
+	var val = sel.options[sel.selectedIndex].value;
+	parm += '&bidhrc='+val; 
+	parm +='&id='+form.id.value;
+	//if (form.chkHrc.checked) parm +='&chkHrc=hrc';
+	//var sel = document.getElementById("syear");
+	//var val = sel.options[sel.selectedIndex].value;
+	//parm +='&sYear='+val;
+	//발주계획 추가 한줄 
+	if (searchType==1 && val == "pln") server = "/g2b/g2bOrder.php"; // ?kwd="+kwd+"&dminsttNm="+dminsttNm;
+	else server="/datas/publicData.php";
+	clog(server+'?'+parm);
+			
+	move();
+	//------------------------------
+	getAjaxPost(server,recv,parm);
+	//------------------------------
+}
+
 if (agent.indexOf("msie") >= 0 || agent.indexOf("chrome") < 0) {
 //alert("인터넷익스플로러 브라우저입니다. agent="+agent);
 brswer = 'ie';
 }
+
 if (agent.indexOf("edge") >= 0) brswer = 'edge';
 // edge agent=mozilla/5.0 (windows nt 10.0; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/64.0.3282.140 safari/537.36 edge/17.17134
 // ie agent=mozilla/5.0 (windows nt 10.0; wow64; trident/7.0; .net4.0c; .net4.0e; infopath.3; rv:11.0) like gecko
@@ -38,36 +137,31 @@ Date.prototype.format = function(f) {
 String.prototype.string = function(len){var s = '', i = 0; while (i++ < len) { s += this; } return s;};
 String.prototype.zf = function(len){return "0".string(len - this.length) + this;};
 Number.prototype.zf = function(len){return this.toString().zf(len);};
-
 Number.prototype.format = function(){
     if(this==0) return 0;
- 
     var reg = /(^[+-]?\d+)(\d{3})/;
     var n = (this + '');
- 
     while (reg.test(n)) n = n.replace(reg, '$1' + ',' + '$2');
- 
     return n;
 };
+
 // 문자열 타입에서 쓸 수 있도록 format() 함수 추가
 String.prototype.format = function(){
     var num = parseFloat(this);
-    if( isNaN(num) ) return num;
- 
+    if( isNaN(num) ) return num; 
     return num.format();
 };
+
 function clog(msg) {
 	console.log(msg);
 }
-function number_format(amount) {
 
+function number_format(amount) {
 	if(amount==0) return 0;
  
     var reg = /(^[+-]?\d+)(\d{3})/;
     var n = (amount + '');
- 
     while (reg.test(n)) n = n.replace(reg, '$1' + ',' + '$2');
- 
     return n;
 }
 
@@ -103,144 +197,16 @@ function dateAddDel(sDate, nNum, type) {
  
     return '' + yy + '-' +  mm  + '-' + dd;
 }
-function timeAddDel(sDate, nNum, type) {
-
-}
  
 function move() {
    document.getElementById('loading').style.display = 'inline'; //"none";= inline
 }
+
 function move_stop() {
    document.getElementById('loading').style.display = 'none'; //"none";= inline
 }
 
-//무료검색 횟수설정 searchCount
-var searchType=1; // 1:입찰정보 2:기업정보
-var searchDt = '';
-var searchCount = 0;
-var searchCountMax = 5;  //무료검색횟수 	-by jsj 0314 
-var searchLoginPlus = 5; //로그인후 무료검색횟수 -by jsj 0314
-var detailsw = false;
-var loginSW = '<?=$loginSW?>'; 	// plugins/g2b.php 83line -by jsj 0312
 
-function searchajax000() {	  	// 상세검색 (통합검색은 g2b_2019.js) 
-	detailsw = true;
-	//var form = document.historyForm;
-	var form = document.myForm;
-	if (form.id.value == '' && (SearchCounts > searchCountMax))	{
-		alert (String(SearchCounts)+'::무료 검색 횟수가 초과 했습니다. 로그인 하십시요. '); //-by jsj 0312
-		location.href='/ulocawp/?page_id=325';	//로그인메뉴로 이동 
-		exit;
-	}
-	else if (loginSW == 0 && (SearchCounts > (searchCountMax + searchLoginPlus))) {
-		alert(String(SearchCounts) + 'ln136[구매결제]회비 납부 기간이 지났습니다. 서비스운영을 위한 구독료 or Donation이 필요합니다.^^');
-		
-		// location.href='/ulocawp/?page_id=1352'; //구매결제로 이동 -by jsj 0312 
-		// exit;
-	}
-	
-	if (searchType==1 && form.kwd.value.trim() == '' && form.dminsttNm.value.trim() == '')
-		{
-			alert('입찰정보 검색에 공고명이나 수요기관 하나는 입력하세요.');
-			form.kwd.focus();
-			return;
-		}
-		/*
-		if (form.kwd.value == '' && form.dminsttNm.value == '')
-		{
-			alert('검색 키워드를 입력 하세요.');
-			form.kwd.focus();
-			return;
-			//form.kwd.value = ' ';
-		} */
-		if (searchType==2 && form.compname.value.trim() == '')
-		{
-			alert('기업정보 검색에 입찰기업명이 없습니다.');
-			form.compname.focus();
-			return;
-		}
-		 
-		document.getElementById('tables').innerHTML = '';
-		document.getElementById('totalrec').innerHTML = '';
-		durationIndex = 0;
-		var today = getToday('-'); //new Date().toJSON().slice(0,10);
-		//alert(utc);
-		form.endDate.value = today;
-		eDate1 = form.endDate.value;
-		durationIndex = 0;
-		ddur = 0 - durationatonce[durationIndex];
-		//clog('durationIndex='+durationIndex+' durationatonce='+durationatonce[durationIndex]+' ddur='+ddur+' eDate1='+eDate1);
-		sDate1 = dateAddDel(eDate1, ddur, 'd');
-		endSw = false;
-		if (sDate1 <= form.startDate.value)
-		{
-			sDate1 = form.startDate.value;
-			endSw = true;
-		}
-		lastStartDate = form.lastStartDate.value;
-		idx = 0;
-		ajaxCnt = 0;
-		curStart = 0;
-		//clog('ajax 1 sDate1='+sDate1+' eDate1='+eDate1+' endSw ='+ endSw+' durationIndex='+durationIndex+' ddur='+ddur+' ajaxCnt='+ajaxCnt);
-	
-		parm = 'kwd='+encodeURIComponent(form.kwd.value.trim()); //+'&startDate='+encodeURIComponent(sDate1)+'&endDate='+eDate1;
-		parm +='&dminsttNm='+encodeURIComponent(form.dminsttNm.value.trim());
-		parm +='&compname='+encodeURIComponent(form.compname.value.trim());
-		//parm +='&searchDt1='+searchDt1;
-		//parm +='&searchDt2='+searchDt2;
-		//parm +='&searchDt3='+searchDt3;
-		//parm +='&searchDt4='+searchDt4;
-		//parm +='&searchDt5='+searchDt5;
-		//parm +='&searchDt6='+searchDt6;
-		parm += '&curStart='+curStart+'&cntonce='+cntonce;
-		if (form.kind21.checked) parm +='&bidthing=1';
-		if (form.kind22.checked) parm +='&bidcnstwk=1';
-		if (form.kind23.checked) parm +='&bidservc=1'; 
-		if (searchType==2) parm +='&compinfo=1';
-		else parm +='&bidinfo=1';
-		
-		var sel = document.getElementById("kind1");
-		var val = sel.options[sel.selectedIndex].value;
-		parm += '&bidhrc='+val; 
-		parm +='&id='+form.id.value;
-		//if (form.chkHrc.checked) parm +='&chkHrc=hrc';
-		//var sel = document.getElementById("syear");
-		//var val = sel.options[sel.selectedIndex].value;
-		//parm +='&sYear='+val;
-		//발주계획 추가 한줄 
-		if (searchType==1 && val == "pln") server = "/g2b/g2bOrder.php"; // ?kwd="+kwd+"&dminsttNm="+dminsttNm;
-		else server="/datas/publicData.php";
-		clog(server+'?'+parm);
-				
-		move();
-		//------------------------------
-		getAjaxPost(server,recv,parm);
-		//------------------------------
-
-		/*   $.ajax({
-        type: "get",/*method type* /
-		scriptCharset: "utf-8" ,
-        contentType: "application/json; charset=utf-8",
-        url: server+parm, //"/datas/publicData.php"+parm,
-        //data: parm , /*parameter pass data is parameter name param is value * /
-        //dataType: "json",
-        success: function(data) {
-               // data = new Buffer(data, 'UTF-8');
-			   //clog(data);
-			   //document.getElementById('tables').innerHTML = data;
-			   //move_stop();
-			   makeTable(data);
-			   
-            }
-        ,
-        error: function(result) {
-			move_stop();
-            alert("Error "+objToString(result));
-        }
-    });
-
-*/		
-}
 
 function searchajax2() {
 	var form = document.myForm;
@@ -276,30 +242,9 @@ function searchajax2() {
 		parm +='&id='+form.id.value;
 		//clog(server+'///'+parm);
 		getAjaxPost(server,recv,parm);	
-/*
-		$.ajax({
-        type: "get",/*method type* /
-		scriptCharset: "utf-8" ,
-        contentType: "application/json; charset=utf-8",
-        url: "/datas/publicData.php"+parm,
-        
-        success: function(data) {
-               
-			   makeTable(data);
-			   //if (endSw == true)  
-				   move_stop();
-            }
-        ,
-        error: function(result) {
-			move_stop();
-            alert("Error "+objToString(result));
-        }
-    });
-*/
 }
 
 function searchajax3() {
-	
 	//var form = document.historyForm;
 	var form = document.myForm;
 				
@@ -337,31 +282,8 @@ function searchajax3() {
 		//---------------------------------
 		getAjaxPost(server,recv,parm);	
 		//---------------------------------
-/*
-
-    $.ajax({
-        type: "get",/*method type* /
-		scriptCharset: "utf-8" ,
-        contentType: "application/json; charset=utf-8",
-        url: "/datas/publicData.php"+parm,
-        //data: parm , /*parameter pass data is parameter name param is value * /
-        //dataType: "json",
-        success: function(data) {
-               // data = new Buffer(data, 'UTF-8');
-			   //clog(data);
-			   //document.getElementById('tables').innerHTML = data;
-			   makeTable(data);
-			   move_stop();
-            }
-        ,
-        error: function(result) {
-			move_stop();
-            alert("Error "+objToString(result));
-        }
-    });
-*/
-		
 }
+
 /* --------------------------------------------------------------------------------
 	스크롤바의 현재 위치 %
 --------------------------------------------------------------------------------- */
@@ -388,7 +310,6 @@ function viewScroll() {
 	doing = true;
 	searchajax2();
 	doing = false;
-
 }
 
 //위치=98.72047244094489% sDate1=2016-02-07 endSw=true doing=false
@@ -408,6 +329,7 @@ function objToString (obj) {
     }
     return str;
 }
+
 function getPublicData() {
 	try {
 		move_stop();
@@ -528,7 +450,6 @@ function mailMe2() {
 	frm2.submit();
 	//popupWindow = window.open(
     //    url,'_blank','height=700,width=900,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes')
-
 }
 
 function domCheck() {
@@ -545,7 +466,6 @@ function domCheck() {
 		for(var y=0; y<cellLength; y+=1){
 			var cell = row.cells[y];
 			//clog('i='+i+' '+' y='+y+' ' +row.cells[y].innerHTML);
-			
 		} 
 	}
 }
@@ -554,21 +474,21 @@ function chkTable() {
 	//x= document.getElementById("bidData").rows[1].cells;
 	var table = document.getElementById('bidData');
 
-var rowLength = table.rows.length;
+	var rowLength = table.rows.length;
 
-for(var i=0; i<rowLength; i+=1){
-  var row = table.rows[i];
-  //clog('i='+i+' '+row.cells[0].checked );
-  //your code goes here, looping over every row.
-  //cells are accessed as easy
+	for(var i=0; i<rowLength; i+=1){
+	var row = table.rows[i];
+	//clog('i='+i+' '+row.cells[0].checked );
+	//your code goes here, looping over every row.
+	//cells are accessed as easy
 
-  var cellLength = row.cells.length;
-  for(var y=0; y<cellLength; y+=1){
-    var cell = row.cells[y];
-	//clog('i='+i+' '+' y='+y+' ' +row.cells[y].innerHTML);
-    //do something with every cell here
-  } 
-}
+	var cellLength = row.cells.length;
+	for(var y=0; y<cellLength; y+=1){
+		var cell = row.cells[y];
+		//clog('i='+i+' '+' y='+y+' ' +row.cells[y].innerHTML);
+		//do something with every cell here
+	} 
+	}
 	//clog(x[0].innerHTML);
 }
 /* ------------------------------------------------------------------------------------------
@@ -580,6 +500,7 @@ function fndjson(jsn,col,val) {
 //}
 
 }
+
 /* ------------------------------------------------------------------------------------------
 상세정보보기
 ------------------------------------------------------------------------------------------- */
@@ -598,12 +519,13 @@ if (url.trim() == '') // || regex.test(url) === false)
 	popupWindow = window.open(url); //,'_blank','height=920,width=840,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
+
 /* ------------------------------------------------------------------------------------------
 사전규격 상세정보보기
 ------------------------------------------------------------------------------------------- */
 function viewDtls(bfSpecRgstNo) {
 
-if (bfSpecRgstNo == '') // || regex.test(url) === false)
+	if (bfSpecRgstNo == '') // || regex.test(url) === false) 
 	{
 		alert('등록번호가 없습니다.');
 		return;
@@ -626,6 +548,7 @@ if (bfSpecRgstNo == '') // || regex.test(url) === false)
 	popupWindow = window.open(url); //,'_blank1','height=920,width=840,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
+
 /* ------------------------------------------------------------------------------------------
 입찰 결과 상세정보보기
 ------------------------------------------------------------------------------------------- */
@@ -654,24 +577,7 @@ function viewRslt(bidNtceNo,bidNtceOrd, dt, pss) {
 	//clog('function viewRslt '+url);
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 	popupWindow.focus();
-
 	return; 
-	/*
-	frm = document.popForm;
-	frm.bidNtceNo.value = bidNtceNo;
-	frm.bidNtceOrd.value = bidNtceOrd;
-	frm.pss.value = pss;
-	frm.from.value = 'getBid';
-//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	url = '/g2b/bidResult.php';//?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//alert(url);
-	popupWindow = window.open(
-        '','_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
-	frm.action =url; 
-	frm.method="post";
-	frm.target="_blank";
-	frm.submit();
-	popupWindow.focus(); */
 }
 
 function viewRslt2(bidNtceNo,bidNtceOrd,dt,pss) {
@@ -706,6 +612,7 @@ if (pss == '용역')
 	popupWindow = window.open(url); //,'_blank1','height=920,width=840,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
+
 function viewRslt3(bidNtceNo,bidNtceOrd,dt,pss) {
 	if (dt == '')
 	{
@@ -739,6 +646,7 @@ if (pss == '용역')
 	return url;
 	
 }
+
 function viewComp(bidNtceNo,bidNtceOrd,dt) {
 	if (dt == '')
 	{
@@ -759,8 +667,9 @@ function viewComp(bidNtceNo,bidNtceOrd,dt) {
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
+
 /* ------------------------------------------------------------------------------------------
-낙찰정보보기
+// 입찰정보 - 수요기관 재검색
 ------------------------------------------------------------------------------------------- */
 var detailsw = false;
 function viewscs(dminsttNm, kwd) {
@@ -792,7 +701,6 @@ function viewscs(dminsttNm, kwd) {
 		frm.kwd.value = kwd + '? ' + dminsttNm;		// 통합검색은 ? 뒤에 수요기관
 		searchajax0_1(); 							// 통합검색 
 	}  
-	
 }
 
 function viewscs0(dminsttNm) {
@@ -820,6 +728,7 @@ if (dminsttNm == '') // || regex.test(url) === false)
 	//clog('viewscs url='+url);
 	popupWindow = window.open(url); //,'_blank','height=920,width=940,left="10",top="10",resizable="yes",scrollbars="both",toolbar="yes",menubar="no",location="no",directories="no",status="yes"');
 }
+
 function viewscs1(dminsttNm) {
 if (dminsttNm == '') // || regex.test(url) === false)
 	{
@@ -844,6 +753,7 @@ if (dminsttNm == '') // || regex.test(url) === false)
 	return url;
 	
 }
+
 function viewscsOpener(dminsttNm) {
 if (dminsttNm == '') // || regex.test(url) === false)
 	{
@@ -869,6 +779,7 @@ if (dminsttNm == '') // || regex.test(url) === false)
 	popupWindow = window.open(
         url,'_blank','height=920,width=940,left="10",top="10",resizable="yes",scrollbars="both",toolbar="yes",menubar="no",location="no",directories="no",status="yes"');
 }
+
 function loginCheck() {
 	if (resudi == '')
 	{
@@ -877,14 +788,14 @@ function loginCheck() {
 	}
 	return true;
 }
+
 /* ------------------------------------------------------------------------------------------
 응찰정보보기
 ------------------------------------------------------------------------------------------- */
 function bidInfo(compno) {
-
 	url = '/g2b/datas/getInfobyComp.php?compno='+compno+'&id='+resudi;
-	popupWindow = window.open(url); //,'_blank7','height=920,width=950,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
-
+	popupWindow = window.open(url); 
+	//,'_blank7','height=920,width=950,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 }
 
 /* ------------------------------------------------------------------------------------------
@@ -896,47 +807,16 @@ function compInfo(compno) {
 	//url = '/ulocawp?page_id=1557&compno='+compno;
 	frm = document.compInfoForm;
 	frm.compno.value = compno;
-
-	//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//url = '/g2b/datas/bidResult.php'; //?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//alert(window.location.hostname);
-	//popupWindow = window.open(
-    //    '','compInfoForm','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
-
-	//frm.action = url; //winddow.location.hostname + url;
-	//frm.method="post";
-	//frm.target="compInfoForm";
-	//frm.submit();
-
 	popupWindow = window.open(url);
-
 }
 
 // KED 상세 검색 --------------------------------
 function detailCompany(compno) {
 	clog ("detailCompany compno="+compno);
-	//url = '/g2b/datas/companyInfo.php?compno='+compno;
     url = '/ulocawp?page_id=2074&compno='+compno;
-    //url = '/ulocawp?page_id=2074&compno='+compno;  //<==uloca22
-
-	//frm = document.compInfoForm;
-	//frm.compno.value = compno;
-
-
-	//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//url = '/g2b/datas/bidResult.php'; //?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//alert(window.location.hostname);
-	//popupWindow = window.open(
-    //    '','compInfoForm','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
-
-	//frm.action = url; //winddow.location.hostname + url;
-	//frm.method="post";
-	//frm.target="compInfoForm";
-	//frm.submit();
-
 	popupWindow = window.open(url);
-
 }
+
 function compInfobyComp(compno) {
 	frm = document.compInfoForm;
 	
@@ -1045,17 +925,7 @@ function searchDaily() {
 		alert('시작시간이 종료시간보다 작습니다.');
 		return;
 	}
-	 /* if (endDate.length == 9) endDate += ' 23:59';
-	if (startDate.length != 16)
-	{
-		alert('시작일시를 바르게 입력하세요. yyyy-mm-dd hh:mm');
-		return;
-	}
-	if (endDate.length != 16)
-	{
-		alert('종료일시를 바르게 입력하세요. yyyy-mm-dd hh:mm');
-		return;
-	} */
+
 	noRow = 0;
 	noSeq = 0;
 	doingsw = true;
@@ -1154,6 +1024,7 @@ function searchDaily3(data) {
 		return; 
 	}
 }
+
 function setTotalRecords(tblid,totid) {
 	//alert('setTotalRecords/'+tblid+'/'+totid);
 	var tbl = document.getElementById(tblid); //'specData');
@@ -1171,15 +1042,13 @@ function getAjax(server,client) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-     ///document.getElementById("demo").innerHTML = this.responseText;
-	 client(this.responseText);
+		client(this.responseText);
+		isRun = false;
     } else if (this.status == 504) {
 		move_stop();
 		alert('Time-out Error...');
 		return;
-    } else {
-		//alert ("Error" + xhttp.status);
-	}
+    }
   };
   xhttp.open("GET", server, true);
   xhttp.send();
@@ -1200,37 +1069,6 @@ function getAjaxPost(server,client,parm) {
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8"); 
 	xhr.send(parm);
 }
-
-/* ------------------------------------------------------------------------------------------
-datepicker 아래 css link가 필요함
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-------------------------------------------------------------------------------------------- */
-
-$(function() {
-  $( "#startDate" ).datepicker({
-    dateFormat: 'yy-mm-dd',
-	changeMonth: true, 
-	changeYear: true,
-	showMonthAfterYear: true, //년 뒤에 월 표시
-	autoSize: false, //오토리사이즈(body등 상위태그의 설정에 따른다)
-
-         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토' ], 
-         monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-  });
-  $( "#endDate" ).datepicker({
-    dateFormat: 'yy-mm-dd',
-	changeMonth: true, 
-	changeYear: true,
-	showMonthAfterYear: true, //년 뒤에 월 표시
-	autoSize: true, //오토리사이즈(body등 상위태그의 설정에 따른다)
-         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토' ], 
-         monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-  });	
-});
 
 /* -------------------------------------------------------------------------------------------
   ajaxJSON	서버에 데이타 요청 & 처리		function ajaxJSON(parm,callback)
@@ -1269,10 +1107,8 @@ $.ajax({
 
 }
 
-
   function closeMe() {
-	
-	//alert("메일을 보냈습니다.");
+  //alert("메일을 보냈습니다.");
   //history.go(-1);
   window.close();
 	}
@@ -1346,6 +1182,7 @@ function CheckAll(chkid){
 	}
 	
 }
+
 /* ---------------------------------------------------------
 - 체크된 값만 가져오기 
 (결과값은 'value1', 'value2', 'value3', 'value4' 의 형태로 query에서 where  구문의 in 조건에 바로 들어갈수 있도록 출력된다.)
@@ -1377,9 +1214,7 @@ if (checkCnt == 0)
 	return false;
 }
 
-
 for(var i=0; i<len; i++){
-
 	if(chk[i].checked == true){  //체크가 되어있는 값 구분
 		checkRow = chk[i].value;
 
@@ -1407,6 +1242,7 @@ for(var i=0; i<len; i++){
   }
   return trs;
 }
+
 /* --------------------------------------------------------------------------------------------------------------------------------------------------
 기능 : object 내용보기
 -------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -1438,11 +1274,8 @@ function viewObject(obj) {
 		for(var x in obj.delegateTarget) { txtValue += [x, obj[x]]+"\n"; }
 		clog("viewObject delegateTarget " +txtValue);
 	} catch (e) {}
-	
-	
-	
-	
 }
+
 /* --------------------------------------------------------------------------------------------------------------------------------------------------
 기능 : selectCheckedRowSelf2 table 에서 체크된 row 가져오기
 -------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -1452,10 +1285,10 @@ function selectCheckedRowSelf2(tblnm,chk) {
 	//clog(tbl.innerHTML);
 	var chk = document.getElementsByName(chk); // 체크박스객체를 담는다 []
 	var len = chk.length;    //체크박스의 전체 개수
-	var checkRow = '';      //체크된 체크박스의 value를 담기위한 변수
+	var checkRow = '';       //체크된 체크박스의 value를 담기위한 변수
 	var checkCnt = 0;        //체크된 체크박스의 개수
 	var checkLast = '';      //체크된 체크박스 중 마지막 체크박스의 인덱스를 담기위한 변수
-	var rowid = '';             //체크된 체크박스의 모든 value 값을 담는다
+	var rowid = '';          //체크된 체크박스의 모든 value 값을 담는다
 	var cnt = 0; 
 
 	try
@@ -1542,77 +1375,18 @@ function selectCheckedRowSelf2(tblnm,chk) {
 		
 	}
 	return trss;
-
-	/*
-
-
-
-
-	for(var i=0; i<len; i++){
-
-		if(chk[i].checked == true){  //체크가 되어있는 값 구분
-			checkRow = chk[i].value;
-
-			if(checkCnt == 1){                            //체크된 체크박스의 개수가 한 개 일때,
-				rowid += "'"+checkRow+"'";        //'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
-			}else{                                            //체크된 체크박스의 개수가 여러 개 일때,
-				if(i == checkLast){                     //체크된 체크박스 중 마지막 체크박스일 때,
-				rowid += "'"+checkRow+"'";  //'value'의 형태 (뒤에 ,(콤마)가 붙지않게)
-				}else{
-				rowid += "'"+checkRow+"',";	 //'value',의 형태 (뒤에 ,(콤마)가 붙게)         			
-				}
-			}
-		cnt++;
-		checkRow = '';    //checkRow초기화.
-		//clog('i='+i);
-		trss = remove1stTD(tbl.rows[i+1].outerHTML);
-		//trss = remove2ndA2(trss);
-		trss = removeEven(trss);
-		//trss = trss.replace(/viewscs/g,'viewscsOpener');
-		//clog('trss='+trss);
-		bidno=getbidno(trss);
-		bid = bidno.split('-',99);
-		//clog('bid='+bid.length);
-		if (bid.length>1)
-		{
-			
-			bidseq = bidno[bidno.length-1];
-			bidn = '';
-			for (var k=0;k<bid.length-1 ;k++ )
-			{
-				clog('k='+k+'/'+bid[k]);
-				bidn += bid[k]+'-';
-			}
-			bidno = bidn.substr(0,bidn.length-1);
-		}
-		else bidseq=getbidseq(trss);
-		pss=getitem(trss);
-		dminsttNm=getdminsttNm(trss);
-		clog('bidno='+bidno+' bidseq='+bidseq+' pss='+pss+' dminsttNm='+dminsttNm);
-
-		trss = relaceUrl1(trss,bidno,bidseq); // 공고번호 링크
-		trss = relaceUrl2(trss,dminsttNm); // 수요기관 링크
-		//clog('bidno='+bidno+' biidseq='+bidseq);
-		trss = relaceUrl3(trss,bidno,bidseq,pss); // 마감일시 링크
-		if (brswer == 'ie' || brswer == 'edge') trs += '<tr><td style="text-align: center;"><a '+trss;
-		else trs += trss;
-		clog(i+"줄 checked."+  " trs="+ trss);
-		}
-		//alert(rowid);    //'value1', 'value2', 'value3' 의 형태로 출력된다.
-	}
-	return trs;
-  */
 }
+
 function selectCheckedRowSelf2_0(tblnm,chk) {
 var trs = "";
 var tbl = document.getElementById(tblnm); //.rows[0]
 //clog(tbl.innerHTML);
 var chk = document.getElementsByName(chk); // 체크박스객체를 담는다 []
 var len = chk.length;    //체크박스의 전체 개수
-var checkRow = '';      //체크된 체크박스의 value를 담기위한 변수
+var checkRow = '';       //체크된 체크박스의 value를 담기위한 변수
 var checkCnt = 0;        //체크된 체크박스의 개수
 var checkLast = '';      //체크된 체크박스 중 마지막 체크박스의 인덱스를 담기위한 변수
-var rowid = '';             //체크된 체크박스의 모든 value 값을 담는다
+var rowid = '';          //체크된 체크박스의 모든 value 값을 담는다
 var cnt = 0; 
 
 for(var i=0; i<len; i++){
@@ -1684,6 +1458,7 @@ for(var i=0; i<len; i++){
   }
   return trs;
 }
+
 function getbidno(str) {
 	i=str.indexOf("bidno=");
 	if (i>0)
@@ -1719,6 +1494,7 @@ function getitem(str) {
 	
 	return pss;
 }
+
 function getdminsttNm(str) {
 	i=str.indexOf("viewscs(");
 	k = 0;
@@ -1732,6 +1508,7 @@ function getdminsttNm(str) {
 	return dminsttNm;
 	
 }
+
 // 공고번호 링크
 function relaceUrl1(str,bidno,bidseq) {
 	//
@@ -1761,6 +1538,7 @@ function relaceUrl1(str,bidno,bidseq) {
 	//clog('relaceUrl1='+str);
 	return str;
 }
+
 //수요기관 링크
 function relaceUrl2(str,dminsttNm) {
 	

@@ -642,10 +642,10 @@ function chkAllFunc(obj) {
 }
 var table1;
 // 입찰정보 -----------------------------------------------
-var col = ["번호", "구분", "공고번호<br/>(→입찰공고)", "공고명", "추정가격", "공고일", "수요기관", "낙찰기업명<br/>(→응찰기록)","개찰일시<br/>(→개찰순위)" ];
-var col2 = ['', 'pss', 'bidNtceNo', 'bidNtceNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidwinnrNm', 'opengDt']; //, 'pss' ];
-var col3 = ['c', 'c', 'c', 'l', 'r', 'd', 'l', 'c', 'd']; //,'c' ];
-var colw = ['5%', '6%', '10%', '29%', '8%', '7%', '13%', '11%','11%']; //, '10%' ]; // width
+var col = ["번호", "구분", "공고번호(→나라장터)", "공고명", "'??'계약방법(or)", "추정가격", "공고일", "'?'수요기관(or)", "낙찰기업(→낙찰기록)","개찰일시<br>(→개찰결과)" ];
+var col2 = ['', 'pss', 'bidNtceNo', 'bidNtceNm', 'cntrctCnclsMthdNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidwinnrNm', 'opengDt']; //, 'pss' ];
+var col3 = ['c', 'c', 'c', 'l', 'l', 'r', 'd', 'l', 'c', 'd']; //,'c' ];
+var colw = ['5%', '6%', '10%', '23%', '10%', '7%', '7%', '12%', '9%','9%']; //, '10%' ]; // width
 
 var colp = ["번호","구분","공사관리번호","사업명","발주금액","발주월","발주기관","게시일시"]; //,"구분"];
 var colp2 = [ '','pss','cnstwkMngNo', 'bizNm', 'orderContrctAmt', 'orderMnth', 'orderInsttNm', 'nticeDt']; //, 'pss' ];
@@ -759,15 +759,15 @@ function makeTable(data) {
 			if (curStart == 0) makeTableHead(colc,colc2,colc3,colcw);
 			//clog("title ok");
 			makeTabletrCompany(data);
-			document.getElementById('totalrec').innerHTML = '['+ String(SearchCounts) + ']total record= ' + (table1.rows.length-1);
-			document.getElementById('LinkExplain').innerHTML = "✔︎︎[사업자번호]클릭 → 기업의 응찰기록  ✔︎︎[업체명]클릭 → 업체정보팝업"; //-by jsj 링크설명 
+			document.getElementById('totalrec').innerHTML = "["+ String(SearchCounts) + "]total record= " + (table1.rows.length-1);
+			document.getElementById('LinkExplain').innerHTML = "<font size='2em'> ✔︎︎[사업자번호]클릭 → 기업의 응찰기록  ✔︎︎[업체명]클릭 → 업체정보팝업"; //-by jsj 링크설명 
 			
 			setSort();
 		
 		} else {
 			//if (searchCount > 5) makeTableHead(colc);
 			makeTabletrCompany2(data);
-			document.getElementById('totalrec').innerHTML = '['+ String(SearchCounts) + ']total record=' + idx;
+			document.getElementById('totalrec').innerHTML = "<font size='2em'>[" + String(SearchCounts) + "]total record=" + idx;
 		}
 		//if (searchCount > 1) searchajax2();
 		
@@ -811,8 +811,8 @@ function makeTable(data) {
 			makeTabletrhrc(data);
 			
 		}
-		document.getElementById('totalrec').innerHTML = '['+ String(SearchCounts) + ']total record= ' + (table1.rows.length-1);
-		document.getElementById('LinkExplain').innerHTML = "✔︎<font color=red>[공고번호]</font>클릭 → 입찰정보상세(나라장터)  ✔︎︎<font color=red>[수요기관]</font>클릭 → 수요기관으로 재검색   ✔︎︎<font color=red>[개찰일시]</font>클릭 → 낙찰결과 순위목록을 보여줍니다."; //-by jsj 링크설명 
+		document.getElementById('totalrec').innerHTML = "["+ String(SearchCounts) + "] total record= " + (table1.rows.length-1);
+		document.getElementById('LinkExplain').innerHTML = "<font size='2em'>✔︎<font color=red>[공고번호]</font>클릭 → 입찰정보상세(나라장터)  ✔︎︎<font color=red>[수요기관]</font>클릭 → 수요기관으로 재검색   ✔︎︎<font color=red>[개찰일시]</font>클릭 → 낙찰결과 순위목록을 보여줍니다."; //-by jsj 링크설명 
 		
 		if (val == 'bid' && table1.rows.length>2) setSort();
 		
@@ -825,7 +825,7 @@ function makeTable(data) {
 			//makeTableHead(colsx);
 			makeTabletr2hrc(data);
 		}
-		document.getElementById('totalrec').innerHTML = '['+ String(SearchCounts) + ']total record=' + idx;
+		document.getElementById('totalrec').innerHTML = "<font size='2em'>[" + String(SearchCounts) + "]total record= " + idx;
 	}
 	/*if (endSw) {
 		document.getElementById('totalrec').innerHTML += '(완료)';
@@ -1169,11 +1169,11 @@ function setLink(items, i, j, cell) {
 			else cell.innerHTML = '<a onclick=\'viewBalju(' + i + ')\'>' + cell.innerHTML + '</a>';
 			break;
 
-		case 6:	// 수요기관으로 재검색
+		case 7:	// 수요기관으로 재검색
 			cell.innerHTML = '<a onclick=\'viewscs("' + items[i]['dminsttNm'] + '")\'>' + cell.innerHTML + '</a>';
 			break;
 
-		case 7: // 낙찰기업 link bidwinnerBizno
+		case 8: // 낙찰기업 link bidwinnerBizno
 			pss = items[i]['pss']; 					// getPSS(); 사전규격
 			if (items[i]['pss'].substr(0, 2) == '사전') {
 				return "사전공개일→";
@@ -1189,7 +1189,7 @@ function setLink(items, i, j, cell) {
 			}
 			break;
 
-		case 8: // 개찰일시 
+		case 9: // 개찰일시 
 			if (today < items[i]['opengDt'].substr(0, 10)) return cell.innerHTML;
 			bidwinnrNm = items[i]['progrsDivCdNm'];	// 유찰 or 재입찰 외
 			pss = items[i]['pss']; 					// getPSS(); 사전규격
@@ -1476,7 +1476,7 @@ function recv(data) {
 	}
 	catch (e)
 	{
-		alert('데이타에 에러가 있는것 같습니다. 관리자에게 문의하세요.'+e.message);
+		alert("ln1479::데이타에 에러가 있는것 같습니다. 관리자에게 문의하세요."+ e.message);
 	}
 }
 loginSW = <?=$loginSW?>; //로그인여부 확인 -by jsj 0312

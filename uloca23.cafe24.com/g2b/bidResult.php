@@ -28,9 +28,11 @@ $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '08'); // $_SESSION[
 // --------------------------------- log
 
 // 낙찰 결과
-$response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
-$json1 = json_decode($response1, true);
-$item1 = $json1['response']['body']['items'];
+$response1 = $g2bClass->getRsltDataAll($bidNtceNo, $bidNtceOrd);
+$item1 = $response1;
+// $response1 = $g2bClass->getRsltData($bidNtceNo, $bidNtceOrd);
+// $json1 = json_decode($response1, true);
+// $item1 = $json1['response']['body']['items'];
 
 // 입찰정보
 //echo $bidNtceNo.'/'.$bidNtceOrd.'/'.$pss;
@@ -63,7 +65,8 @@ $mailintop = $mailtop + 4;	// mail address
 	<link rel="stylesheet" href="/jquery/jquery-ui.css">
 
 	<script src="/jquery/jquery.min.js">
-	</script><script src="/jquery/jquery-ui.min.js"></script>
+	</script>
+	<script src="/jquery/jquery-ui.min.js"></script>
 	<script src="/js/common.js?version=20190203"></script>
 	<script src="/g2b/g2b.js?version=20200401"></script>
 	<script src="/g2b/g2b_2019.js?version=20190203"></script>
@@ -100,7 +103,7 @@ $mailintop = $mailtop + 4;	// mail address
 			frm2.email2.value = emailid.value;
 
 			msg = document.getElementById('contents').outerHTML; //json2table(data2) ; //document.getElementById('bidinfo').innerHTML;
-			hdr = '<p><a href="http://uloca23.cafe24.com"><input  type="button" value="유로카 입찰정보" style="width:200px; background-color:#E9602C; height:28px; color:#ffffff; cursor:pointer; font-size:14px; font-weight: bold; text-align:center; border:solid 1px #99bbe8; border-bottom:solid 1px #99bbe8;"></a></p><br>';
+			hdr = '<p><a href="http://uloca.net"><input  type="button" value="유로카 입찰정보" style="width:200px; background-color:#E9602C; height:28px; color:#ffffff; cursor:pointer; font-size:14px; font-weight: bold; text-align:center; border:solid 1px #99bbe8; border-bottom:solid 1px #99bbe8;"></a></p><br>';
 			frm2.message.value = hdr + msg;
 			//var gsWin = window.open('about:blank','new_blank','width=900,height=700,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 			frm2.submit();
@@ -124,8 +127,8 @@ $mailintop = $mailtop + 4;	// mail address
 						<th style='font-size:1.0em; background-color:#E9602C;color:#ffffff;border:solid 1px #E9602C;text-align:center; cursor:pointer; '>
 							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#ffffff;'> 입찰공고 바로가기<br> (나라장터상세정보) </a></th>
 						<td style='font-size:1.0em; cursor:pointer;color:#E9602C;border:solid 1px #E9602C; '>
-							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#E9602C;font-weight:bold; '> 
-							&nbsp;&nbsp;<?= $item0[0]['bidNtceNo'] ?> &nbsp;/&nbsp; <?= $item0[0]['bidNtceNm'] ?></a>
+							<a onclick=viewDtls1("<?= $item0[0]['bidNtceNo'] ?>","<?= $bidNtceOrd ?>") style='color:#E9602C;font-weight:bold; '>
+								&nbsp;&nbsp;<?= $item0[0]['bidNtceNo'] ?> &nbsp;/&nbsp; <?= $item0[0]['bidNtceNm'] ?></a>
 						</td>
 					</tr>
 				</tbody>
@@ -161,20 +164,21 @@ $mailintop = $mailtop + 4;	// mail address
 
 			<div id=totalrechrc>낙찰결과 <br> (공공데이터포털 API) Total record=<?= count($item1) ?></div>
 			<div id=LinKExplain align="left">
-				예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul, 4, '.', '') ?>)</font>
+				예정가격(<?= $plnprc ?>) = 기초금액(<?= $bssamt ?>) * <font color=red>사정율(<?= number_format($sasungyul * 100, 3, '.', '') ?> %)</font>
+				<!-- 낙찰하한율(=<?= $sucsfbidLwltRate ?>) -->
 			</div>
 
 			<table class="type10" id="specData" width="100%">
 				<thead>
 					<tr>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">순위</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호<br>(클릭→기업의 낙찰이력)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">사업자등록번호<br>(클릭→낙찰이력)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="20%;">업체명<br>(클릭→업체정보)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">대표자</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰금액(원)</th>
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">투찰율(%)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">예정가격의</br>투찰율(%)</th>
 
-						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">기초금액투찰율(%)</th>
+						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="10%;">기초금액의</br>투찰율(%)</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="5%;">입찰번호</th>
 						<th style='background-color:#666666;; height:16px; color:#fff; font-size:11px; font-family:Dotum; text-align:center;  ' width="15%;">비고</th>
 					</tr>
@@ -215,17 +219,14 @@ $mailintop = $mailtop + 4;	// mail address
 				$k = 1;
 				if (count($item1) == 0) {
 					// 진행구분에 유찰로 업데이트 (개찰일시가 오늘날짜-1일 과 비교)
-					$sql  = "UPDATE openBidInfo SET ";
-					if ($rgstTyNm == '연계기관 공고건'){
+					if ($rgstTyNm == '연계기관 공고건') {
+						$sql  = "UPDATE openBidInfo SET ";
 						$sql .= "       progrsDivCdNm = '연계기관'";
-					} else {
-						$sql .= "       progrsDivCdNm = '유찰'";
+						$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
+						$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
+						// $sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -7 day)  ";
+						if (!($conn->query($sql))) $msg .= ("ln150::Err Sql=" .$sql. ", <br>");	
 					}
-					$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
-					$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
-					$sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -1 day)  ";
-					if (!($conn->query($sql))) echo ("ln150::Err Sql=" .$sql. ", <br>");	
-
 					// 유찰 메시지 출력
 					$tr = "<tr>";
 					$tr .= '<td colspan=7  style="text-align: center; color:red;"><br>DATA가 없습니다. 개찰이 안되었거나, 유찰이 되었을수 있습니다.<br><br></td>';
@@ -343,7 +344,7 @@ $mailintop = $mailtop + 4;	// mail address
 <div style='position: fixed; top: <?= $mailtop ?>px; right: 210px;' class="btn_areas"><a onclick="mailMe3();" class="search">이메일</a></div>
 -->
 
-	<div style='position: fixed; top: 62px; right: 210px;' class="btn_areas"><a onclick="locaciotn.href='https://uloca.net'" class="search">통합검색</a></div>
+	<div style='position: fixed; top: 62px; right: 210px;' class="btn_areas"><a onclick="location.href='https://uloca23.cafe24.com'" class="search">통합검색</a></div>
 	<div style='position: fixed; top: 62px; right: 125px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
 	<div style='position: fixed; top: 62px; right: 40px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
 	<div id=mail style='visibility: hidden;display:inline;' -->

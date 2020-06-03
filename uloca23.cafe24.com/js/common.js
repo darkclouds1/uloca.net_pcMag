@@ -1,7 +1,3 @@
-// common.js	2019/02/23
-// <script src="/js/common.js?version=20190203"></script>
-
-
 function clog(msg) {
 	console.log(msg);
 }
@@ -42,6 +38,7 @@ function dateAddDel(sDate, nNum, type) {
  
     return '' + yy + '-' +  mm  + '-' + dd;
 }
+
 function setDate(sDate,sep) {
 	if (sDate.length<5) return sDate;
 
@@ -50,50 +47,6 @@ function setDate(sDate,sep) {
 		return sDate.substr(0,2)+sep+sDate.substr(2,2)+sep+sDate.substr(4,2);
 	} else return sDate.substr(0,4)+sep+sDate.substr(4,2)+sep+sDate.substr(6,2);
 }
-/* =============================================================================================================
-	쿠키 관련 함수
-=============================================================================================================== */
-//쿠키읽어 오기
-function GetCookie(cookieName)
-{
-	var retVal = ""
-	if(cookieName == null) return "";
-
-	thisCookie = document.cookie.split("; ");
-	
-	for (i = 0; i < thisCookie.length; i++)
-	{
-		if (cookieName == thisCookie[i].split("=")[0])
-		{
-			retVal = thisCookie[i].split("=")[1];
-		}
-	}
-	
-	return unescape(retVal);
-}
-
-//쿠키에 설정 
-function SetCookie(cookieName,cookieVal,cookieExp)
-{ 
-	
-	if(cookieVal == null) return;
-	if(cookieName == null) return;
-
-	expireDate = new Date;
-		
-	if(cookieExp == null) // default 하루
-	{
-		//expireDate.setMonth(expireDate.getMonth()+6); // 6개월간 쿠키 저장
-		expireDate.setDate(expireDate.getDate()+1); // 현재 시간에서 날자 구하고 유효기간 더해서 쿠키 유효일 설정
-	} else {
-		expireDate.setDate(expireDate.getDate()+cookieExp);
-	}
-	
-	//document.cookie = cookieName + "=" + cookieVal + "; expires=" + expireDate.toGMTString() ;
-	document.cookie = cookieName + "=" + escape(cookieVal)+"; path=/; expires="+expireDate.toGMTString()+"; "; // 쿠키 문자열 설정
-	
-}
-
 
 function getToday(sep) {
 	var today = new Date();
@@ -112,6 +65,7 @@ function getToday(sep) {
 	today = yyyy + sep + mm + sep + dd  ;
 	return today;
 }
+
 function getTodayTime(sep) {
 	var sep2 = ':';
 	var today = new Date();
@@ -219,4 +173,3 @@ function getAjaxPost(server,client,parm) {
 
 	// xhttp.send("fname=Henry&lname=Ford");
 }
-

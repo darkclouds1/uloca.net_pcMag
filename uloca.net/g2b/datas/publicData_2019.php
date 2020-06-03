@@ -22,6 +22,8 @@ else if ($compinfo == 1 && $compname != '') {
 	$pss = '';
 	$pss2 = '';
 }
+
+$id = $_SESSION['current_user']->user_login;
 $rmrk = 'compname=' . $compname . ' kwd=' . $kwd . ' dminsttNm=' . $dminsttNm . 'pss=' . $pss; // '조건검색';
 $dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, $pss2, $key);
 

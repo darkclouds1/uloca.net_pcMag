@@ -48,7 +48,8 @@ if ($row = $dbResult->fetch_assoc()) {
     echo $row['bidNtceOrd'];
 
     $opengDt = $row['opengDt'];
-    $timestamp = strtotime("-1 days"); // 개찰일시 > 오늘날짜-2일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
+    $timestamp = strtotime("-0 days"); // 개찰일시 > 오늘날짜-2일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
+    echo ("<br>ln52::timestamp=" .$timestamp. "<br>");
     $timestamp = date("Y-m-d", $timestamp);
     $opengDt   = date("Y-m-d", strtotime($opengDt));
     echo ("<br>ln54::timestamp=" .$timestamp. ",     opengDt=" .$opengDt);

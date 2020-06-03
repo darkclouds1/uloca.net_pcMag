@@ -8,12 +8,14 @@
 
 @extract($_GET);
 @extract($_POST);
-require($_SERVER['DOCUMENT_ROOT'] . '/classphp/g2bClass.php'); 
+date_default_timezone_set('Asia/Seoul');
+require($_SERVER['DOCUMENT_ROOT'] . '/classphp/g2bClass.php');
 require($_SERVER['DOCUMENT_ROOT'] . '/classphp/dbConn.php');
 
 $g2bClass = new g2bClass;
 $dbConn   = new dbConn;
 $conn     = $dbConn->conn();
+// $mobile   = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
 
 $startDate   = $_GET['startDate'];
 $endDate     = $_GET['endDate'];
@@ -21,9 +23,6 @@ $openBidInfo = $_GET['openBidInfo'];
 $openBidSeq  = $_GET['openBidSeq'];
 $bidSeqOn    = $_GET['bidSeqOn']; // 개찰결과 입력이 체크되어 있으면, 목록에 업데이트할 공고를 표시 함.
 
-//--------------------------------------------------
-// 입찰정보, 낙찰정보, 업체별 낙찰이력 추가
-//--------------------------------------------------
 if ($startDate == '' || $endDate == '') {
 	return;
 }
@@ -40,7 +39,6 @@ $sql = " UPDATE workdate SET workdt='" . $workdt . "', lastdt='" . $endDate . "'
 $sql .= " Where workname= 'dailyDataFill' ";
 if (!($conn->query($sql))) echo "SQL Error: " . $sql;
 // ----------------------------------------
-
 
 if (strlen($startDate) == 10) $startDate = substr($startDate, 0, 4) . substr($startDate, 5, 2) . substr($startDate, 8, 2);
 if (strlen($endDate) == 10) $endDate = substr($endDate, 0, 4) . substr($endDate, 5, 2) . substr($endDate, 8, 2);
@@ -67,8 +65,8 @@ $tag .= "		<th scope='cols' width='5%;' >8)응찰건수</th>";
 $tag .= "	</tr>";
 $tag .= "</thead>";
 
-//  echo ('ln39:: startDate=" .$startDate. ", endDate=" .$endDate. ", openBidInfo=" .$openBidInfo. ", oepnBidSeq=" .$openBidSeq);
-//  return;
+// echo ("ln39:: startDate=" .$startDate. ", endDate=" .$endDate. ", openBidInfo=" .$openBidInfo. ", oepnBidSeq=" .$openBidSeq);
+// return;
 
 //-------------------------------------------------------------------------------
 // 입찰공고:: 나라장터 검색조건에 의한 나라장터 입찰공고 정보서비스
@@ -89,8 +87,6 @@ $item13 = $json13['response']['body']['items'];
 // Sum
 $item10 = array_merge($item11, $item12, $item13);
 
-// echo "입찰정보=" . count($item10) . ", ";
-
 //-------------------------------------------------------------------------------
 // 낙찰정보 현황조회 -by jsj 200329
 //-------------------------------------------------------------------------------
@@ -109,8 +105,6 @@ $json4 = json_decode($response4, true);
 $item4 = $json4['response']['body']['items'];
 // 낙찰정보 sum
 $item22 = array_merge($item2, $item3, $item4);
-
-// echo "낙찰현황=" . count($item22) . ", ";
 
 //-------------------------------------------------------------------------------
 // 낙찰정보 목록조회 -by jsj 200329 ? 
@@ -134,8 +128,6 @@ $item7 = $json7['response']['body']['items'];
 // 낙찰정보 sum
 $item23 = array_merge($item5, $item6, $item7);
 
-//echo "낙찰목록=" . count($item23) . " <br>";
-
 $i = 1; // 그리드 목록 번호
 $newInfoRecord = 0;	   // 입찰정보 추가 Count
 $updateOpenBidInfo = 0;
@@ -144,10 +136,10 @@ $updateRstCnt = 0; 	   // 낙찰정보 업데이트 count
 $updateProgrsDivCdNm = 0; // 낙찰목록의 진행구분을 입찰공고에 업뎃 
 $updateOpenBidInfo_1th = 0; // openBidSeq_xxxx 입력시 1순위 낙찰정보를 입찰정보에 업뎃
 
-// ----------------------------------------------
+// -------------------------------------------------------------
 // 입찰정보 INSERT or UPDATE(낙찰정보아님) -by jsj 200321
 // openBidSeq_xxxx 추가 (낙찰정보도 입력)
-// ----------------------------------------------
+// -------------------------------------------------------------
 
 foreach ($item11 as $arr) {
 	$pss = '입찰물품';
@@ -199,7 +191,7 @@ foreach ($item23 as $arr) {
 				echo "REPLACE Error:" . $sql . "<br>";
 			}
 			$updateProgrsDivCdNm++; //진행구분 progrsDivCdNm 업데이트 건수
-			displayBidInfo($i, $arr, $pss, $row['idx'] );
+			displayBidInfo($i, $arr, $pss, $row['idx'], $progrsDivCdNm );
 		}
 	} else {
 		// 업데이트할 공고가 없으면 continue
@@ -235,22 +227,22 @@ foreach ($item22 as $arr) {
 	if ($row = $dbResult->fetch_assoc() ) {
 		// 낙찰정보 업데이트
 		if ($row['bidwinnrBizNo'] == '') {
-			$sql = "UPDATE openBidInfo SET "; // bidNtceOrd ='".$arr['bidNtceOrd']."', ";
-			$sql .= " prtcptCnum = '"    .$arr['prtcptCnum'].    "', "; // 참가업체수
-			$sql .= " bidwinnrNm = '"    .$arr['bidwinnrNm'].    "', ";	// 최종낙찰업체명
-			$sql .= " bidwinnrBizno = '" .$arr['bidwinnrBizno']. "', ";	// 최종낙찰업체사업자번호
-			$sql .= " sucsfbidAmt = '"   .$arr['sucsfbidAmt'].   "', "; // 최종낙찰금액
-			$sql .= " sucsfbidRate = '"  .$arr['sucsfbidRate'].  "', "; // 숫자
-			$sql .= " rlOpengDt = '"     .$arr['rlOpengDt'].     "', ";	// 실개찰일시
-			$sql .= " bidwinnrCeoNm = '" .$arr['bidwinnrCeoNm']. "', ";	// 대표자명
-			$sql .= " bidwinnrTelNo = '" .$arr['bidwinnrTelNo']. "', ";	// 전화번호
-			$sql .= " progrsDivCdNm = '" .$arr['progrsDivCdNm']. "'  "; // 진행구분
+			$sql = " UPDATE openBidInfo SET "; // bidNtceOrd ='".$arr['bidNtceOrd']."', ";
+			$sql .= "       prtcptCnum = '"    .$arr['prtcptCnum'].    "', "; // 참가업체수
+			$sql .= "       bidwinnrNm = '"    .$arr['bidwinnrNm'].    "', ";	// 최종낙찰업체명
+			$sql .= "       bidwinnrBizno = '" .$arr['bidwinnrBizno']. "', ";	// 최종낙찰업체사업자번호
+			$sql .= "       sucsfbidAmt = '"   .$arr['sucsfbidAmt'].   "', "; // 최종낙찰금액
+			$sql .= "       sucsfbidRate = '"  .$arr['sucsfbidRate'].  "', "; // 숫자
+			$sql .= "       rlOpengDt = '"     .$arr['rlOpengDt'].     "', ";	// 실개찰일시
+			$sql .= "       bidwinnrCeoNm = '" .$arr['bidwinnrCeoNm']. "', ";	// 대표자명
+			$sql .= "       bidwinnrTelNo = '" .$arr['bidwinnrTelNo']. "'  ";	// 전화번호
 			$sql .= " WHERE bidNtceNo = '"  .$arr['bidNtceNo'].  "' ";
 			$sql .= "   AND bidNtceOrd = '" .$arr['bidNtceOrd']. "' ";
 			if ($conn->query($sql) == false) echo "Update Error:" .$sql. "<br>";
 			$updateRstCnt++;
 			// 화면표시
-			displayBidInfo($i, $arr, $pss, $row['idx']);
+
+			displayBidInfo($i, $arr, $pss, $row['idx'], $progrsDivCdNm);
 		}
 	} else { //입찰공고가 없으면
 		// 공고번호 없으면 '01' Stauts 에 낙찰결과 INSERT
@@ -266,7 +258,7 @@ foreach ($item22 as $arr) {
 		$sql .= "         '" . $arr['prtcptCnum'] . "',    '" . $arr['bidwinnrNm'] .   "', ";
 		$sql .= "         '" . $arr['bidwinnrBizno'] . "', '" . $arr['sucsfbidAmt'] .  "', ";
 		$sql .= "         '" . $arr['sucsfbidRate'] . "',  '" . $arr['rlOpengDt'] .   "', ";
-		$sql .= "         '" . $arr['bidwinnrCeoNm'] . "', '" . $arr['bidwinnrTelNo'] . "', '개찰완료' )";
+		$sql .= "         '" . $arr['bidwinnrCeoNm'] . "', '" . $arr['bidwinnrTelNo'] . "', '' )";
 		if (!($conn->query($sql))) echo "REPLACE Error:" . $sql . "<br>";
 		$nonNtceNoCnt++; //공고없음
 		continue;
@@ -277,7 +269,7 @@ foreach ($item22 as $arr) {
 // table 최종 리턴값
 // ------------------
 $tag .= "</tbody></table>";
-echo ($tag); 
+echo ($tag);
 // ------------------
 
 function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $openBidSeq)
@@ -289,6 +281,7 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 	$sql .= "  AND bidNtceNo  = '" .$arr['bidNtceNo'].  "' ";
 	$sql .= "  AND bidNtceOrd = '" .$arr['bidNtceOrd']. "' ";
 	if (!($dbResult = $conn->query($sql))) echo "ln239 error sql=" .$sql. "<br>";
+	
 	if ($row = $dbResult->fetch_assoc()){
 		$idx = $row['idx'];
 		$bidwinnrBizNo = $row['bidwinnrBizNo'];
@@ -299,22 +292,23 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 		$progrsDivCdNm = trim($row['progrsDivCdNm']); 	// 유찰, 개찰완료, 재입찰
 
 		// 입찰공고는 '취소' 등 업데이트 필요
-		$sql = " UPDATE openBidInfo SET  bidNtceNm    ='" .addslashes($arr['bidNtceNm']). "', ntceInsttNm ='" .addslashes($arr['ntceInsttNm']). "', dminsttNm=  '" .addslashes($arr['dminsttNm']). "', ";
-		$sql .="                         opengDt      ='" .$arr['opengDt'].               "', bidtype     ='" .$pss.                "', reNtceYn        ='" .$arr['reNtceYn'].         "',";
-		$sql .="                         rgstTyNm     ='" .$arr['rgstTyNm'].              "', ntceKindNm  ='" .$arr['ntceKindNm'].  "', bidMethdNm      ='" .$arr['bidMethdNm'].       "',";
-		$sql .="                         bidNtceDt    ='" .$arr['bidNtceDt'].             "', ntceInsttCd ='" .$arr['ntceInsttCd']. "', dminsttCd       ='" .$arr['dminsttCd'].        "',";
-		$sql .="                         bidBeginDt   ='" .$arr['bidBeginDt'].            "', bidClseDt   ='" .$arr['bidClseDt'].   "', presmptPrce     ='" .$arr['presmptPrce'].      "',";
-		$sql .="                         bidNtceDtlUrl='" .$arr['bidNtceDtlUrl'].         "', bidNtceUrl  ='" .$arr['bidNtceUrl'].  "', sucsfbidLwltRate='" .$arr['sucsfbidLwltRate']. "', ";
-		$sql .="                         bfSpecRgstNo ='" .$arr['bfSpecRgstNo'].          "' ";
-		$sql .=" WHERE bidNtceNo=  '" .$arr['bidNtceNo'].  "' "; 
-		$sql .="   AND bidNtceOrd= '" .$arr['bidNtceOrd']. "' ";
-		if (!($conn->query($sql))) echo "ln308 error sql=" . $sql . "<br>";
+		$sql = " UPDATE openBidInfo SET  bidNtceNm    ='" .addslashes($arr['bidNtceNm']). "', ntceInsttNm ='"      .addslashes($arr['ntceInsttNm']). "', dminsttNm  ='" .addslashes($arr['dminsttNm']). "', ";
+		$sql .="                         opengDt      ='" .$arr['opengDt'].               "', bidtype     ='"      .$pss.                       "', reNtceYn        ='" .$arr['reNtceYn'].              "', ";
+		$sql .="                         rgstTyNm     ='" .$arr['rgstTyNm'].              "', ntceKindNm  ='"      .$arr['ntceKindNm'].         "', bidMethdNm      ='" .$arr['bidMethdNm'].            "', ";
+		$sql .="                         bidNtceDt    ='" .$arr['bidNtceDt'].             "', ntceInsttCd ='"      .$arr['ntceInsttCd'].        "', dminsttCd       ='" .$arr['dminsttCd'].             "', ";
+		$sql .="                         bidBeginDt   ='" .$arr['bidBeginDt'].            "', bidClseDt   ='"      .$arr['bidClseDt'].          "', presmptPrce     ='" .$arr['presmptPrce'].           "', ";
+		$sql .="                         bidNtceDtlUrl='" .$arr['bidNtceDtlUrl'].         "', bidNtceUrl  ='"      .$arr['bidNtceUrl'].         "', sucsfbidLwltRate='" .$arr['sucsfbidLwltRate'].      "', ";
+		$sql .="                         bfSpecRgstNo ='" .$arr['bfSpecRgstNo'].          "', lcnsLmtNm = '"       .$arr['lcnsLmtNm'] .         "', ";			// 면허제한명(추가)
+		$sql .= "                        locate       ='" .$arr['prtcptLmtRgnNm'] .       "',cntrctCnclsMthdNm= '" .$arr['cntrctCnclsMthdNm'] . "' ";			// 참가제한지역명, 계약방법명(추가)		
+		$sql .="  WHERE bidNtceNo=  '" .$arr['bidNtceNo'].  "' ";
+		$sql .="    AND bidNtceOrd=  '" .$arr['bidNtceOrd'].  "' ";
+		if (!($conn->query($sql))) echo "ln312 error sql=" . $sql . "<br>";
 
 	} else { 
 		// 입찰공고가 없으면 추가
 		$sql = 'REPLACE INTO ' . $openBidInfo . ' (bidNtceNo, bidNtceOrd, bidNtceNm, ntceInsttNm, dminsttNm, opengDt, bidtype,';
 		$sql .= '                                  reNtceYn, rgstTyNm, ntceKindNm, bidMethdNm, bidNtceDt, ntceInsttCd, dminsttCd, bidBeginDt, bidClseDt,';
-		$sql .= '                                  presmptPrce, bidNtceDtlUrl, bidNtceUrl, sucsfbidLwltRate, bfSpecRgstNo)';
+		$sql .= '                                  presmptPrce, bidNtceDtlUrl, bidNtceUrl, sucsfbidLwltRate, bfSpecRgstNo, lcnsLmtNm, locate, cntrctCnclsMthdNm, ModifyDT)';
 		$sql .= "VALUES ('"     .$arr['bidNtceNo'].     "', '" .$arr['bidNtceOrd'].       "', ";
 		$sql .= "'"  .addslashes($arr['bidNtceNm']).    "', '" .addslashes($arr['ntceInsttNm']). "', ";
 		$sql .= "'"  .addslashes($arr['dminsttNm']).    "', '" .$arr['opengDt'].          "', '" .$pss. "', ";
@@ -323,9 +317,11 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 		$sql .= "'"             .$arr['ntceInsttCd'].   "', '" .$arr['dminsttCd'].        "', ";
 		$sql .= "'"             .$arr['bidBeginDt'].    "', '" .$arr['bidClseDt'].        "', ";
 		$sql .= "'"             .$arr['presmptPrce'].   "', '" .$arr['bidNtceDtlUrl'].    "', ";
-		$sql .= "'"             .$arr['bidNtceUrl'].    "', '" .$arr['sucsfbidLwltRate']. "', ";
-		$sql .= "'"             .$arr['bfSpecRgstNo'].  "') ";
-		if (!($conn->query($sql))) echo "ln325:Err sql=" . $sql . "<br>";
+		$sql .= "'"             .$arr['bidNtceUrl'] .   "', '" .$arr['sucsfbidLwltRate']. "', ";
+		$sql .= "'"             .$arr['bfSpecRgstNo'] . "', '" .$arr['lcnsLmtNm'].        "', " ;			// 사전규격등로번호, 면허제한명
+		$sql .= "'"             .$arr['prtcptLmtRgnNm'] ."','" .$arr['cntrctCnclsMthdNm']."', ";		    // 지역제한명,      계약방법명
+		$sql .= " now() )" ;		
+		if (!($conn->query($sql))) echo "ln331:Err sql=" . $sql . "<br>";
 
 		// 입찰공고 신규 idx 확인
 		$sql = "SELECT idx, bidwinnrBizNo, opengDt, rgstTyNm, ntceKindNm, bidMethdNm, progrsDivCdNm FROM openBidInfo WHERE 1";
@@ -342,21 +338,24 @@ function insertOpenBidInfo($i, $g2bClass, $conn, $openBidInfo, $pss, $arr, $open
 			$progrsDivCdNm = trim($row['progrsDivCdNm']); 	// 유찰, 개찰완료, 재입찰
 		}
 	}
-	// 개찰결과가 없거나 신규공고를을 화면에 보여줌, 개찰일시가 도래하지 않으면 목록 제외
+	// 개찰결과가 없거나 신규공고를을 화면에 보여줌, 개찰결과가 도래하지 않으면 목록 제외
 	$timestamp = strtotime("-1 days"); // 개찰일시 > 오늘날짜-1일 :: 비교해서 날짜 도래하지 않으면 표시하지 않음
     $timestamp = date("Y-m-d", $timestamp);
-    $opengDt   = date("Y-m-d", strtotime($opengDt));   
-	if (($progrsDivCdNm <> '개찰완료')  && ($rgstTyNm <> '연계기관 공고건') && ($ntceKindNm <> '취소')   && ($ntceKindNm <> '연기') && 
-	    ($bidMethdNm <> '직찰')         && ($progrsDivCdNm <> '유찰')      && ($opengDt < $timestamp ) ) {
-		// 기존에 입찰현황이 있고, 개찰결과가 없는것만 표시
-		displayBidInfo($i, $arr, $pss, $idx);		// 개찰결과가 없는 경우 표시, Fill 이후 신규로 되어 있는 경우는 나타남
+	$opengDt   = date("Y-m-d", strtotime($opengDt));   
+
+	//echo ("ln344::progrsDivCdNm=" .$progrsDivCdNm);
+	if (($progrsDivCdNm <> '개찰완료') && ($progrsDivCdNm <> '재입찰')     && ($progrsDivCdNm <> '유찰') && 
+		($ntceKindNm <> '취소')        && ($ntceKindNm <> '연기')  &&
+	    ($bidMethdNm <> '직찰')        && ($rgstTyNm <> '연계기관 공고건')  && ($opengDt < $timestamp )) {
+		// 기존에 입찰현황이 있고, 개찰결과가 없는것만 표시, 유찰은 나중에 개찰되었을 수 있으니, 조건에서 제외 -by jsj 20200513
+		displayBidInfo($i, $arr, $pss, $idx, $progrsDivCdNm );		// 개찰결과가 없는 경우 표시, Fill 이후 신규로 되어 있는 경우는 나타남
 	}
 }
 
 // --------------------------------------------------------------
 // 입찰현황, 낙찰목록, 낙찰현황 3가지 업데이트 or Insert 후 화면표시
 // --------------------------------------------------------------
-function displayBidInfo($no, $arr, $pss='', $idx='0'){
+function displayBidInfo($no, $arr, $pss='', $idx='0', $progrsDivCdNm = ''){
 	global $tag;
 	if (mb_strlen($pss,'utf-8') == 2) {
 		$pss = "입찰" .$pss;
@@ -371,12 +370,12 @@ function displayBidInfo($no, $arr, $pss='', $idx='0'){
 	$tag .= '<td style="text-align: center;">' .$arr['rlOpengDt']. '</td>'; 							// 개찰일시
 	$tag .= '<td style="text-align: center;">' .$pss. '</td>'; 											// 공고구분 ex 물품, 공사, 용역
 	$tag .= '<td style="text-align: center;">' .$idx. '</td>'; 											// 공고Index
-	$tag .= '<td style="text-align: right;">'  .$arr['prtcptCnum']. '</td>';							// 응찰건수
+	if ($arr['prtcptCnum'] == '') {
+		$tag .= '<td style="text-align: right;">'  .$progrsDivCdNm. '</td>';							// 응찰건수
+	} else {
+		$tag .= '<td style="text-align: right;">'  .$arr['prtcptCnum']. '</td>';						// 응찰건수
+	}
 	$tag .= '</tr>';
-}
-
-function clog($data){
-    echo "<script>console.log( 'PHP_Console: " . $data . "' );</script>";
 }
 
 ?>

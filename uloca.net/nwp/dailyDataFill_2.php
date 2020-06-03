@@ -1,15 +1,13 @@
 <?
 
-//error_reporting(E_ALL);
-//ini_set("display_errors", 1);
-//ini_set('max_execution_time', 600);
-echo "max_execution_time=" . ini_get('max_execution_time') . "<br>";
+// error_reporting(E_ALL);
+// ini_set("display_errors", 1);
+// ini_set('max_execution_time', 600);
+// echo "max_execution_time=" . ini_get('max_execution_time') . "<br>";
 
 @extract($_GET);
 @extract($_POST);
 ob_start();
-// http://uloca.net/g2b/datas/dailyDataSearch.php?startDate=2018-07-02 00:00&endDate=2018-07-03 10:59&openBidInfo=openBidInfo_2018_2&openBidSeq=openBidSeq_2018_2
-//http://uloca.net/nwp/dailyDataFill.php?startDate=20180930&endDate=20180930&pss=%EB%AC%BC%ED%92%88
 require($_SERVER['DOCUMENT_ROOT'] . '/classphp/g2bClass.php'); //'/g2b/classPHP/g2bClass.php');
 require($_SERVER['DOCUMENT_ROOT'] . '/classphp/dbConn.php');
 $g2bClass = new g2bClass;
@@ -19,9 +17,6 @@ $conn = $dbConn->conn();
 $startDate = '';
 $endDate = '';
 $contn = 0;
-
-// sumit 안하기 때문에 _POST 없음
-// echo "_POST Value= startDate=" .$_POST['startDate']. ", enddate=" .$_POST['endDate']. ", contn=" .$_POST['contn']. "<br>";
 
 if ($_POST['startDate'] != '') {
 	$startDate = date("Y-m-d", strtotime($_POST['startDate']));
@@ -62,13 +57,11 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta name="format-detection" content="telephone=no">
-	<!--//-by jsj 전화걸기로 링크되는 것 막음 -->
-
 	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190102" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="/js/common.js"></script>
 	<script src="/g2b/g2b.js"></script>
-	<script src="/g2b/g2b_2019.js?version=20190203"></script>
+	<script src="/g2b/g2b_2019.js"></script>
 
 	<script>
 		stopOn = true;  
@@ -162,7 +155,6 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 			// 입찰정보 (from~to) 수집  , bidSeqOn=true 개찰이력 입력
 			//------------------------------------------------------
 			url = '/nwp/insertBidInfoFill.php?startDate=' + startDate + '&endDate=' + endDate + '&openBidInfo=openBidInfo&openBidSeq=' + openBidSeq + '&bidSeqOn=' +bidSeqOn;
-			//document.getElementById('btn').style.display = 'none';
 			getAjax(url, searchDaily2_Fill);
 			console.log(url);
 		}
@@ -286,9 +278,6 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 				donextday(); 
 			}, 10000);				// 20초간 delay
 		}
-
-		// sumit 시작
-		//searchDailyFill();
 	</script>
 
 <body onload="javascript:donextday();">
@@ -335,7 +324,7 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 
 	</form>
 	<div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 50%;margin-top: -10px; margin-left: -50px; '>
-		<img src='http://uloca23.cafe24.com/g2b/loading3.gif' width='100px' height='100px'>
+		<img src='https://uloca.net/g2b/loading3.gif' width='100px' height='100px'>
 	</div>
 	<div style='font-size:12px;font-weight:bold;'>- 입찰공고 / 낙찰현황 / 낙찰목록 API  <br>
 		1) 입찰정보(등록일 기준): 입찰공고 UPDATE, 없으면 REPLACE, 개찰결과가 없거나 신규입력을 화면에 보여줌, 개찰일시 > 오늘날짜(-1 day) 제외  <br/>

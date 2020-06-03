@@ -110,6 +110,8 @@ class g2bClass {
 			case 'scsbidfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch'; // 외자낙찰
 				break;
+
+				// 입찰공고
 			case 'bidthing': 
 				$url = 'http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch'; // 물품입찰 (나라장터검색조건)
 				break;
@@ -134,8 +136,11 @@ class g2bClass {
 			case 'hrcfrgcpt':
 				$url = 'http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoFrgcptPPSSrch'; // 외자사전규격
 				break;
-			case 'bidopen': // 개찰결과 openBidSeq_xxxx 에 업데이트용 -by jsj 20200401
+			case 'bidopen': // 개찰결과 openBidSeq_xxxx 에 업데이트용 '개찰완료' -by jsj 20200401
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt'; // 개찰결과 개찰완료 목록 조회,물품, 공사, 용역, 외자 공통
+				break;
+			case 'bidfail': // 개찰결과 '유찰' openBidInfo에 업데이트용 '유찰' -by jsj 20200513
+				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoFailing'; // 개찰결과 '유찰'목록
 				break;
 			case 'scsbidthing1':
 				$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThng';	// 낙찰된 목록 현황 물품조회 1등만
@@ -257,7 +262,7 @@ class g2bClass {
 		/*Service Key*/
 		//getSvrData($bidrdo,$startDate,$endDate,$kwd,$dminsttNm,$numOfRows,$pageNo,$inqryDiv)
 		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); /*한 페이지 결과 수*/
-		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); 		/*페이지 번호*/
+		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); /*페이지 번호*/
 		//$queryParams .= '&' . urlencode('ServiceKey') . '=' . urlencode('-'); /*공공데이터포털에서 받은 인증키*/
 		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqryDiv); /*검색하고자하는 조회구분 1:공고게시일시, 2:개찰일시, 3:입찰공고번호*/
 		if (strlen($startDate) <=10) {
@@ -672,14 +677,13 @@ class g2bClass {
 		$queryParams .= '&' . urlencode('inqryEndDt') . '=' . '';
 		$queryParams .= '&' . urlencode('corpNm') . '=' . ''; // 검색하고자 하는 업체명 조회구분 1,2인 경우 선택
 		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqryDiv); /*검색하고자하는 조회구분 입력 1: 등록일기준 검색, 2: 변경일기준검색, 3: 사업자등록번호 기준검색 */
-		$queryParams .= '&' . urlencode('bizno') . '=' . urlencode($bizno); // 사업자등록번호
-		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); /*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
+		$queryParams .= '&' . urlencode('bizno') . '=' . urlencode($bizno); 		// 사업자등록번호
+		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); 			/*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
 		
 		//echo ('queryParams='.$queryParams);
 		
 		$queryParams .= '&' . urlencode('ServiceKey') . '=' .
 				'BT4h3Pd5ovl0%2BOWmcIGClMw42vc%2F%2B9Asx6MAg%2Fa4xt1jg%2BF4q9ZfU9Tm8qlo09bZWZjSlcr3Uf062qMVG56vpA%3D%3D';
-		
 		
 		curl_setopt($ch, CURLOPT_URL, $url . $queryParams);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -756,10 +760,10 @@ class g2bClass {
 		$inqDiv = 2; // 개찰일시 1:공고게시일시, 2:개찰일시, 3:입찰공고번호
 		$ch = curl_init();
 		global $ServiceKey;
-		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch';    				   // 낙찰현황 용역조회
-		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 낙찰현황 공사조회
-		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch';   // 낙찰현황 물품조회
-		if ($pss == "물품목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch';   // 낙찰목록 물품조회
+		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch';    				   		// 낙찰현황 용역조회
+		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; 		// 낙찰현황 공사조회
+		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch';   		// 낙찰현황 물품조회
+		if ($pss == "물품목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch';   // 낙찰목록 물품조회	// 진행구분코드 progrsDivCdNm '유찰', '개찰완료', '재입찰'
 		if ($pss == "공사목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoCnstwkPPSSrch'; // 낙찰목록 공사조회
 		if ($pss == "용역목록") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoServcPPSSrch';  // 낙찰목록 용역조회
 
@@ -788,29 +792,26 @@ class g2bClass {
 		return $response;
 	} // getBidRslt
 	
-	function getBidRslt2($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss,$bidNtceNo) {
+	function getBidRslt2($numOfRows,$pageNo,$inqryDiv,$inqryBgnDt,$inqryEndDt,$pss,$bidNtceNo, $bidNtceOrd) {
 		$inqDiv = 3; // 3:입찰공고번호
 		$ch = curl_init();
 		global $ServiceKey;
 		$url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch'; // 나라장터 검색조건에 의한 낙찰된 목록 현황 용역조회
-		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch'; // 공사조회
-		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch'; // 물품
+		if ($pss == "공사") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch';  // 공사조회
+		if ($pss == "물품") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch';    // 물품
+		if ($pss == "유찰") $url = 'http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoFailing';  	// 개찰결과 유찰 목록 조회
 		
-		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); /*한 페이지 결과 수*/
-		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo); /*페이지 번호*/
-		//$queryParams .= '&' . urlencode('ServiceKey') . '=' . urlencode('-'); /*공공데이터포털에서 받은 인증키*/
-		//$queryParams .= '&' . urlencode('inqryBgnDt') . '=' . $inqryBgnDt;
-		//$queryParams .= '&' . urlencode('inqryEndDt') . '=' . $inqryEndDt;
-		$queryParams .= '&' . urlencode('bidNtceNo') . '=' . $bidNtceNo; // 검색하고자 하는 공고번호
-		$queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1:공고게시일시, 2:개찰일시, 3:입찰공고번호 */
+		$queryParams = '?' . urlencode('numOfRows') . '=' . urlencode($numOfRows); // 한 페이지 결과 수
+		$queryParams .= '&' . urlencode('pageNo') . '=' . urlencode($pageNo);     // 페이지 번호
+		$queryParams .= '&' . urlencode('bidNtceNo') . '=' . $bidNtceNo; 		  // 공고번호
+		// $queryParams .= '&' . urlencode('bidNtceOrd') . '=' . $bidNtceOrd; 		  // 공고차수
+		// $queryParams .= '&' . urlencode('inqryDiv') . '=' . urlencode($inqDiv); /*검색하고자하는 조회구분 입력 1:공고게시일시, 2:개찰일시, 3:입찰공고번호 */
 		//$queryParams .= '&' . urlencode('bizno') . '=' . ''; // 사업자등록번호
 		$queryParams .= '&' . urlencode('type') . '=' . urlencode('json'); /*오픈API 리턴 타입을 JSON으로 받고 싶을 경우 */
 		
-		echo ('queryParams='.$queryParams.'<br>');
-		
+		// echo ('queryParams='.$queryParams.'<br>');
 		$queryParams .= '&' . urlencode('ServiceKey') . '=' .
 				'BT4h3Pd5ovl0%2BOWmcIGClMw42vc%2F%2B9Asx6MAg%2Fa4xt1jg%2BF4q9ZfU9Tm8qlo09bZWZjSlcr3Uf062qMVG56vpA%3D%3D';
-		
 		
 		curl_setopt($ch, CURLOPT_URL, $url . $queryParams);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
@@ -1252,6 +1253,7 @@ class g2bClass {
 		
 		return $header;
 	}
+	
 	function getBidInfo2_1($item,$pss,$kwd,$dminsttNm,$startDate,$endDate) {
 		$header = '
 		<center><div style=\'font-size:18px; color:blue;font-weight:bold;\'>- 입찰 정보 ('.$pss.') -</center>
@@ -1387,6 +1389,7 @@ class g2bClass {
 		
 		return $header;
 	}
+
 	function getHrcOne1($target,$startDate,$endDate,$kwd,$dminsttNm,$pss) {
 		//$pss = '사전물품';
 		//target = hrcthing/hrccnstwk/hrcservc
@@ -1620,8 +1623,8 @@ class g2bClass {
 	function autoRecList($login_userid) {
 		
 		
-		//$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
-		$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
+		$conn = new mysqli("localhost", "uloca22", "w3m69p21!@", "uloca22");
+		//$conn = new mysqli('localhost', 'uloca23', 'uloca23090(', 'uloca23');
 		// Check connection
 		if ($conn->connect_error) {
 			die("DB Connection failed: " . $conn->connect_error);
@@ -1884,10 +1887,8 @@ class g2bClass {
 		}
 		$json_string .= '], "numOfRows": '.$rowCount. ', "pageNo": 1, "totalCount": '.$rowCount . '}} }'; // $json1['response']['body']['totalCount']. '}} }';
 		return $json_string;
-		
-		//$i += 1;
-		
 	}
+
 	function rs2Json1($stmt, $colArray,$pss) {
 		$json_string = '{"response": { "header": { "resultCode": "00", "resultMsg":"정상"}, "body": { "items": [';
 		$rowCount = $stmt->num_rows;
@@ -1909,10 +1910,8 @@ class g2bClass {
 		}
 		$json_string .= '], "numOfRows": '.$rowCount. ', "pageNo": 1, "totalCount": '.$rowCount . '}} }'; // $json1['response']['body']['totalCount']. '}} }';
 		return $json_string;
-		
-		//$i += 1;
-		
 	}
+
 	function rs2Json11($stmt, $colArray) {
 		$json_string = '[';
 		$rowCount = $stmt->num_rows;
@@ -1933,7 +1932,6 @@ class g2bClass {
 		}
 		$json_string .= '] '; // $json1['response']['body']['totalCount']. '}} }';
 		return $json_string;
-		
 	}
 	
 	function rs2Json2($result) {
@@ -1956,10 +1954,9 @@ class g2bClass {
 		}
 		$json_string .= ']'; // }'; // $json1['response']['body']['totalCount']. '}} }';
 		return $json_string;
-		
 		//$i += 1;
-		
 	}
+
 	function rs2Json2bidRec($result) {
 		$json_string = '['; //'{ "items": [';
 		$rowCount = mysqli_num_rows($result); //$stmt->num_rows;
@@ -1978,7 +1975,6 @@ class g2bClass {
 			$json_string .= '"tuchaldatetime": "' .$row['tuchaldatetime']. '", ';
 			$json_string .= '"rank": "' .$row['remark']. '", ';
 			
-			
 			if ($i > $rowCount-1) $json_string .= '}';
 			else $json_string .= '},';
 			
@@ -1986,9 +1982,6 @@ class g2bClass {
 		}
 		$json_string .= ']'; // }'; // $json1['response']['body']['totalCount']. '}} }';
 		return $json_string;
-		
-		//$i += 1;
-		
 	}
 
 	function getFromUrl($url, $method = 'POST')

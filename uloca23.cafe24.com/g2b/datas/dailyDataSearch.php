@@ -280,7 +280,7 @@ $countItem = count($item1) + count($item2) + count($item3);
 		// --------------------------------------- function insertopenBidInfo
 		function insertopenBidInfo($conn, $openBidInfo, $idx, $arr, $pss, $g2bClass, $itemLimit)
 		{
-			$lcnsLmtNm = ''; // 뒤에 일괄적으로 업데이트 $g2bClass->findColumn($itemLimit,'bidNtceNo',$arr['bidNtceNo'],'lcnsLmtNm');
+			// $lcnsLmtNm = ''; // 뒤에 일괄적으로 업데이트 $g2bClass->findColumn($itemLimit,'bidNtceNo',$arr['bidNtceNo'],'lcnsLmtNm');
 			$bidNtceNo = $arr['bidNtceNo'];
 			if ($bidNtceNo ==  '') $bidNtceNo = $arr['bfSpecRgstNo'];
 			$sql = "select bidNtceOrd from " . $openBidInfo . " where bidNtceNo = '" . $bidNtceNo . "'; ";
@@ -289,46 +289,44 @@ $countItem = count($item1) + count($item2) + count($item3);
 			//if ($row = $result->fetch_assoc()) $bidNtceOrd = $row['Ord'];
 			if ($row = $result->fetch_assoc()) {
 				if ($row['bidNtceOrd'] < $arr['bidNtceOrd'] || $arr['bidClseDt'] == NULL || $arr['bidClseDt'] == '') {
-					$sql = "update " . $openBidInfo . " set bidNtceOrd ='" . $arr['bidNtceOrd'] . "', ";
-					$sql .= "reNtceYn = '"     . $arr['reNtceYn'] . "',      rgstTyNm = '"         . $arr['rgstTyNm'] . "', ";
-					$sql .= "ntceKindNm = '"   . $arr['ntceKindNm'] . "',    bidNtceDt = '"        . $arr['bidNtceDt'] . "', ";
-					$sql .= "ntceInsttCd = '"  . $arr['ntceInsttCd'] . "',   dminsttCd = '"        . $arr['dminsttCd'] . "', ";
-					$sql .= "bidBeginDt = '"   . $arr['bidBeginDt'] . "',    bidClseDt = '"        . $arr['bidClseDt'] . "', ";
-					$sql .= "presmptPrce = '"  . $arr['presmptPrce'] . "',   bidNtceDtlUrl = '"    . $arr['bidNtceDtlUrl'] . "', ";
-					$sql .= "bidNtceUrl = '"   . $arr['bidNtceUrl'] . "',    sucsfbidLwltRate = '" . $arr['sucsfbidLwltRate'] . "', ";
-					$sql .= "bfSpecRgstNo = '" . $arr['bfSpecRgstNo'] . "', ";
-					$sql .= "lcnsLmtNm = '"    . $lcnsLmtNm . "', ";
-					$sql .= "locate = '"       . $arr['prtcptLmtRgnNm'] . "', ";
-					$sql .= "ModifyDT = now() ";
-					$sql .= " where bidNtceNo='" . $arr['bidNtceNo'] . "';";
-					$conn->query($sql);
+					// 입찰공고는 '취소' 등 업데이트 필요
+					$sql = " UPDATE openBidInfo SET  bidNtceNm    ='" .addslashes($arr['bidNtceNm']). "', ntceInsttNm ='"      .addslashes($arr['ntceInsttNm']). "', dminsttNm  ='" .addslashes($arr['dminsttNm']). "', ";
+					$sql .="                         opengDt      ='" .$arr['opengDt'].               "', bidtype     ='"      .$pss.                       "', reNtceYn        ='" .$arr['reNtceYn'].              "', ";
+					$sql .="                         rgstTyNm     ='" .$arr['rgstTyNm'].              "', ntceKindNm  ='"      .$arr['ntceKindNm'].         "', bidMethdNm      ='" .$arr['bidMethdNm'].            "', ";
+					$sql .="                         bidNtceDt    ='" .$arr['bidNtceDt'].             "', ntceInsttCd ='"      .$arr['ntceInsttCd'].        "', dminsttCd       ='" .$arr['dminsttCd'].             "', ";
+					$sql .="                         bidBeginDt   ='" .$arr['bidBeginDt'].            "', bidClseDt   ='"      .$arr['bidClseDt'].          "', presmptPrce     ='" .$arr['presmptPrce'].           "', ";
+					$sql .="                         bidNtceDtlUrl='" .$arr['bidNtceDtlUrl'].         "', bidNtceUrl  ='"      .$arr['bidNtceUrl'].         "', sucsfbidLwltRate='" .$arr['sucsfbidLwltRate'].      "', ";
+					$sql .="                         bfSpecRgstNo ='" .$arr['bfSpecRgstNo'].          "', lcnsLmtNm = '"       .$arr['lcnsLmtNm'] .         "', ";			// 면허제한명(추가)
+					$sql .= "                        locate       ='" .$arr['prtcptLmtRgnNm'] .       "',cntrctCnclsMthdNm= '" .$arr['cntrctCnclsMthdNm'] . "' ";			// 참가제한지역명, 계약방법명(추가)		
+					$sql .="  WHERE bidNtceNo=  '" .$arr['bidNtceNo'].  "' ";
+					$sql .="    AND bidNtceOrd=  '" .$arr['bidNtceOrd'].  "' ";
+					if (!($conn->query($sql))) echo "ln303:Err sql=" . $sql . "<br>";	
 				}
 				return false; // update
 			} else {
 
 				//$sql = 'insert into '.$openBidInfo.' (idx, bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
-				$sql =  'INSERT INTO ' . $openBidInfo . ' ( bidNtceNo, bidNtceOrd, bidNtceNm,  ntceInsttNm, dminsttNm,   opengDt,   bidtype,';
-				$sql .= 'reNtceYn,  rgstTyNm,   ntceKindNm, bidNtceDt,   ntceInsttCd, dminsttCd, bidBeginDt, bidClseDt,';
-				$sql .= 'presmptPrce,bidNtceDtlUrl,bidNtceUrl,sucsfbidLwltRate,bfSpecRgstNo,lcnsLmtNm,locate,ModifyDT)';
-				// $sql .= 'prtcptCnum,bidwinnrNm,bidwinnrBizno,sucsfbidAmt,sucsfbidRate,rlOpengDt,bidwinnrCeoNm) '; 
-				$sql .= "VALUES ( '" . $arr['bidNtceNo'] . "', '" . $arr['bidNtceOrd'] . "', '" . addslashes($arr['bidNtceNm']) . "','" . addslashes($arr['ntceInsttNm']) . "','" . addslashes($arr['dminsttNm']) . "',";
-				$sql .= "'" . $arr['opengDt'] . "', '" . $pss . "', ";
-				$sql .= "'" . $arr['reNtceYn'] . "', '" . $arr['rgstTyNm'] . "', ";
-				$sql .= "'" . $arr['ntceKindNm'] . "', '" . $arr['bidNtceDt'] . "', ";
-				$sql .= "'" . $arr['ntceInsttCd'] . "', '" . $arr['dminsttCd'] . "', ";
-				$sql .= "'" . $arr['bidBeginDt'] . "', '" . $arr['bidClseDt'] . "', ";
-				$sql .= "'" . $arr['presmptPrce'] . "', '" . $arr['bidNtceDtlUrl'] . "', ";
-				$sql .= "'" . $arr['bidNtceUrl'] . "', '" . $arr['sucsfbidLwltRate'] . "', ";
-				$sql .= "'" . $arr['bfSpecRgstNo'] . "', '" . $lcnsLmtNm . "', '" . $arr['prtcptLmtRgnNm'] . "',now() ) ";
-
-				if ($sql != '') {
-					if ($conn->query($sql) === TRUE) {
-					}
-				}
+				$sql = 'REPLACE INTO ' . $openBidInfo . ' (bidNtceNo, bidNtceOrd, bidNtceNm, ntceInsttNm, dminsttNm, opengDt, bidtype,';
+				$sql .= '                                  reNtceYn, rgstTyNm, ntceKindNm, bidMethdNm, bidNtceDt, ntceInsttCd, dminsttCd, bidBeginDt, bidClseDt,';
+				$sql .= '                                  presmptPrce, bidNtceDtlUrl, bidNtceUrl, sucsfbidLwltRate, bfSpecRgstNo, lcnsLmtNm, locate, cntrctCnclsMthdNm, ModifyDT)';
+				$sql .= "VALUES ('"     .$arr['bidNtceNo'].     "', '" .$arr['bidNtceOrd'].       "', ";
+				$sql .= "'"  .addslashes($arr['bidNtceNm']).    "', '" .addslashes($arr['ntceInsttNm']). "', ";
+				$sql .= "'"  .addslashes($arr['dminsttNm']).    "', '" .$arr['opengDt'].          "', '" .$pss. "', ";
+				$sql .= "'"             .$arr['reNtceYn'].      "', '" .$arr['rgstTyNm'].         "', ";
+				$sql .= "'"             .$arr['ntceKindNm'].    "', '" .$arr['bidMethdNm'].       "', '" .$arr['bidNtceDt']. "', ";
+				$sql .= "'"             .$arr['ntceInsttCd'].   "', '" .$arr['dminsttCd'].        "', ";
+				$sql .= "'"             .$arr['bidBeginDt'].    "', '" .$arr['bidClseDt'].        "', ";
+				$sql .= "'"             .$arr['presmptPrce'].   "', '" .$arr['bidNtceDtlUrl'].    "', ";
+				$sql .= "'"             .$arr['bidNtceUrl'] .   "', '" .$arr['sucsfbidLwltRate']. "', ";
+				$sql .= "'"             .$arr['bfSpecRgstNo'] . "', '" .$arr['lcnsLmtNm'].        "', " ;			// 사전규격등로번호, 면허제한명
+				$sql .= "'"             .$arr['prtcptLmtRgnNm'] ."','" .$arr['cntrctCnclsMthdNm']."', ";		    // 지역제한명,      계약방법명
+				$sql .= " now() )" ;		
+				if (!($conn->query($sql))) echo "ln323:Err sql=" . $sql . "<br>";	
 				return true;
 			}
 			//select * from openBidInfo_2018_2 where bidNtceNo ='20180626257'
 		}
+
 		// --------------------------------------- function insertopenBidInfo
 		function insertopenBidInfoHrc($conn, $openBidInfo, $idx, $arr, $pss, $g2bClass, $itemLimit)
 		{
@@ -341,22 +339,19 @@ $countItem = count($item1) + count($item2) + count($item3);
 			//if ($row = $result->fetch_assoc()) $bidNtceOrd = $row['Ord'];
 			if ($row = $result->fetch_assoc()) {
 				if (false) { // update 안함..$row['bidNtceOrd'] < $arr['bidNtceOrd'] || $arr['bidClseDt'] == NULL || $arr['bidClseDt'] == '') {
-					$sql = "update " . $openBidInfo . " set bidNtceDt = '" . $arr['rcptDt'] . "', ";
+					$sql = "UPDATE " . $openBidInfo . " SET bidNtceDt = '" . $arr['rcptDt'] . "', ";
 					$sql .= "ntceInsttCd = '" . $arr['ntceInsttCd'] . "', dminsttCd = '" . $arr['dminsttCd'] . "', ";
 					$sql .= "bidBeginDt = '" . $arr['rgstDt'] . "',  ";
 					$sql .= "presmptPrce = '" . $arr['asignBdgtAmt'] . "',  ";
 					$sql .= "ModifyDT = now() ";
-					$sql .= " where bidNtceNo='" . $arr['bfSpecRgstNo'] . "';";
+					$sql .= " WHERE bidNtceNo='" . $arr['bfSpecRgstNo'] . "';";
 					$conn->query($sql);
 				}
 				return false; // update
 			} else {
-				/*품명	prdctClsfcNoNm 발주기관명	orderInsttNm 실수요기관명	rlDminsttNm 배정예산금액	asignBdgtAmt
-	접수일시	rcptDt 사전규격등록번호	bfSpecRgstNo
-	물품상세목록	prdctDtlList 등록일시	rgstDt */
-
+				/*품명	prdctClsfcNoNm 발주기관명	orderInsttNm 실수요기관명	rlDminsttNm 배정예산금액	asignBdgtAmt 접수일시	rcptDt 사전규격등록번호	bfSpecRgstNo	물품상세목록	prdctDtlList 등록일시	rgstDt */
 				//$sql = 'insert into '.$openBidInfo.' (idx, bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
-				$sql = 'insert into ' . $openBidInfo . ' ( bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
+				$sql = 'INSERT INTO ' . $openBidInfo . ' ( bidNtceNo, bidNtceOrd, bidNtceNm,ntceInsttNm, dminsttNm,opengDt,bidtype,';
 				$sql .= 'reNtceYn,rgstTyNm,ntceKindNm,bidNtceDt,ntceInsttCd,dminsttCd,bidBeginDt,bidClseDt,';
 				$sql .= 'presmptPrce,bidNtceDtlUrl,bidNtceUrl,sucsfbidLwltRate,bfSpecRgstNo,lcnsLmtNm,ModifyDT)';
 				// $sql .= 'prtcptCnum,bidwinnrNm,bidwinnrBizno,sucsfbidAmt,sucsfbidRate,rlOpengDt,bidwinnrCeoNm) '; 

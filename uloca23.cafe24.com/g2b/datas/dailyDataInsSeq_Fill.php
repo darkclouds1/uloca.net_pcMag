@@ -144,32 +144,44 @@ if ($cnt > 0) {
 		if (!($conn->query($sql))) $msg .= ("ln140::Err Sql=" .$sql. ", <br>");
 		$i++;
 	}
-} else {  // 낙찰건수가 없으면 개찰일시(-1 day)와 비교해서 '유찰' 또는 '연계기관 공고건' 업데이트
-
+} else {  
+	// 낙찰건수가 없으면 개찰일시(-7 day)와 비교해서 '유찰' 또는 '연계기관 공고건' 업데이트 
+	// ==> 개찰결과 유찰목록조회, 개찰결과 개찰완료 목록 조회 에서 업데이트해야 함
+	if ($rgstTyNm == '연계기관 공고건') {
 		$sql  = "UPDATE openBidInfo SET ";
-		if ($rgstTyNm == '연계기관 공고건') {
-			$sql .= "       progrsDivCdNm = '연계기관'";
-		} else {
-			$sql .= "       progrsDivCdNm = '유찰'";
-		}
+		$sql .= "       progrsDivCdNm = '연계기관'";
 		$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo. "'";
 		$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "'";
-		$sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -1 day)  ";
-
-	if (!($conn->query($sql))) $msg .= ("ln150::Err Sql=" .$sql. ", <br>");	
-	if ($rgstTyNm == '연계기관 공고건') {
+		// $sql .= "   AND date_format(opengDt,'%Y%m%d') < date_add(now(), interval -7 day)  ";
+		if (!($conn->query($sql))) $msg .= ("ln150::Err Sql=" .$sql. ", <br>");	
 		$msg .= "연계기관";
 	} else {
-		$youchalCnt++;
+		// 유찰, 유찰사유 입력
+		$pss = '유찰';
+		$numOfRows = 10;
+		$pageNo = 1;
+		$response = $g2bClass->getBidRslt2($numOfRows, $pageNo, $inqryDiv, '', '', $pss, $bidNtceNo, $bidNtceOrd);
+		$json = json_decode($response, true);
+		$item = $json['response']['body']['items'];
+		$arr = $item[0];
+		if (count($item) <> 0 ){
+			$sql  = "UPDATE openBidInfo SET ";
+			$sql .= "       progrsDivCdNm = '" .$arr['opengRsltDivNm']. "', ";	// 유찰
+			$sql .= "       nobidRsn = '"      .$arr['nobidRsn'].       "'  ";	// 유찰사유
+			$sql .= " WHERE bidNtceNo  = '" .$bidNtceNo.  "' ";
+			$sql .= "   AND bidNtceOrd = '" .$bidNtceOrd. "' ";
+			if (!($conn->query($sql))) $msg .= ("ln150::Err Sql=" .$sql. ", <br>");	
+			$msg .= '유찰=' .$arr['nobidRsn'];
+		} else {
+			$msg .= '미확인';
+		}
 	}
 }	// end if ($cnt>0)
 
 // =======================================================================
 // 업데이트 결과 - 개찰일시(opengDt)가 지나고 건수=0 이면 '유찰'로 업데이트 함
 // =======================================================================
-if ($youchalCnt == 1 ) {
-	$msg .= "유찰";
-} else {
+if ($cnt > 0 ) {
 	$msg .= "건수=" .$cnt; 
 }
 

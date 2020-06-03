@@ -25,12 +25,14 @@ function getJSon($searchDate){
 	//echo $list; exit;
 
 	foreach ($list as $key=>$value) {
-		$result .= "[{\"value\":\"" . $value->_dt ."\"},";
-		$result .= "{\"value\":\"" . $value->_id . "\"},";
-		$result .= "{\"value\":\"" . $value->_ip . "\"},";
-		$result .= "{\"value\":\"" . $value->_cnt . "\"},";
-		$result .= "{\"value\":\"" . $value->_rmrk ."\"},";
-		$result .= "{\"value\":\"" . $value->_pg . "\"}],";
+		$result .= "[{\"value\":\"" .$value->_dt.       "\"},";
+		$result .= "{\"value\":\"" .$value->_id.        "\"},";
+		$result .= "{\"value\":\"" .$value->_ip.        "\"},";
+		$result .= "{\"value\":\"" .$value->_pgDtlCD.   "\"},";
+		$result .= "{\"value\":\"" .$value->_rmrk.      "\"},";
+		$result .= "{\"value\":\"" .$value->_pg.        "\"},";
+		$result .= "{\"value\":\"" .$value->_keyDtlCD . "\"},";
+		$result .= "{\"value\":\"" .$value->_modifydt . "\"}],";
 	}
 	$result .= "]}";
 	

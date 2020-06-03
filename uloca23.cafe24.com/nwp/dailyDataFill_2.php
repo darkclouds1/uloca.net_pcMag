@@ -1,15 +1,13 @@
 <?
 
-//error_reporting(E_ALL);
-//ini_set("display_errors", 1);
-//ini_set('max_execution_time', 600);
-echo "max_execution_time=" . ini_get('max_execution_time') . "<br>";
+// error_reporting(E_ALL);
+// ini_set("display_errors", 1);
+// ini_set('max_execution_time', 600);
+// echo "max_execution_time=" . ini_get('max_execution_time') . "<br>";
 
 @extract($_GET);
 @extract($_POST);
 ob_start();
-// http://uloca.net/g2b/datas/dailyDataSearch.php?startDate=2018-07-02 00:00&endDate=2018-07-03 10:59&openBidInfo=openBidInfo_2018_2&openBidSeq=openBidSeq_2018_2
-//http://uloca.net/nwp/dailyDataFill.php?startDate=20180930&endDate=20180930&pss=%EB%AC%BC%ED%92%88
 require($_SERVER['DOCUMENT_ROOT'] . '/classphp/g2bClass.php'); //'/g2b/classPHP/g2bClass.php');
 require($_SERVER['DOCUMENT_ROOT'] . '/classphp/dbConn.php');
 $g2bClass = new g2bClass;
@@ -19,9 +17,6 @@ $conn = $dbConn->conn();
 $startDate = '';
 $endDate = '';
 $contn = 0;
-
-// sumit 안하기 때문에 _POST 없음
-// echo "_POST Value= startDate=" .$_POST['startDate']. ", enddate=" .$_POST['endDate']. ", contn=" .$_POST['contn']. "<br>";
 
 if ($_POST['startDate'] != '') {
 	$startDate = date("Y-m-d", strtotime($_POST['startDate']));
@@ -62,13 +57,11 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<meta name="format-detection" content="telephone=no">
-	<!--//-by jsj 전화걸기로 링크되는 것 막음 -->
-
 	<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css?version=20190102" />
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="/js/common.js"></script>
 	<script src="/g2b/g2b.js"></script>
-	<script src="/g2b/g2b_2019.js?version=20190203"></script>
+	<script src="/g2b/g2b_2019.js"></script>
 
 	<script>
 		stopOn = true;  
@@ -162,7 +155,6 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 			// 입찰정보 (from~to) 수집  , bidSeqOn=true 개찰이력 입력
 			//------------------------------------------------------
 			url = '/nwp/insertBidInfoFill.php?startDate=' + startDate + '&endDate=' + endDate + '&openBidInfo=openBidInfo&openBidSeq=' + openBidSeq + '&bidSeqOn=' +bidSeqOn;
-			//document.getElementById('btn').style.display = 'none';
 			getAjax(url, searchDaily2_Fill);
 			console.log(url);
 		}
@@ -286,9 +278,6 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 				donextday(); 
 			}, 10000);				// 20초간 delay
 		}
-
-		// sumit 시작
-		//searchDailyFill();
 	</script>
 
 <body onload="javascript:donextday();">
@@ -335,14 +324,13 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 
 	</form>
 	<div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 50%;margin-top: -10px; margin-left: -50px; '>
-		<img src='http://uloca23.cafe24.com/g2b/loading3.gif' width='100px' height='100px'>
+		<img src='https://uloca.net/g2b/loading3.gif' width='100px' height='100px'>
 	</div>
-	<div style='font-size:14px ;font-weight:bold'>- 입찰공고 / 낙찰현황 / 낙찰목록 API  <br>
+	<div style='font-size:12px;font-weight:bold;'>- 입찰공고 / 낙찰현황 / 낙찰목록 API  <br>
 		1) 입찰정보(등록일 기준): 입찰공고 UPDATE, 없으면 REPLACE, 개찰결과가 없거나 신규입력을 화면에 보여줌, 개찰일시 > 오늘날짜(-1 day) 제외  <br/>
 		2) 낙찰목록(개찰일 기준): 낙찰사업자번호가 없으면 ★ 진행구분(progrsDivCdNm) UPDATE, 공고가 없으면 openBidSeq_status '01'에 진행구분 REPLACE <br/>
 		3) 낙찰현황(개찰일 기준); 낙찰1순위 정보 UPDATE, 공고없으면 openBidSeq_status '01' 에 ★ 낙찰현황정보 및 진행구분(progrsDivCdNm)='개찰완료' REPLACE <br/>
 	</div>
-
 	<div id='totalRecords'>total records=<?= $countItem ?> </div>
 	<!-- 공고목록 테이블 헤드 -->
 	<table class='type10' id='specData'>
@@ -388,7 +376,7 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	$sql .= " WHERE status_rs = 'N' ";
 	$sql .= "   AND bidNtceNo IN ( ";
 	$sql .= "       SELECT bidNtceNo FROM openBidInfo where 1 ";
-	$sql .= "          AND bidwinnrBizno <> '' ";    		   				   // 낙찰결과있음
+	$sql .= "          AND bidwinnrBizno <> '' ";    		   				   // 낙찰결과 있음
 	$sql .= "           OR ntceKindNm IN ('취소', '재입찰', '연기') ";			//  일반, < 변경, 취소, 재입찰, 연기>,  긴급, 갱신, 긴급갱신
 	$sql .= "           OR bidMethdNm NOT IN ('전자입찰' )";    			    // 입찰방식이 '전자입찰' 이 아니면 낙찰결과가 없음
 	$sql .= "           OR progrsDivCdNm IN ('유찰', '개찰완료', '재입찰') ";   //  유찰, 개찰완료, 재입찰
@@ -399,7 +387,7 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	// $sql = " DELETE FROM openBidInfo_status WHERE status_rs = 'Y' ";
 	// if ($conn->query($sql) <> true) echo "SQL error= " . $sql . "<br>";
 	// <status상태> 결과에 openBidInfo_status 상태를 보여줌
-	echo "<br>------ openBidInfo_Status 상태정보 -------------<br>";
+	echo "------ openBidInfo_Status 상태정보 -------------<br>";
 	$sql = " SELECT statusCd, status_rs, COUNT(statusCd) as Cnt from openBidInfo_status GROUP BY statusCd, status_rs ";
 	echo "ln629 sql=' " . $sql . " '<br>";
 
@@ -407,22 +395,22 @@ echo " startDate=" . $startDate . ", endDate=" . $endDate . ", 계속(contn)=" .
 	while ($arr = $dbRst->fetch_assoc()) {
 		switch ($arr['statusCd'] . $arr['status_rs']) {
 			case "01N":
-				echo " (01)낙찰목록비교 공고번호없고, 진행구분-확보= " . $arr['Cnt'] . "건,";
+				echo " (01)낙찰목록비교 공고번호 없음, 진행구분-확보= " . $arr['Cnt'] . "건,";
 				break;
 			case "01Y":
-				echo " (완료)낙찰목록비교 공고번호없고, 완료= " . $arr['Cnt'] . "건, <br>";
+				echo " (완)낙찰목록비교 공고번호 확인 완료= " . $arr['Cnt'] . "건, <br>";
 				break;
 			case "02N":
-				echo " (02)입찰정보비교 낙찰정보없음=" . $arr['Cnt'] . "건, ";
+				echo " (02)입찰정보비교 낙찰정보 없음=" . $arr['Cnt'] . "건, ";
 				break;
 			case "02Y":
-				echo " (완료)입찰정보비교 낙찰정보없음, 완료=" . $arr['Cnt'] . "건, <br>";
+				echo " (완)입찰정보비교 낙찰정보 확인 완료=" . $arr['Cnt'] . "건, <br>";
 				break;
 			case "03N":
-				echo " (03)입찰정보비교 공고신규입력=" . $arr['Cnt'] . "건, ";
+				echo " (03)입찰정보비교 공고신규입력 필요=" . $arr['Cnt'] . "건, ";
 				break;
 			case "03Y":
-				echo " (완료)입찰정보비교 공고신규입력, 완료=" . $arr['Cnt'] . "건, <br>";
+				echo " (완)입찰정보비교 공고신규입력 완료=" . $arr['Cnt'] . "건, <br>";
 				break;
 		}
 	}

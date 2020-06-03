@@ -374,8 +374,4 @@ function displayBidInfo($no, $arr, $pss='', $idx='0'){
 	$tag .= '</tr>';
 }
 
-function clog($data){
-    echo "<script>console.log( 'PHP_Console: " . $data . "' );</script>";
-}
-
 ?>

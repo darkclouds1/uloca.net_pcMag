@@ -9,7 +9,7 @@
  */
 //include 'http://uloca.net/g2b/scsBid.php';
 
-function g2bShortCode()
+function g2bShortCode_tst()
 {
 	//	session_start();
 	@extract($_GET);
@@ -126,7 +126,10 @@ function g2bShortCode()
 	 $json_string = $g2bClass->rs2Json11($stmt, $fields);
 	 
 	 / * ---------------------------------------------- graph ---------------------------- */
+
+
 ?>
+
 	<!DOCTYPE html>
 	<html>
 
@@ -185,17 +188,15 @@ function g2bShortCode()
 		<script src="/jquery/jquery-ui.min.js"></script>
 		<script src="/include/JavaScript/tableSort.js"></script>
 		<script src="/js/common.js?version=20190203"></script>
-
-		<script src="/g2b/g2b.js"></script>			
-		<script src="/g2b/g2b_2019.js"></script>	
-		<script src="/g2b/g2bCookie.js"></script>
+		<script src="/g2b/g2b.js"></script>
+		<script src="/g2b/g2b_2019.js"></script>
 
 		<script>
 			var SearchCounts = '<?= $SearchCount ?>'; // 검색회수
 		</script>
 	</head>
 
-	<body onload="init()">
+	<body>
 		<!-- onload='reinit()'> <!-- onscroll='viewScroll()' -->
 		<!-- ------------------ 검색창 ---------------------------------------------------------- -->
 
@@ -300,12 +301,13 @@ function g2bShortCode()
 					<? } ?>
 					<!--  시작 searchajax()-->
 					<div class="btn_area">
+						<!-- input type="submit" class="search" value="검색" onclick="searchx()" /-->&nbsp;&nbsp;
 						<a onclick="searchajax();" class="search">검색</a>
 						<a onclick="showhidegr();" class="search">Chart보기</a>
 						<a onclick="copyURL();" class="search">링크복사</a>
-						<a onclick="searchBidNoList()" class="search">관심입찰</a>
-						<div id='bidKwd'></div>
-						<div id='compKwd'></div>
+						<a onclick="saveBidNoList()" class="search">관심입찰</a>
+						<div id='bidKwd'>최근 조회한 입찰정보</div>
+						<div id='compKwd'>최근 조회한 기업정보</div>
 						<!-- a onclick="mailMe2();" class="search">이메일</a>
 						<a onclick="gotoComp();" class="search">기업정보</a><!-- a onclick="tableToExcel('bidData','bidData','bid_<?= $endDate ?>.xls')" class="search">엑셀</a -->
 					</div>
@@ -369,70 +371,42 @@ function g2bShortCode()
 		<script>
 			$("#kwd").click(function() {
 				// $(this).select();
-				$(this).val('');
+				// $(this).val('');
 			});
 			$("#compname").click(function() {
 				// $(this).select();
-				$(this).val('');
+				// $(this).val('');
 			});
 
 			//-----------------------------------------
-			// 쿠키명: 쿠키저장 최근 조회한 입찰정보 키워드
-			// kwd: 입찰정보, compName: 기업검색
-			// 
+			// 쿠키저장 최근 조회한 입찰정보 키워드
 			//-----------------------------------------
-			var isRun = false;      // ajax 완료전에 다시 클릭 금지 (관심목록 DB저장 적용)
-			var resudi = "<?= $current_user->user_login ?>";	// 사용자
-			
-			// 최초 관심 목록 DB 조회 쿠키에 저장 type: C=업데이터, R=읽기
-			function init() {
-				// 쿠키 입찰검색
-				cookieKwd.length = 0;
-				cookieKwd = unescape(getCookieArray('kwd', cookieCnt));
-				cookieKwd = cookieKwd.split(',');
-				cookieLink = "";
-				for (var key in cookieKwd) {
-					if (cookieKwd[key] == "undefined" || cookieKwd[key] == undefined) continue;
-					// if (cookieKwd[key] == undefined) continue;
-					cntNum = key;	cntNum++;
-					if (cntNum == 1) cntNum = '[입찰정보] ' + cntNum;
-					cookieLink += cntNum +')<a onclick=\'viewKwd(\"' + cookieKwd[key] + '")\'>' + cookieKwd[key] + '&nbsp</a> ';
-					// 마지막에 쿠키'삭제' 링크 추가
-					if (key == cookieKwd.length -1 ) {
-						cookieLink += '&nbsp&nbsp → <a onclick=\'delKwd(\"kwd")\'>삭제</a>';
-					}
-				}
-				document.getElementById('bidKwd').innerHTML = cookieLink
+			const cookieCnt = 7;	// 쿠키 갯수
+			// 쿠키 입찰정보 키워드
+			cookieKwd = decodeURIComponent(unescape(getCookieArray('kwd', cookieCnt)));
+			cookieKwd = cookieKwd.split(',');
+			delete cookieKwd[cookieKwd.indexOf("undefined")];
 
-				// 쿠키 기업검색
-				cookieKwd.length = 0; // 초기화
-				cookieKwd = unescape(getCookieArray('compName', cookieCnt));
-				cookieKwd = cookieKwd.split(',');
-				cookieLink = "";
-				for (var key in cookieKwd) {
-					if (cookieKwd[key] == "undefined" || cookieKwd[key] == undefined) continue;
-					cntNum = key;	cntNum++;
-					if (cntNum == 1) cntNum = '[기업검색] ' + cntNum;
-					cookieLink += cntNum + ')<a onclick=\'viewCompKwd(\"' + cookieKwd[key] + '")\'>' + cookieKwd[key] + '&nbsp</a> ';
-					// 마지막에 쿠키'삭제' 링크 추가
-					if (key == cookieKwd.length -1 ) {
-						cookieLink += '&nbsp&nbsp → <a onclick=\'delKwd(\"compName")\'>삭제</a>';
-					}
-				}
-				document.getElementById('compKwd').innerHTML = cookieLink;
-
-				//--------------------------------------------------------------------------------------		
-				// DB->쿠키로 저장 후 관심 자동 조회 됨, 로그인 상태로 id가 있는 경우만 해당, type: R=읽기
-				//--------------------------------------------------------------------------------------
-				cookieUse = false;	// 최초 자동 검색은 쿠키 저장 없음. (입찰정보 쿠키에 적용되는 것을 막기 위함)
-				if (resudi != '') {
-					isRun = true;
-					url = "./wp-content/plugins/g2b/updateBidNoList.php?bidNoList=" + bidNoList + "&id=" + resudi + "&type=" +"R";	// 관심 입찰번호, id
-					getAjax(url, updateDbBidNoList);
-					console.log(url);
-				}
+			var cookieLink = "";	// 최근 검색어 링크
+			for (var i in cookieKwd) {
+				cookieLink += '□<a onclick=\'viewKwd(\"' + cookieKwd[i] + '")\'>' + cookieKwd[i] + '</a> ';
 			}
+			document.getElementById('bidKwd').innerHTML = cookieLink
 
+			// 쿠키 기업검색 키워드
+			cookieLink = "";
+			cookieKwd = decodeURIComponent(unescape(getCookieArray('compName', cookieCnt)));
+			cookieKwd = cookieKwd.split(',');
+			delete cookieKwd[cookieKwd.indexOf("undefined")];
+
+			for (var i in cookieKwd) {
+				cookieLink += '□<a onclick=\'viewCompKwd(\"' + cookieKwd[i] + '")\'>' + cookieKwd[i] + '</a> ';
+			}
+			document.getElementById('compKwd').innerHTML = cookieLink
+			//-----------------------------------------
+
+
+			var resudi = "<?= $current_user->user_login ?>";
 			function reinit9() {
 				myLineChart = new dhtmlXChart({
 					view: "line",
@@ -523,16 +497,38 @@ function g2bShortCode()
 				//getAjax(url,drawchart);
 			}
 
-
 			function makeparm2() {
 				//var sel = document.getElementById("kind1");
 				var val = 'bid'; //sel.options[sel.selectedIndex].value;
 				if (val == 'hrc') return; // 사전규격이면 안함...
 				var form = document.myForm;
 				parm = "?a=1&pall=1";
+
+				//if (document.getElementById('kind20').checked) parm +='&bidall=1';
+				//if (document.getElementById('kind21').checked) parm +='&bidthing=1';
+				//if (document.getElementById('kind22').checked) parm +='&bidcnstwk=1';
+				//if (document.getElementById('kind23').checked) parm +='&bidservc=1';
+
 				parm += '&kwd=' + encodeURIComponent(form.kwd.value);
 				parm += '&dminsttNm=' + encodeURIComponent(form.dminsttNm.value);
 				parm += '&id=' + document.popForm.id.value;
+				/*if (document.getElementById('kind40').checked) parm +='&p1w=1';
+				if (document.getElementById('kind41').checked) parm +='&p1m=1';
+				if (document.getElementById('kind42').checked) parm +='&p6m=1';
+				if (document.getElementById('kind43').checked) parm +='&p1y=1';
+				if (document.getElementById('kind44').checked) parm +='&pall=1';
+				frrange = document.getElementById('frrange').value;
+				torange = document.getElementById('torange').value;
+				
+				parm += '&frrange='+frrange+'&torange='+torange+'&curpos='+curpos;
+				/ * if (document.getElementById('kind60').checked) parm +='&loc0=1';
+				if (document.getElementById('kind61').checked) parm +='&loc1=1';
+				if (document.getElementById('kind62').checked) parm +='&loc2=1';
+				if (document.getElementById('kind63').checked) parm +='&loc3=1';
+				if (document.getElementById('kind64').checked) parm +='&loc4=1';
+				if (document.getElementById('kind65').checked) parm +='&loc5=1';
+				if (document.getElementById('kind66').checked) parm +='&loc6=1';
+				if (document.getElementById('kind67').checked) parm +='&loc7=1'; */
 				//clog(parm);
 			}
 
@@ -541,14 +537,16 @@ function g2bShortCode()
 				showchart();
 				data = JSON.parse(datas); //JSON.stringify(datas);
 				orgdata = JSON.parse(datas);
+				//clog(data.length+'/');
+				//clog(data); //[0]['tr']);
 				mydrawChart();
 			}
-
 			var maxindex;
 			var maxvalue;
 			var stepvalue;
 			var data;
 			var orgdata;
+
 			function getMaxno() {
 				max = 0;
 				for (i = 0; i < data.length; i++) {
@@ -713,7 +711,7 @@ function g2bShortCode()
 			var table1;
 			// 입찰정보 -----------------------------------------------
 			var col = ["번호", "구분", "공고번호(→나라장터)", "공고명", "'??'계약방법(or)", "추정가격", "공고일", "'?'수요기관(or)", "낙찰기업(→낙찰기록)", "개찰일시<br>(→개찰결과)", "찜하기"];
-			var col2 = ['', 'pss', 'bidNtceNo', 'bidNtceNm', 'cntrctCnclsMthdNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidwinnrNm', 'opengDt', 'check']; //, 'pss' ];
+			var col2 = ['', 'pss', 'bidNtceNo', 'bidNtceNm', 'cntrctCnclsMthdNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidwinnrNm', 'opengDt', 'chkBox']; //, 'pss' ];
 			var col3 = ['c', 'c', 'c', 'l', 'l', 'r', 'd', 'l', 'c', 'd', 'c']; //,'c' ];
 			var colw = ['5%', '6%', '10%', '20%', '10%', '7%', '7%', '10%', '9%', '9%', '5%']; //, '10%' ]; // width
 
@@ -824,7 +822,6 @@ function g2bShortCode()
 					clog('makeTable5');
 					return;
 				}
-
 				/* ----------------------------------------------------------------------------
 					입찰정보
 				----------------------------------------------------------------------------- */
@@ -847,8 +844,8 @@ function g2bShortCode()
 					var useExplain =  "<font size='2em'>✔︎︎[공고명검색] 입찰정보를 검색하려면 공고명에 포함된 단어(=키워드)를 입력하세요. 제외하려면 키워드 앞에[-]마이너스를 사용하세요.(ex.정보 감리 -공사)</br>";
 					useExplain    += " ✔︎︎[수요기관검색] 공고명 ?수요기관  → [?]물음표 뒤에 수요기관 키워드를 입력하세요.(ex.정보 감리 ?서울)</br>"
 					useExplain    += " ✔︎︎[계약방법검색] 공고명 ??계약방법 → [??]물음표 2개 뒤에 계약방법 키워드를 입력하세요.(ex. 정보 감리 ??총액), 제외하려면 (ex.정보 감리 ??-협상) [-]마이너스를 사용하세요.</font>"; //-by jsj 링크설명 
-					if (loginSW) useExplain    = ''; // 1:관리자 or 유료사용자는 설명없이 진행
 					document.getElementById('useExplain').innerHTML = useExplain;
+					// document.getElementById('linkExplain').innerHTML = "<font size='2em'>✔︎[공고번호]클릭 → 입찰정보상세(나라장터) ✔︎︎[수요기관]클릭 → 수요기관으로 재검색 ✔︎︎<font color=red>[개찰일시]클릭 → 낙찰결과 순위목록을 보여줍니다.</font>"; //-by jsj 링크설명 
 					document.getElementById('totalrec').innerHTML = "<font size='2em'>[" + String(SearchCounts) + "]total record=" + idx;
 
 					clog('val=' + val + ' table1.rows.length=' + table1.rows.length);
@@ -857,17 +854,16 @@ function g2bShortCode()
 				} else { // "Mobile"
 					if (val == 'bid') {
 						//makeTableHead(col);
-						makeTabletr2bid(data);	// Mobile
+						makeTabletr2bid(data);
 					}
 					/*else {
 						//makeTableHead(colsx);
 						makeTabletr2hrc(data);
 					} */
 
-					//total record
+					//total record 뒤에 검색 URL 표시 -by jsj 190320 
 					document.getElementById('totalrec').innerHTML = "<font size='2em'>[" + String(SearchCounts) + "]total record=" + idx;
 				}
-				isRun = false  // 조회완료
 
 				viewmore();
 				move_stop();
@@ -901,6 +897,7 @@ function g2bShortCode()
 				for (var i = 0; i < column.length; i++) {
 					var th = document.createElement("th"); // TABLE HEADER.
 					if (column[i] == 'check') th.innerHTML = '<input type="checkbox" onclick="javascript:CheckAll(\'' + chkid + '\')">';
+
 					else if (i != 0) th.innerHTML = column[i] + '<a onclick="sortTD (' + i + ')">▲</a><a onclick="reverseTD (' + i + ')">▼</a>';
 					else th.innerHTML = column[i];
 					th.setAttribute('style', 'width:' + columnw[i] + ';');
@@ -934,8 +931,11 @@ function g2bShortCode()
 				//if (items.length>1) items.sort(custonSort);
 
 				// 찜한 공고번호 cookie에서 가져오기
-				cookieKwd = unescape(getCookieArray('bidNoList'));
+				cookieKwd = decodeURIComponent(unescape(getCookieArray('bidNo', cookieCnt)));
 				cookieKwd = cookieKwd.split(',');
+				delete cookieKwd[cookieKwd.indexOf("undefined")];
+
+				// alert (cookieKwd);
 
 				var tbody = table1.createTBody();
 				for (var i = 0; i < items.length; i++) {
@@ -972,17 +972,15 @@ function g2bShortCode()
 							tabCell.innerHTML = setLink(items, i, j, tabCell);
 
 							// 찜하기 chkBox
-							if (col2[j] == 'check') {
-								// alert (trim(items[i]['bidNtceNo']));
-								// alert ("indexOf=" +cookieKwd.indexOf(trim(items[i]['bidNtceNo'])) + ", cookie=" + cookieKwd);
-
+							if (col2[j] == 'chkBox') {
 								if (cookieKwd.indexOf(trim(items[i]['bidNtceNo'])) == -1 ) {
 									//tabCell.innerHTML = "<input type=\'checkbox\' name=\'saveChkBox" +i+ "\' unchecked onclick=\'saveCookieBidNo(this);>";
-									tabCell.innerHTML = "<input type=checkbox name=saveChkBox" + idx + " unchecked onclick=saveCookieBidNo(this\,\'"+trim(items[i]['bidNtceNo'])+ "\'\)\;\>";
+									tabCell.innerHTML = "<input type=checkbox name=saveChkBox" + i + " unchecked onclick=saveCookieBidNo(this\,\'"+trim(items[i]['bidNtceNo'])+ "\'\)\;\>";
 								} else {
 									// 찜한 공고번호
-									tabCell.innerHTML = "<input type=checkbox name=saveChkBox" + idx + " checked onclick=saveCookieBidNo(this\,\'"+trim(items[i]['bidNtceNo'])+ "\'\)\;\>";
+									tabCell.innerHTML = "<input type=checkbox name=saveChkBox" + i + " checked onclick=saveCookieBidNo(this\,\'"+trim(items[i]['bidNtceNo'])+ "\'\)\;\>";
 								}
+								// if (idx==1) alert (tabCell.innerHTML);
 							}
 						} // column 
 
@@ -996,63 +994,46 @@ function g2bShortCode()
 				divContainer.appendChild(table1);
 			}
 
-			//-------------------------------------------------
 			// 찜하기 배열 저장 cookie=bidNo -by jsj 20200531
-			//-------------------------------------------------
-			var saveDur = 30; // 찜하기 저장 일수
+			var maxSaveBidNo = 1000; // 저장 갯수 1000개
 			function saveCookieBidNo(obj, bidNo){
-				cookieKwd.length = 0; // 배열초기화
-				cookieKwd = unescape(getCookieArray('bidNoList'));	
+				cookieKwd = decodeURIComponent(unescape(getCookieArray('bidNo', maxSaveBidNo)));	
 				cookieKwd = cookieKwd.split(',');
+				delete cookieKwd[cookieKwd.indexOf("undefined")];
 
-				if ($(obj).prop("checked") == true) {
+				if ($(obj).prop("checked") == true) {	// 저장
 					if (cookieKwd.indexOf(trim(bidNo)) == -1) {
-						cookieKwd.unshift(bidNo); // 공고 추가
+						cookieKwd.unshift(bidNo);
+						setCookieArray ('bidNo', cookieKwd, 100);	// 쿠키 저장 일수
+						//alert (cookieKwd);
 					}
-				} else { 
+				} else {	// 삭제
 					if (cookieKwd.indexOf(trim(bidNo)) != -1) {
-						delete cookieKwd[cookieKwd.indexOf(trim(bidNo))];               // 공고 삭제
+						delete cookieKwd[cookieKwd.indexOf(trim(bidNo))];
+						setCookieArray ('bidNo', cookieKwd, 100);	// 쿠키 저장 일수
+						//alert (cookieKwd);
 					}
 				}
-				// 쿠키에 저장
-				setCookieArray ('bidNoList', cookieKwd, saveDur);
 			}
-
-			//------------------------------------------------------
-			// 쿠키 관심 입찰 목록 조회 (동시에 DB저장) -by 20200601
-			// 쿠키 bidNoList: 관심 입찰 번호
-			//------------------------------------------------------
-			var bidNoList = ''; // DB에서 관심 목록 저장 후 조회 함
-			function searchBidNoList(){
-				// init()에서 쿠키에 DB -> 쿠키에 들어가 있어야 함.
-				cookieKwd.length = 0; // 배열초기화
-				cookieKwd = unescape(getCookieArray('bidNoList'));
+			// 관심 입찰 목록
+			function saveBidNoList(){
+				cookieKwd = decodeURIComponent(unescape(getCookieArray('bidNo', maxSaveBidNo)));
 				cookieKwd = cookieKwd.split(',');
+				delete cookieKwd[cookieKwd.indexOf("undefined")];
 
-				bidNoList = '';
-				for (var key in cookieKwd){
-					if (cookieKwd[key] == "undefined" || cookieKwd[key] == undefined) continue;					
-					bidNoList += cookieKwd[key] + ' ';
+				var bidNoList = '';
+				for (var i in cookieKwd){
+					bidNoList += cookieKwd[i] + ' ';
 				}
+				// alert ("bidNoList=" + bidNoList);
+				if (trim(bidNoList) == '') return;
 
-				if (trim(bidNoList) == '') {
-					alert ("관심입찰이 없습니다. PC에서 입찰정보 조회 후 \'찜하기\'의 체크박스를 선택하세요.");
-					document.getElementById('kwd').focus();
-					return;
-				}
-				
-				// 로그인 사용자만 관심입찰 조회 가능
-				if (resudi == '') {
-					alert ("관심입찰 저장/조회는 로그인 후 사용가능합니다.");
-					return;
-				}
-				//--------------------------------------------------------		
-				// DB저장 후 관심 목록 조회 type: C=업데이터, R=읽기
-				//---------------------------------------------------------
-				isRun = true;
-				url = "./wp-content/plugins/g2b/updateBidNoList.php?bidNoList=" + bidNoList + "&id=" + resudi + "&type=" +"C";	// 관심 입찰번호, id
-				getAjax(url, updateDbBidNoList);
-				// console.log(url);
+				// 관심 목록은 키워드 쿠키에 넣지 않도록 false로 진행
+				// 조회 후 쿠키 사용으로 바뀜
+				cookieUse = false; 
+				viewKwd(bidNoList);
+				// 관심 목록 키워드는 조회 후 삭제 -by jsj 20200531
+				$(kwd).val('');	// 
 			}
 
 			function makeTabletr2bid(datas) { // mobile
@@ -1082,6 +1063,7 @@ function g2bShortCode()
 						//if (items[i]['bidNtceNo'] == '') continue;
 
 						idx = idx + 1;
+
 						//licn += '<li><a class="a1" href = "http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='+items[i]['bidNtceNo']+'&bidseq='+items[i]['bidNtceOrd']+'&releaseYn=Y&taskClCd=1 ">';
 						pss = items[i]['pss']; //getPSS();
 						if (pss.substr(0, 2) == '계획') {
@@ -1091,7 +1073,6 @@ function g2bShortCode()
 							balju = false;
 							bidClseDt = items[i]['bidClseDt'].substr(0, 10);
 						}
-
 						if (pss.substr(0, 2) == '사전') pss = "&nbsp;&nbsp;<font color=orange>" + pss + "</font>";
 						else pss = "&nbsp;&nbsp;<font color=red>" + pss + "</font>";
 						if (balju) {
@@ -1125,12 +1106,14 @@ function g2bShortCode()
 					} catch (ex) {
 						clog(ex.message);
 					}
+
 				}
 				//clog(licn);
 				lic += licn;
 				//alert(lic);
 				document.getElementById("tables").innerHTML = lic;
 			}
+
 
 			function openButton(idx) {
 				if (document.getElementById("link" + idx).style.display == 'inline') {
@@ -1184,7 +1167,10 @@ function g2bShortCode()
 							tabCell.setAttribute('style', attr);
 							tabCell.innerHTML = setLinksx(items, i, j, tabCell);
 						}
+
+
 					} catch (ex) {}
+
 				}
 
 				// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
@@ -1317,12 +1303,12 @@ function g2bShortCode()
 						<a class="a1" href="/ep/invitation/publish/bidInfoDtl.do?bidno=20180903077&amp;bidseq=00&amp;releaseYn=Y&amp;taskClCd=1 ">김천시 강남북 연결도로 개설공사(총괄 및 1차분)-SEB거더<br /><font class="f1">조달청 대구지방조달청&#32;|&#32;경상북도 김천시<br />공고 : 20180903077-00&#32;|&#32;마감 : 2018/09/13 12:00</font> </a>
 					</li>
 					var col2 = [ '','check','bidNtceNo', 'bidNtceNm', 'presmptPrce', 'bidNtceDt', 'dminsttNm', 'bidClseDt', 'pss' ];
-					$sql = 'insert into '.$openBidInfo.' (bidNtceNo, bidNtceOrd, bidNtceNm,';
-					$sql .= 'presmptPrce,bidNtceDt,dminsttNm,bidClseDt,bidNtceDtlUrl,bidtype)';
-					$sql .= "VALUES ('".$arr['bfSpecRgstNo']."', '', '" .addslashes($arr['prdctClsfcNoNm']). "','" . $arr['asignBdgtAmt'] . "','" . $arr['rgstDt'] . "',";
-					$sql .= "'".addslashes($arr['rlDminsttNm'])."',  ";
-					$sql .= "'".$arr['opninRgstClseDt']."', '".$arr['bidNtceNoList']."', '".$pss."')";
-								*/
+	$sql = 'insert into '.$openBidInfo.' (bidNtceNo, bidNtceOrd, bidNtceNm,';
+		$sql .= 'presmptPrce,bidNtceDt,dminsttNm,bidClseDt,bidNtceDtlUrl,bidtype)';
+		$sql .= "VALUES ('".$arr['bfSpecRgstNo']."', '', '" .addslashes($arr['prdctClsfcNoNm']). "','" . $arr['asignBdgtAmt'] . "','" . $arr['rgstDt'] . "',";
+		$sql .= "'".addslashes($arr['rlDminsttNm'])."',  ";
+		$sql .= "'".$arr['opninRgstClseDt']."', '".$arr['bidNtceNoList']."', '".$pss."')";
+					*/
 						idx = idx + 1;
 						licn += '<li><a  class="a1"  onclick=openButton(' + idx + ')>';
 						licn += items[i]['bidNtceNm'] + '<br /><font class="f1">' + items[i]['dminsttNm'] + '<br />공고 : ' + items[i]['bidNtceNo'] + ' 마감 : ' + items[i]['bidClseDt'].substr(0, 10) + '</font> </a>';
@@ -1496,7 +1482,6 @@ function g2bShortCode()
 					clog(data);
 				}
 			}
-
 			loginSW = <?= $loginSW ?>;
 			reinit();
 		</script>
@@ -1513,7 +1498,7 @@ function g2bShortCode()
 				searchType = 1;
 				kwd = decodeURIComponent('<?= $kwd ?>');
 				form.kwd.value = kwd;
-				searchajax0(); // 링크에도 발주계획 없이 보냄 //searchajax_balju(); (발주계획포함)
+				searchajax0(); // 링크에도 발주계회 없이 보냄 //searchajax_balju(); (발주계획포함)
 			</script>
 
 		<?
@@ -1529,6 +1514,6 @@ function g2bShortCode()
 	<?
 		}
 	}
-	add_shortcode('g2bx', 'g2bShortCode');
+	add_shortcode('g2bx_tst', 'g2bShortCode_tst');
 
 	?>

@@ -17,16 +17,22 @@ function getJSon($searchDate){
 	if($searchDate == null) $searchDate = date("Y-m-d");
 	$result = "";
 	$result = "{\"result\":[";
-	$svcDAO = new classDAO; 
+	$svcDAO = new classDAO;
+	
 	$list = array();
 	$list = $svcDAO->searchUserlogin($searchDate);
 	
+	//echo $list; exit;
+
 	foreach ($list as $key=>$value) {
-		$result .= "[{\"value\":\"" . $value->_dt ."\"},";
-		$result .= "{\"value\":\"" . $value->_id . "\"},";
-		$result .= "{\"value\":\"" . $value->_ip . "\"},";
-		$result .= "{\"value\":\"" . $value->_rmrk ."\"},";
-		$result .= "{\"value\":\"" . $value->_pg . "\"}],";
+		$result .= "[{\"value\":\"" .$value->_dt.       "\"},";
+		$result .= "{\"value\":\"" .$value->_id.        "\"},";
+		$result .= "{\"value\":\"" .$value->_ip.        "\"},";
+		$result .= "{\"value\":\"" .$value->_pgDtlCD.   "\"},";
+		$result .= "{\"value\":\"" .$value->_rmrk.      "\"},";
+		$result .= "{\"value\":\"" .$value->_pg.        "\"},";
+		$result .= "{\"value\":\"" .$value->_keyDtlCD . "\"},";
+		$result .= "{\"value\":\"" .$value->_modifydt . "\"}],";
 	}
 	$result .= "]}";
 	

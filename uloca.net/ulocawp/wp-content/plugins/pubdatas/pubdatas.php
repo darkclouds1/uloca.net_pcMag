@@ -42,7 +42,10 @@ require($_SERVER['DOCUMENT_ROOT'].'/classphp/g2bClass.php'); //'/g2b/classPHP/g2
 
 <body>
 
-<div align=left style='font-size:12px; color:red'>아래 목록을 클릭하면 수정,삭제 버튼이 뜹니다. 설정은 한 아이디에 5개까지 됩니다.</div>
+<div align=left style='font-size:12px; color:red'> 
+	자동받기는 업그레이드 예정입니다. 자신의 관심분야를 입력해 놓으면 메일로 보내드릴 예정입니다.</br>
+	아래 목록을 클릭하면 수정,삭제 버튼이 뜹니다. 설정은 한 아이디에 5개까지 됩니다.
+</div>
 
 <!-- ------------------ 검색창 ---------------------------------------------------------- -->
 <!-- http://uloca23.cafe24.com/ulocawp/wp-content/plugins/pubdatas/ -->

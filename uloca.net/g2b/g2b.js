@@ -121,7 +121,7 @@ var searchCount = 0;
 var searchCountMax = 5;  //무료검색횟수 	-by jsj 0314 
 var searchLoginPlus = 5; //로그인후 무료검색횟수 -by jsj 0314
 var detailsw = false;
-var loginSW = '<?=$loginSW?>'; 	// plugins/g2b.php 83line -by jsj 0312
+var loginSW = '<?=$loginSW?>'; 	// 1:관리자 or 유료사용자, 0: 권한없음,  plugins/g2b.php 83line -by jsj 0312
 
 function searchajax000() {	  	// 상세검색 (통합검색은 g2b_2019.js) 
 	detailsw = true;
@@ -648,9 +648,9 @@ function viewRslt(bidNtceNo,bidNtceOrd, dt, pss) {
 		return;
 	}
 	frm = document.compInfoForm;
-	//id = frm.id.value;
+	// id = frm.id.value;
 	url = '/g2b/bidResult.php?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
-	//url += '&id='+id;
+	// url += '&id='+id;
 	//clog('function viewRslt '+url);
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 	popupWindow.focus();
@@ -662,7 +662,7 @@ function viewRslt(bidNtceNo,bidNtceOrd, dt, pss) {
 	frm.bidNtceOrd.value = bidNtceOrd;
 	frm.pss.value = pss;
 	frm.from.value = 'getBid';
-//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
+	//parm = 'bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
 	url = '/g2b/bidResult.php';//?bidNtceNo='+bidNtceNo+'&bidNtceOrd='+bidNtceOrd +'&pss='+pss+'&from=getBid';
 	//alert(url);
 	popupWindow = window.open(
@@ -759,8 +759,9 @@ function viewComp(bidNtceNo,bidNtceOrd,dt) {
 	popupWindow = window.open(url); //,'_blank','height=920,width=880,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
 
 }
+
 /* ------------------------------------------------------------------------------------------
-낙찰정보보기
+// 입찰정보 - 수요기관 재검색
 ------------------------------------------------------------------------------------------- */
 var detailsw = false;
 function viewscs(dminsttNm, kwd) {
@@ -792,7 +793,6 @@ function viewscs(dminsttNm, kwd) {
 		frm.kwd.value = kwd + '? ' + dminsttNm;		// 통합검색은 ? 뒤에 수요기관
 		searchajax0_1(); 							// 통합검색 
 	}  
-	
 }
 
 function viewscs0(dminsttNm) {
@@ -1171,15 +1171,12 @@ function getAjax(server,client) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-     ///document.getElementById("demo").innerHTML = this.responseText;
-	 client(this.responseText);
+		client(this.responseText);
     } else if (this.status == 504) {
 		move_stop();
 		alert('Time-out Error...');
 		return;
-    } else {
-		//alert ("Error" + xhttp.status);
-	}
+    }
   };
   xhttp.open("GET", server, true);
   xhttp.send();
@@ -1200,37 +1197,6 @@ function getAjaxPost(server,client,parm) {
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8"); 
 	xhr.send(parm);
 }
-
-/* ------------------------------------------------------------------------------------------
-datepicker 아래 css link가 필요함
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-------------------------------------------------------------------------------------------- */
-
-$(function() {
-  $( "#startDate" ).datepicker({
-    dateFormat: 'yy-mm-dd',
-	changeMonth: true, 
-	changeYear: true,
-	showMonthAfterYear: true, //년 뒤에 월 표시
-	autoSize: false, //오토리사이즈(body등 상위태그의 설정에 따른다)
-
-         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토' ], 
-         monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-  });
-  $( "#endDate" ).datepicker({
-    dateFormat: 'yy-mm-dd',
-	changeMonth: true, 
-	changeYear: true,
-	showMonthAfterYear: true, //년 뒤에 월 표시
-	autoSize: true, //오토리사이즈(body등 상위태그의 설정에 따른다)
-         dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-         dayNamesMin: ['일', '월', '화', '수', '목', '금', '토' ], 
-         monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-         monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월']
-  });	
-});
 
 /* -------------------------------------------------------------------------------------------
   ajaxJSON	서버에 데이타 요청 & 처리		function ajaxJSON(parm,callback)
@@ -1269,10 +1235,8 @@ $.ajax({
 
 }
 
-
   function closeMe() {
-	
-	//alert("메일을 보냈습니다.");
+  //alert("메일을 보냈습니다.");
   //history.go(-1);
   window.close();
 	}

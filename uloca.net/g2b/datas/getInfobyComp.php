@@ -195,7 +195,7 @@ if ($mobile == "Mobile") {
 	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right3 ?>px;' class="btn_areas"><a onclick="mailMe3();" class="search">이메일</a></div>
 	-->
 
-	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right3 ?>px;' class="btn_areas"><a onclick="location.href='https://uloca23.cafe24.com'" class="search">통합검색</a></div>
+	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right3 ?>px;' class="btn_areas"><a onclick="location.href='https://uloca.net'" class="search">통합검색</a></div>
 	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right2 ?>px;' class="btn_areas"><a onclick="copyURL();" class="search">링크복사</a></div>
 	<div style='position: fixed; top: <?= $emaildiv_top1 ?>px; right: <?= $emaildiv_right1 ?>px;' class="btn_areas"><a onclick="self.close();" class="search">닫 기</a></div>
 
@@ -424,7 +424,7 @@ if ($mobile == "Mobile") {
 					for (i = 0; i < data2.length; i++) {
 						tbody += '<tr><td>' + idx + '</td>';
 						tbody += '<td><a href="http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=' + data2[i]['bidNtceNo'] + '&bidseq=' + data2[i]['bidNtceOrd'] + '&releaseYn=Y&taskClCd=5">' + data2[i]['bidNtceNo'] + '-' + data2[i]['bidNtceOrd'] + '</a></td>';
-						tbody += '<td><a href="http://uloca23.cafe24.com/g2b/bidResult.php?bidNtceNo=' + data2[i]['bidNtceNo'] + '&bidNtceOrd=' + data2[i]['bidNtceOrd'] + '&pss=' + data2[i]['bidtype'] + '&from=getBid">' + data2[i]['bidNtceNm'] + '</a></td>';
+						tbody += '<td><a href="http://uloca.net/g2b/bidResult.php?bidNtceNo=' + data2[i]['bidNtceNo'] + '&bidNtceOrd=' + data2[i]['bidNtceOrd'] + '&pss=' + data2[i]['bidtype'] + '&from=getBid">' + data2[i]['bidNtceNm'] + '</a></td>';
 						tbody += '<td style="color:#000;">' + data2[i]['dminsttNm'] + '</td>';
 						tbody += '<td style="color:#000;" align="center">' + data2[i]['bidtype'] + '</td>';
 						tbody += '<td style="color:#000;" align="right">' + number_format(data2[i]['tuchalamt']) + '</td>';

@@ -323,7 +323,7 @@ function setDate(sDate,sep) {
 			var text = '';
 			if (eval(E017_fs.getElementsByTagName('fs_val3')[0].textContent) > 10000000)
 			{	// 1000만원 이상
-			text = ' [' +
+				text = ' [' +
 				'{ "fs_val3":"'+xmlText(E017_fs,'fs_val3',5)+'", "fs_val6":"'+xmlText(E017_fs,'fs_val6',5)+'", "fs_val8":"'+xmlText(E017_fs,'fs_val8',5)+'", "fs_val9":"'+xmlText(E017_fs,'fs_val9',5)+'", "fs_val10":"'+xmlText(E017_fs,'fs_val10',5)+'", "fs_val16":"'+xmlText(E017_fs,'fs_val16',5)+'", "fs_acct_dt":"'+xmlText(E017_fs,'fs_acct_dt',6)+'" },' +
 				'{ "fs_val3":"'+xmlText(E017_fs,'fs1_val3',5)+'", "fs_val6":"'+xmlText(E017_fs,'fs1_val6',5)+'", "fs_val8":"'+xmlText(E017_fs,'fs1_val8',5)+'", "fs_val9":"'+xmlText(E017_fs,'fs1_val9',5)+'", "fs_val10":"'+xmlText(E017_fs,'fs1_val10',5)+'", "fs_val16":"'+xmlText(E017_fs,'fs1_val16',5)+'", "fs_acct_dt":"'+xmlText(E017_fs,'fs1_acct_dt',6)+'" },' +
 				'{ "fs_val3":"'+xmlText(E017_fs,'fs2_val3',5)+'", "fs_val6":"'+xmlText(E017_fs,'fs2_val6',5)+'", "fs_val8":"'+xmlText(E017_fs,'fs2_val8',5)+'", "fs_val9":"'+xmlText(E017_fs,'fs2_val9',5)+'", "fs_val10":"'+xmlText(E017_fs,'fs2_val10',5)+'", "fs_val16":"'+xmlText(E017_fs,'fs2_val16',5)+'", "fs_acct_dt":"'+xmlText(E017_fs,'fs2_acct_dt',6)+'" }' +

@@ -12,6 +12,9 @@ header('Content-Type: text/html; charset=UTF-8');
 
 function ul_compSearch_ShortCode()
 {
+	global $current_user;
+	$current_user = wp_get_current_user(); //get_currentuserinfo();
+	$id = $current_user->user_login;
 
 	require($_SERVER['DOCUMENT_ROOT'] . '/classphp/g2bClass.php');
 	$g2bClass = new g2bClass;
@@ -36,7 +39,6 @@ function ul_compSearch_ShortCode()
 	$dbConn = new dbConn;
 
 	$conn = $dbConn->conn(); //
-
 	// --------------------------------- log
 	$rmrk = '기업상세검색';
 	$dbConn->logWrite2($id, $_SERVER['REQUEST_URI'], $rmrk, '', '09');
@@ -45,9 +47,7 @@ function ul_compSearch_ShortCode()
 
 	<!doctype html>
 	<html>
-
 	<head>
-
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=2, user-scalable=no">
@@ -67,10 +67,9 @@ function ul_compSearch_ShortCode()
 
 		<script type="text/javascript">
 			function searchFunction() {
-				//if (document.getElementById("userName").value.length<10) return;
-
 				var xhr = new XMLHttpRequest;
-				xhr.open("POST", "./wp-content/plugins/ul_compSearch/compSearchServlet.php?userName=" + encodeURIComponent(document.getElementById("userName").value), true);
+				var postParam = "?userId="+ encodeURIComponent(document.getElementById("userId").value, true) + "&searchKwd=" + encodeURIComponent(document.getElementById("searchKwd").value, true);
+				xhr.open("POST", "./wp-content/plugins/ul_compSearch/compSearchServlet.php" + postParam);
 
 				//var url = "https://testkedex.cretop.com:6056/invoke/infoInquiry.Service/companySearch2?user_id=ulocaonl&process=S&bzno=6098164815&cono=&pid_agr_yn=N&jm_no=E017";
 				//xhr.open('GET', url, true);
@@ -84,10 +83,12 @@ function ul_compSearch_ShortCode()
 				//$('#xml').text(xhr.readyState + ", " + xhr.status);
 
 				xhr.onreadystatechange = function() {
-
 					if (xhr.readyState == 4 && xhr.status == 200) {
-						//alert ("ok sucess");
-						//$('#xml').text(xhr.responseText);
+						// return 값에 "운영자" 메시지가 있으면 alert
+						if (xhr.responseText.match("운영자")) {
+							alert (xhr.responseText);
+							return;
+						}
 						makecomptable(this); //xhr.responseXML);
 					} else if (xhr.readState == 1) {
 						alert("readyState: " + xhr.readyState + ", status: " + xhr.status);
@@ -98,7 +99,7 @@ function ul_compSearch_ShortCode()
 			}
 
 			window.onload = function() {
-				//document.getElementById("userName").value="1248100998";//"1248100998"; //"1048126067"; //"6098164815"; //
+				//document.getElementById("searchKwd").value="1248100998"; //"1048126067"; //"6098164815"; //
 				<? if ($_GET['compno'] == "") {
 					$compno = "1248100998";
 				} else $compno = $_GET['compno']; ?>
@@ -130,6 +131,7 @@ function ul_compSearch_ShortCode()
 					}
 				} catch (e) {
 					// alert (xhr.responseText + "IE는 일부 기능을 지원하지 않습니다. 다른 Web Browser 를 사용해 보세요.");
+
 					alert(e.message);
 					return;
 				}
@@ -143,11 +145,8 @@ function ul_compSearch_ShortCode()
 				make_basic(E017);
 				make_etc(E017);
 				make_fs_summ(E017); // 요약재무제표
-
 				make_fr_summ(E017); // 요약재무비율
-
 				make_cf_anal_summ(E017); // 요약현금흐름분석 
-
 				// chart ----------------------------------------------
 				make_fs_summ_json(E017);
 				mydrawChart(E017); // chart
@@ -173,6 +172,10 @@ function ul_compSearch_ShortCode()
 		</script>
 	</head>
 
+<form action="" name="myForm" id="myform" method="post" >
+	<input type="hidden" id="userId" name="userId" value="<?=$current_user->user_login?>" />
+</form>    
+
 	<body>
 		<div id='loading' style='display: none; position: fixed; width: 100px; height: 100px; top: 35%;left: 60%;margin-top: -10px; margin-left: -50px; '>
 			<img src='/g2b/loading3.gif' width='100px' height='100px'>
@@ -184,8 +187,8 @@ function ul_compSearch_ShortCode()
 			<!-- div id='totalCnt' class="col-xs-2">
 			totalCnt=
 		</div -->
-			<div class="form-group row pull-right">
-				<input id="userName" onkeyup="" type="text" size="12" value="<?= $compno ?>" style="text-align:center" placeholder="사업자등록번호 10자리">
+			<div class="form-group row pull-right">사업자번호: &nbsp;
+				<input id="searchKwd" onkeyup="" type="text" size="20" value="<?= $compno ?>" style="text-align:center" placeholder="사업자등록번호 10자리">
 				<button class="btn-primary" onclick="searchFunction();" type="button">검색</button>
 			</div>
 
@@ -309,15 +312,15 @@ function ul_compSearch_ShortCode()
 					</tr>
 					<tr>
 						<th style='text-align:center;'>기업신용등급</th>
-						<td id='cr_grd'></td>
+						<td style='color:white;' id='cr_grd'></td>
 					</tr>
 					<tr>
 						<th style='text-align:center;'>기업신용등급설명</th>
-						<td id='cr_grd_dtl'></td>
+						<td style='color:white;' id='cr_grd_dtl'></td>
 					</tr>
 					<tr>
 						<th style='text-align:center;'>등급구분</th>
-						<td id='grd_cls'></td>
+						<td style='color:white;' id='grd_cls'></td>
 					</tr>
 					<tr>
 						<th style='text-align:center;'>평가(산출)일자</th>

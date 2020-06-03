@@ -818,8 +818,26 @@ function llorix_one_lite_admin_notice() {
 add_action( 'admin_notices', 'llorix_one_lite_admin_notice', 99 );
 
 
-add_filter( 'wpmem_logout_redirect', 'my_logout_redirect' );
+// 로그아웃 시 사용자를 원하는 페이지로 보내기 -by jsj 20181214
+add_action('wp_logout','wpbox_redirect_after_logout');
+function wpbox_redirect_after_logout(){
+	//아래의 url을 원하는 페이지로 변경합니다
+	wp_redirect( 'https://uloca.net/ulocawp/?page_id=1134' );	//통합검색 
+	exit();
+}
 
+// 우커머스 확인없이 로그아웃 하기
+function wpbox_bypass_logout_confirmation() {
+	global $wp;
+	if ( isset( $wp->query_vars['customer-logout'] ) ) {
+		wp_redirect( str_replace( '&amp;', '&', wp_logout_url( wc_get_page_permalink( 'myaccount' ) ) ) );
+		exit();
+	}
+}
+add_action( 'template_redirect', 'wpbox_bypass_logout_confirmation' );
+
+
+add_filter( 'wpmem_logout_redirect', 'my_logout_redirect' );
 function my_logout_redirect()
 {
 // 로그아웃 시 리디렉션될 URL 반환
@@ -833,4 +851,14 @@ function my_show_admin_bar() {
 		return true;
 	}
 	return false;
+}
+
+// 문의하기(ID=1), 결제문의 (ID=4) - 자신의 쓴글만, 관리자는 전체
+add_filter('kboard_list_where', 'my_kboard_list_where', 10, 2);
+function my_kboard_list_where($where, $board_id){
+	if(!is_super_admin() && ($board_id=='1' )){ // 원하시는 게시판 ID 값으로 바꿔주세요.
+		$user_ID = get_current_user_id();
+		return $where . " AND `member_uid`='$user_ID'";
+	}
+	return $where; 
 }

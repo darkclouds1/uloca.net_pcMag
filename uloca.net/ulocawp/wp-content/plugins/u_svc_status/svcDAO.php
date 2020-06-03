@@ -7,10 +7,33 @@ class  classDAO {
 		$dbConn = new dbConn;
 		$conn = $dbConn->conn();
 
-		$SQL  = "SELECT dt, id, ip, pgDtlCD as cnt, pg, rmrk FROM `logdb` WHERE 1";
+		$SQL  = "SELECT dt, id, ip, ";
+		$SQL .= "       ( CASE pgDtlCD ";
+		$SQL .= "         WHEN '01' THEN '01:용역' ";
+		$SQL .= "         WHEN '02' THEN '02:공사' ";
+		$SQL .= "         WHEN '03' THEN '03:물품' ";
+		$SQL .= "         WHEN '04' THEN '04:사용' ";
+		$SQL .= "         WHEN '04' THEN '05:사공' ";
+		$SQL .= "         WHEN '04' THEN '06:사물' ";
+		$SQL .= "         END ) AS pgDtlCD, ";
+		$SQL .= "       pg, rmrk, ";
+		$SQL .= "       ( CASE keyDtlCD ";
+		$SQL .= "         WHEN '01' THEN '01:공고명' ";
+		$SQL .= "         WHEN '02' THEN '02:수요기관' ";
+		$SQL .= "         WHEN '03' THEN '03:공고+수요기관' ";
+		$SQL .= "         WHEN '04' THEN '04:사전용역' ";
+		$SQL .= "         WHEN '05' THEN '05:차트보기' ";
+		$SQL .= "         WHEN '06' THEN '06:공고상세' ";
+		$SQL .= "         WHEN '07' THEN '07:수요기관재검색' ";
+		$SQL .= "         WHEN '08' THEN '08:낙찰결과' ";
+		$SQL .= "         WHEN '09' THEN '09:기업응찰기록' ";
+		$SQL .= "         WHEN '10' THEN '10:업체정보' ";
+		$SQL .= "         END ) AS keyDtlCD, ";
+		$SQL .= "       modifydt FROM `logdb` WHERE 1";
         $SQL .= "   AND rmrk <> '일일자료수집'";	//
-        $SQL .= "   AND ip <> '222.108.91.28'";  	// 오류동 IP
-        //$SQL .= "   AND ip <> '175.197.112.218'";  	// 모바일(노트9) IP
+		// $SQL .= "   AND ip <> '175.197.112.218'";  	// 모바일(노트9) IP
+		$SQL .= "   AND ip <> '220.79.57.179'";		    // 상일로 71
+		$SQL .= "   AND ip <> '220.85.206.164'";		// 모바일 note9
         $SQL .= "   AND date(dt) = date(?)";  		// 입력날
 		// $SQL .= " GROUP BY `ip` ";
 		$SQL .= " ORDER BY dt DESC ";
@@ -20,8 +43,8 @@ class  classDAO {
         
         $stmt->bind_param('s', $SearchDate);
 		//$stmt->bind_param('ss', $name, $name);
-		//return $SQL; //debug SQL
-
+		//return $SQL; //debug SQL++
+		
 		if ($stmt->execute()) {
 
 			$fields = bindAll($stmt);
@@ -34,9 +57,11 @@ class  classDAO {
 				$oSvc->set_dt($row['dt']);
 				$oSvc->set_id($row['id']);
 				$oSvc->set_ip($row['ip']);
-				$oSvc->set_cnt($row['cnt']);
+				$oSvc->set_cnt($row['pgDtlCD']);
 				$oSvc->set_pg($row['pg']);
 				$oSvc->set_rmrk($row['rmrk']);
+				$oSvc->set_keyDtlCD($row['keyDtlCD']);
+				$oSvc->set_modifydt($row['modifydt']);
 				array_push($list, $oSvc);
 			}
 		} else {
@@ -56,6 +81,8 @@ class svc {
 	public $_cnt;
 	public $_pg;
 	public $_rmrk;
+	public $_keyDtlCD;
+	public $_modifydt;
 
 	/**
 	 * Get the value of _dt
@@ -176,6 +203,44 @@ class svc {
 
 		return $this;
 	}
-}
 
-?>
+	/**
+	 * Get the value of _keyDtlCD
+	 */ 
+	public function get_keyDtlCD()
+	{
+		return $this->_keyDtlCD;
+	}
+
+	/**
+	 * Set the value of _keyDtlCD
+	 *
+	 * @return  self
+	 */ 
+	public function set_keyDtlCD($_keyDtlCD)
+	{
+		$this->_keyDtlCD = $_keyDtlCD;
+
+		return $this;
+	}
+
+	/**
+	 * Get the value of _modifydt
+	 */ 
+	public function get_modifydt()
+	{
+		return $this->_modifydt;
+	}
+
+	/**
+	 * Set the value of _modifydt
+	 *
+	 * @return  self
+	 */ 
+	public function set_modifydt($_modifydt)
+	{
+		$this->_modifydt = $_modifydt;
+
+		return $this;
+	}
+}

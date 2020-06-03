@@ -1,6 +1,9 @@
 //----------------------------------------
 //  통합검색 -by jsj 190320 
 //----------------------------------------
+// 쿠키 전역변수, -by jsj 20200601
+// 관심목록(Reload시)은 자동 검색되므로 false로 설정->  최초조회시 검색 쿠키 저장 막음
+var	cookieUse = false; 
 var duridx = -1;
 var searchDuration = [ -1, -3, -6, -12, -24, -999 ];
 function searchajax() {
@@ -110,7 +113,6 @@ function searchajax_balju() {
 
 	move();
 	getAjaxPost(server,recv_balju,parm);
-	// http://uloca23.cafe24.com/g2b/datas/publicData_2019.php?kwd=%EB%B6%80%EC%82%B0&compname=&fromDT=0&toDT=2019-01-10&curStart=0&cntonce=1000&bidinfo=1&id=blueoceans
 }
 
 //통합검색 - 기업검색   -by jsj 0312
@@ -123,7 +125,6 @@ function searchajax1(t1,t2) {
 	}
 	else if (loginSW == 0 && (SearchCounts > (searchCountMax + searchLoginPlus))) {
 		alert(String(SearchCounts) + '[구매결제]회비 납부 기간이 지났습니다. 서비스운영을 위한 구독료 or Donation이 필요합니다.^^');
-
 		// location.href='/ulocawp/?page_id=1352'; //구매결제로 이동 -by jsj 0312 
 		// exit;
 	}
@@ -165,9 +166,77 @@ function searchajax1(t1,t2) {
 	//parm +='&bidservc=1'; 
 	if (searchType==2) parm +='&compinfo=1';
 	else parm +='&bidinfo=1';
-
 	parm +='&id='+form.id.value;
 
+	//--------------------------------------------------------
+	// 쿠키 저장을 위한 kwd, compName 변수 -by jsj 20200521
+	//--------------------------------------------------------
+	if (cookieUse == true) {	// 관심 목록 조회 시 전역변수 cookieUse = false로 설정
+		// alert (cookieUse);
+		var compName = form.compname.value.trim();	// 기업정보
+		var kwd = form.kwd.value.trim();	        // 입찰정보
+		var cookieKwd = new Array();		        // 쿠키 
+
+		switch (searchType) {
+			case 1:	// 입찰정보
+				// 쿠기 array 가져옴
+				cookieKwd = unescape(getCookieArray('kwd', cookieCnt));
+				cookieKwd = cookieKwd.split(',');
+
+				// 동일 키워드 없으면 저장
+				if (cookieKwd.indexOf(trim(kwd)) == -1) {
+					cookieKwd.unshift(kwd);
+					setCookieArray ('kwd', cookieKwd, 30);	// 쿠키저장(30일)
+
+					// 쿠키 입찰정보 표시
+					cookieKwd = unescape(getCookieArray('kwd', cookieCnt));
+					cookieKwd = cookieKwd.split(',');
+
+					var cookieLink = "";
+					for (var i in cookieKwd){
+						cntNum = i;	cntNum++;	// 번호 추가
+						if (cntNum == 1) cntNum = '[입찰정보] ' + cntNum;
+						cookieLink += cntNum + ')<a onclick=\'viewKwd(\"' + cookieKwd[i] + '")\'>' + cookieKwd[i] + '&nbsp</a> ';
+						// 마지막에 쿠키 '삭제' 링크 추가
+						if (i == cookieKwd.length -1 ) {
+							cookieLink += '&nbsp&nbsp → <a onclick=\'delKwd(\"kwd")\'>삭제</a>';
+						}
+					}
+					document.getElementById('bidKwd').innerHTML = cookieLink;
+				};
+				break;
+
+			case 2:	// 기업검색
+				cookieKwd = unescape(getCookieArray('compName', cookieCnt));
+				cookieKwd = cookieKwd.split(',');
+
+				if (cookieKwd.indexOf(trim(compName)) == -1) {
+					cookieKwd.unshift(compName);
+					setCookieArray ('compName', cookieKwd, 7);
+
+					// 쿠키 기업검색 표시
+					cookieKwd = unescape(getCookieArray('compName', cookieCnt));
+					cookieKwd = cookieKwd.split(',');
+
+					var cookieLink = "";
+					for (var i in cookieKwd){
+						cntNum = i;	cntNum++;
+						if (cntNum == 1) cntNum = '[기업검색] ' + cntNum;
+						cookieLink += cntNum + ')<a onclick=\'viewCompKwd(\"' + cookieKwd[i] + '")\'>' + cookieKwd[i] + '&nbsp</a> ';
+						// 마지막에 쿠키'삭제' 링크 추가
+						if (i == cookieKwd.length -1 ) {
+							cookieLink += '&nbsp&nbsp → <a onclick=\'delKwd(\"compName")\'>삭제</a>';
+						}
+					}
+					document.getElementById('compKwd').innerHTML = cookieLink;
+
+					//$("#compKwd").text(decodeURIComponent(unescape(getCookieArray('compName', 5))));
+				};
+				break;
+		}
+	} // if cookieUse== true
+	
+	cookieUse = true; // 조회 후 쿠키 사용으로 바꿈 (관심 목록은 false 셋팅 후 콜)
 	//--------------------------------
 	// 통합검색
 	//--------------------------------
@@ -216,4 +285,106 @@ function viewBalju(i) {
 	form.deptNm.value = itembalju[i]['deptNm'];
 	form.bidNtceNm.value = itembalju[i]['bidNtceNm'];
 	form.submit();
+}
+
+// 키워드 쿠키저장 -by jsj 20200521
+function setCookie(cname, cvalue, exdays) {
+	var d = new Date();
+	const SameSite = "; SameSite=Lax";
+	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+	var expires = "; expires=" + d.toUTCString();
+	document.cookie = cname + "=" + escape(cvalue) + "; " + expires + "; " + SameSite;
+}
+
+// 쿠키 가져오기
+function getCookie(cname) {
+	// 변수를 선언한다.
+	var cookies = document.cookie.split(";");
+	for(var i in cookies) {
+		if(cookies[i].search(cname) !== -1) {
+			return (cookies[i].replace(cname + "=", ""));
+		}
+	}
+}
+
+// 쿠키 삭제
+function delCookie(cname) {
+	setCookie(cname);
+}
+
+// 배열데이타 쿠키 저장
+function setCookieArray(cname, carray, exdays) {
+	var str = '';
+	for (var key in carray) {
+		if (carray[key] == "undefined" || carray[key] == undefined) continue;
+		if (str != "") str += ",";
+		str += carray[key];
+	}
+	str = encodeURIComponent(str);
+	this.setCookie(cname, str, exdays);
+}
+
+// 쿠키에서 배열로 저장된 데이타 가져옴
+function getCookieArray(cname, retCnt=0) {
+	var str = decodeURIComponent(unescape(this.getCookie(cname)));
+	var carray = new Array();
+	
+	carray.length = 0;	// 배열초기화
+	if (retCnt == 0) {	// 전체 다가져옴.
+		carray = str.split(',');	//
+	} else {
+		carray = str.split(',', retCnt);	// @retCnt = 가져올 갯수
+	}
+	// 배열 문자열 모두 trim해야 중복키워드 비교가 됨
+	for (var key in carray) {
+		if (carray[key] == "undefined" || carray[key] == undefined) continue;
+		carray[key] = trim(carray[key]);	
+	}
+	return carray;
+}
+
+/* ------------------------------------------------------------------------------------------
+// 입찰정보 검색 - 쿠기 문자열로 검색 -by jsj 20200527
+------------------------------------------------------------------------------------------- */
+function viewKwd(kwd) {
+	frm = document.getElementById('myForm');
+	frm.kwd.value = kwd;
+	searchType = 1;
+	searchajax();
+}
+
+/* ------------------------------------------------------------------------------------------
+// 기업 검색 - 쿠기 문자열로 검색 -by jsj 20200527
+------------------------------------------------------------------------------------------- */
+function viewCompKwd(kwd) {
+	frm = document.getElementById('myForm');
+	frm.compname.value = kwd;
+	searchType = 2;
+	searchajax();
+}
+
+//-----------------------------------
+// 키워드 삭제 후 통합검색 Reload 
+//-----------------------------------
+function delKwd(cname) {
+	delCookie(cname);
+	location.reload();
+}
+
+// 앞 공백 제거
+function rtrim(str)
+{
+   return str.replace( /\s*$/g, "" );
+}
+
+//뒤 공백 제거
+function ltrim(str)
+{
+   return str.replace( /^\s*/g, "" );
+}
+
+// 앞뒤 공백문자열을 제거
+function trim(str)
+{
+  return str.replace(/(^\s*)|(\s*$)/gi, "");
 }
