@@ -1,0 +1,24 @@
+2019-02-22T15:58:25+00:00 CRITICAL Uncaught Error: [] operator not supported for strings in /uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php:56
+Stack trace:
+#0 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(286): WC_Admin_Menus->admin_menu('')
+#1 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(310): WP_Hook->apply_filters(NULL, Array)
+#2 /uloca22/www/ulocawp/wp-includes/plugin.php(453): WP_Hook->do_action(Array)
+#3 /uloca22/www/ulocawp/wp-admin/includes/menu.php(150): do_action('admin_menu', '')
+#4 /uloca22/www/ulocawp/wp-admin/menu.php(294): require_once('/uloca22/www/ul...')
+#5 /uloca22/www/ulocawp/wp-admin/admin.php(140): require('/uloca22/www/ul...')
+#6 /uloca22/www/ulocawp/wp-admin/nav-menus.php(13): require_once('/uloca22/www/ul...')
+#7 {main}
+  thrown(/uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php, 줄 56)
+
+2019-02-22T16:19:45+00:00 CRITICAL Uncaught Error: [] operator not supported for strings in /uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php:57
+Stack trace:
+#0 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(286): WC_Admin_Menus->admin_menu('')
+#1 /uloca22/www/ulocawp/wp-includes/class-wp-hook.php(310): WP_Hook->apply_filters(NULL, Array)
+#2 /uloca22/www/ulocawp/wp-includes/plugin.php(453): WP_Hook->do_action(Array)
+#3 /uloca22/www/ulocawp/wp-admin/includes/menu.php(150): do_action('admin_menu', '')
+#4 /uloca22/www/ulocawp/wp-admin/menu.php(294): require_once('/uloca22/www/ul...')
+#5 /uloca22/www/ulocawp/wp-admin/admin.php(140): require('/uloca22/www/ul...')
+#6 /uloca22/www/ulocawp/wp-admin/nav-menus.php(13): require_once('/uloca22/www/ul...')
+#7 {main}
+  thrown(/uloca22/www/ulocawp/wp-content/plugins/woocommerce/includes/admin/class-wc-admin-menus.php, 줄 57)
+

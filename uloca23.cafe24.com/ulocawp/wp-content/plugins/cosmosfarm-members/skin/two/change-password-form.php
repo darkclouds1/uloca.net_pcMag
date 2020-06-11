@@ -1,7 +1,7 @@
 <?php if(!defined('ABSPATH')) exit;?>
 <div class="cosmosfarm-members-form pwdchange-form <?php echo $option->skin?>">
 	<form method="post" action="<?php echo esc_url($form_action_url)?>">
-	<?php echo wp_nonce_field('wpmem_shortform_nonce', '_wpmem_pwdchange_nonce')?>
+		<?php echo wp_nonce_field('wpmem_login_nonce')?>
 		<input type="hidden" name="redirect_to" value="<?php echo esc_url($form_action_url)?>">
 		<input type="hidden" name="a" value="pwdchange">
 		<input type="hidden" name="formsubmit" value="1">

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ULOCA Data 수집</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/g2b/css/g2b.css" />
+<link rel="stylesheet" href="/jquery/jquery-ui.css">
+<script src="/jquery/jquery.min.js"></script>
+<script src="/jquery/jquery-ui.min.js"></script>
+<script src="/js/common.js?version=20190203"></script>
+<script src="/g2b/g2b.js"></script>
+
+<script>
+
+function updateCompInofStart() {
+	server="/test/updateCompInfo_01.php?startDate=20130101&endDate=20130105";
+	//clog(server+'?'+parm);
+	move();
+	//------------------------------
+	getAjaxPost(server,getCompInfoUpdate);
+	//------------------------------
+	alert ("getCompInfoUpdate Call....")
+}
+
+function getCompInfoUpdate(data) {
+	
+	document.getElementById('status').innerHTML = data;
+	
+	//jQuery
+	$("#mydiv").scrollTop($("#mydiv")[0].scrollHeight);
+	move_stop();
+	
+}
+
+function searchDaily_tmp(func) {
+	frm = document.myForm;
+	daily_func = func;
+	openBidInfo = frm.openBidInfo.value;
+	openBidSeq = frm.openBidSeq.value;
+	openBidSeq_tmp = frm.openBidSeq_tmp.value;
+	if (openBidInfo == '')
+	{
+		alert('입찰정보 테이블 명이 없습니다.');
+		return;
+	}
+	if (openBidSeq == '')
+	{
+		alert('개찰정보 테이블 명이 없습니다.');
+		return;
+	}
+	if (openBidSeq_tmp == '')
+	{
+		alert('임시 개찰정보 테이블 명이 없습니다.');
+		return;
+	}
+	// 임시테이블 처리 
+	url = '/g2b/datas/dailyDataHandle.php?func='+func+'&openBidInfo='+openBidInfo + '&openBidSeq='+openBidSeq + '&openBidSeq_tmp='+openBidSeq_tmp;
+	move();
+	
+	getAjax(url,moved_tmp);
+}
+
+
+</script>
+
+</head>
+<form>
+</form>
+<body>
+	<div class="btn_area" id='btn'>
+		<button type="button" width="500px" onclick="updateCompInofStart()">기업정보 UPDATE</button>
+	</div>
+	<div id='procdiv' style='visibility:inline;position: fixed; top: 234px; right: 20px;'>
+		<input type="text" name="totalcnt" id="totalcnt" value="" style='text-align:center;' size=5 />
+		<input type="text" name="proccnt" id="proccnt" value=""  style='text-align:center;' size=5 />
+		<input type="text" name="seqcnt" id="seqcnt" value=""  style='text-align:center;' size=5 />
+	</div>
+	<div id='status'>
+	</div>
+	<div id='mydiv'>
+	
+	</div>
+</body>
+</html>

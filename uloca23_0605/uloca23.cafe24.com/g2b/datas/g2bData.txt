@@ -1,0 +1,938 @@
+
+g2b 나라장터 개찰결과 데이타 긁어오기
+
+주화면	http://www.g2b.go.kr/index.jsp
+용역입찰공고 http://www.g2b.go.kr:8101/ep/tbid/serviceBidDtl.do?tbidno=20180524809&bidseq=00
+
+입찰정보	plugins/g2b.php		http://uloca.net/ulocawp/?page_id=337 old: http://uloca.net/g2b/scsBid.php
+	g2b/g2b.js	searchajax()	검색 ->http://uloca.net/datas/publicData.php?kwd=부산&startDate=20180514&endDate=20180514
+	g2b/sendmail2.php	mailMe2()	이메일
+	g2b/getBid.php	
+	datas/publicData.php
+	http://uloca.net/g2b/getBid.php?kwd=%EA%B9%80%EC%B2%9C&dminsttNm=%EA%B2%BD%EC%83%81%EB%B6%81%EB%8F%84%20%EA%B9%80%EC%B2%9C%EC%8B%9C&inqryBgnDt=20170725&inqryEndDt=20180725
+
+자동받기 설정
+	plugins/pubdatas.php
+	datas/datas.js	savepubsetup()
+	datas/insAutoSet.php 
+	datas/updAutoSet.php
+	datas/delAutoset.php
+자동 받기 실행	history, 일 1회
+	plugins/doauto.php
+	plugins/runauto.php 
+	classphp/g2bclass.php
+	
+한 입찰 결과 보여주기
+	http://uloca.net/g2b/bidResult.php?bidNtceNo=20180230529&bidNtceOrd=00
+입찰 정보 긁어오기
+	http://uloca.net/g2b/datas/getBidInfo.php	-> openBidInfo 개찰정보
+	getSvrData inqryDiv /*검색하고자하는 조회구분 1:공고게시일시, 2:개찰일시, 3:입찰공고번호*/
+	$inqryDiv=2; //  1. 공고게시일시 : 공고일자(pblancDate) 2. 개찰일시 : 개찰일시(opengDt)
+	
+개찰결과 긁어오기
+	http://uloca.net/g2b/datas/getBidRslt.php	-> openBidSeq 개찰결과순위, openCompany 응찰회사정보
+	getRsltData($bidNtceNo,$bidNtceOrd);
+	inqryDiv /*검색하고자하는 조회구분 1:공고게시일시, 2:개찰일시, 3:입찰공고번호*/
+	시간 날때마다 계속 할것
+입찰기업 <---- 특정회사 응찰결과
+	url = 'http://uloca.net/g2b/datas/getInfobyComp.php?compno='+compno;
+입찰기업 <----특정회사 응찰결과 메뉴
+	plugins/bidCompany
+	검색	http://uloca.net/g2b/datas/bidCompanySearch.php?compname='+compname+'&compno='+compno+'&duration='+frm.duration.value;
+	응찰기록	http://uloca.net/g2b/datas/getInfobyComp.php?compno=6038114092+'&duration='+frm.duration.value;
+	입창결과정보 http://uloca.net/g2b/bidResult.php?bidNtceNo=20180534208&bidNtceOrd=00+'&duration='+frm.duration.value;
+일일자료수집	메뉴 없슴, 단독 실행
+	http://uloca.net/g2b/datas/getBidInfo.php + http://uloca.net/g2b/datas/getBidRslt.php
+	http://uloca.net/nwp/dailyDataFill.php (기간내 빠진 openBidInfo_2018_2 체크, 보완)
+		$g2bClass->getSvrData 개찰일 기준 입찰공고 읽기 
+	http://uloca.net/nwp/dailyDataFill2.php (기간내 빠진 openBidInfo_2018_2 낙찰1등 정보 체크, 보완)
+		openBidInfo 에서 개찰일 기준 입찰공고중에 개찰결과 1등한 값 db 업데이크,읽기
+	http://uloca.net/nwp/dailyDataSeq.php
+비공개: 일일자료수집 - menu
+	plugins/dailyData/dailyData.php
+	http://uloca.net/g2b/datas/dailyDataSearch,php
+	http://uloca.net/g2b/datas/dailyDataInsSeq.php
+	http://uloca.net/g2b/datas/companyInfo.php
+
+table name 위치		/g2b/datas/bidCompanySearch.php
+openBidSeq_2018		/g2b/datas/getInfobyComp.php
+			/g2b/datas/getBidRslt.php
+
+---------------------------------------------------------------------------
+live server	10G 광아우토반 FullSSD 비즈니스
+서버 환경		UTF-8 (PHP7.0, mariadb-10.0.x)	2000M
+서버아이피		uws7-056 | 183.111.138.214
+uloca22/w3m69p21!@
+---------------------------------------------------------------------------
+test server	10G 광아우토반 FullSSD 절약형
+서버 환경		UTF-8 (PHP7.0, mariadb-10.0.x)	200M
+서버아이피		uws7-066 | 183.110.224.156
+
+uloca23.cafe24.com
+uloca23/w3m69p21!@/ ftp/db/uloca23090(
+-------------------------------------------------------------------------
+메시지 : 검색어로 검색된 결과가 통합검색을 위한 정보처리시 누락될수 있으므로 원하는 정보가 검색되지 않을수 있습니다.
+	검색결과는 참고용으로만 활용하시기 바랍니다.
+PHP 5.x에서는 변수 선언에 대해 조금 더 엄격해 졌습니다. 
+굳이 변수 초기화를 하지 않고 바로 사용해도 상관이 없었던 때에 비해 지금은 변수 초기화 없이 사용을 하게 되면 Notice 에러가 발생하게 됩니다.
+
+===========================================20181019 ==================================
+
+===========================================20181018 ==================================
+uloca22-mariDB --> 내PC mysql --> Oracle w/dbeaver
+DHTMLX	dhtmlxSuite - Enterprise License - REF#12971761
+http://support.dhtmlx.com/  info@jnvalue.com/12971761
+===========================================20181017 ==================================
+이사
+===========================================20181016 ==================================
+===========================================20181015 ==================================
+김재홍대표하고 스티커 붙여가며 현재 현황을 정리해 봤습니다.
+
+결론적으로, 당장엔 DHTMLX (페이징, 그래픽), Oracle 로 바꾼다 입니다.
+
+위 모두 uloca23.에서 테스트 후 진행해 주세요.
+
+오라클은 제이앤밸류 서버 셋팅되는 대로 제가 dump 해 놓겠습니다.
+
+DHMLX는 전무님이 적용해 주세요.
+
+===========================================20181013 ==================================
+select * from openBidSeq_2018_2  order by idx desc
+select * from openBidInfo_2018_2 where bidNtceNo='20181003419'
+
+제이앤밸류로 api 로 검색하니까, 하나는 낙찰정보가 있는데, 하나는 업체명만 있고 금액 등등은 빠져 있더라.
+기업정보는 우리 db가 아니고 서버에서 가지고 오는데, 원본에 데이타가 빠져있네..
+정상	"bidNtceNo": "20180612347"
+비정상	"bidNtceNo": "20170927549"
+
+주식회사 제이앤밸류	2898600121
+http://www.info21c.net/v4/	adws2413!!
+===========================================20181012 ==================================
+
+http://uloca.net/nwp/dailySeqFill.php
+
+
+
+select * from openBidInfo_2017_2 where bidwinnrNm='' and opengDt>='2017-07-01' and opengDt <='2017-07-05 23:59:59'
+
+select * from openBidInfo_2017_2 where bidNtceNo=' 20170927549' //20170927549'
+select * from openBidSeq_2018 where bidNtceNo='20171232081' //20171208413'
+select * from openBidSeq_2017_2 where bidIdx = 0 and idx >= 15211092
+delete from openBidSeq_2018 where bidIdx <= 0 and idx >= 15211295	idx=15211090 bidIdx=276038
+select * from openBidSeq_2018 where  idx >= 15211090 order by idx	bidIdx = 0 and	bidNtceNo=20171232081	idx=15211295
+select * from openBidSeq_2018 where bidIdx <= 0 order by idx
+
+openBidSeq_2018 idx = 15211090
+
+===========================================20181011 ==================================
+오늘의 낙찰결과 - 메뉴추가
+Seq 다시 insert
+info.idx = Seq.bidIdx-1 ****************
+===========================================20181010 =====일일자료 삭제하고 다시 실행=================
+delete from openBidInfo_2018_2 where opengDt>='2018-10-10'
+이후 마지막 idx check 한다음
+delete from openBidSeq_2018_2 where bidIdx>'107926'
+
+===========================================20181009 ==================================
+낙찰자 정보 추가 openBidInfo
+===========================================20181008 ==================================
+10월 6일 대전 갔다옴. jnvalue 방문.
+===========================================20181005 ==================================
+select * from openBidInfo_2018_2 where bidwinnrNm='' and opengDt>='2018-10-01' and opengDt <='2018-10-05 23:59:59'  order by idx
+select * from openBidSeq_2018_2 where bidNtceNo='20171219437'; 20180922064' ;20180920495'; 주식회사 두나우 20180922064
+===========================================20181004 ==================================
+nwp	menu
+자동받기 보완
+
+select count(idx) cnt,bidNtceNo from openBidSeq_2018_2 where bidNtceNo in (select bidNtceNo from openBidInfo_2018_2 where bidwinnrNm != '') group by bidIdx order by cnt
+===========================================20181003 ==================================
+http://uloca.net/g2b/testG2bClass.php
+
+http://uloca.net/nwp/dailyDataFill.php		날자로 입찰정보+낙찰정보 보완
+	2018-2 완료
+	2018 완료
+	2017-2 완료 2017 완료
+	2016-2 완료 2016 완료
+update workdate set lastdt='2018-12-31' where workname = 'dailyDataFill'
+select lastdt from workdate where workname = 'dailyDataFill'
+select bidNtceNo,opengDt,bidNtceNm,bidwinnrNm from openBidInfo_2018_2 where opengDt>'2018-10-04'
+http://uloca.net/nwp/dailyDataFill2.php		갯수로 =	22,000(10/3) 111412(2018)/3200
+select count(*) from openBidInfo_2018 where bidwinnrNm=''
+===========================================20181002 ==================================
+logdb	idx,dt,pg,id,ip,rmrk
+info,seq 비교 seq 빠진것 보완
+DailySearch.php	보완
+
+backup	dbconn-logwrite()
+
+select * from openBidInfo_2018_2 where bidNtceNo='20180632388'
+select * from openBidInfo_2018_2 where bidwinnrNm='' order by opengDt desc
+
+select a.bidNtceNo, a.bidNtceNm,a.opengDt,b.cnt cnt from openBidInfo_2018_2 a, 
+( select count(*) cnt,bidNtceNo from openBidSeq_2018_2 group by bidNtceNo) b 
+where a.bidNtceNo=b.bidNtceNo and a.opengDt like '2018-10-01%' order by a.opengDt
+
+select a.bidNtceNo, a.bidNtceNm  from openBidInfo_2018_2 a where opengDt like '2018-10-01%' limit 0,50
+===========================================20181001 ==================================
+낙찰기업 목록 추가요  g2b/getBid.php
+테이블에 컬럼추가	openBidInfo
+
+===========================================20180928 ==================================
+selectCheckedRowSelf2	수정	
+E011809159-00	http://www.g2b.go.kr:8101/ep/tbid/serviceBidDtl.do?tbidno=20180905349&bidseq=00
+20180901241 - 00	http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=20180901241&bidseq=00&releaseYn=Y&taskClCd=5
+
+===========================================20180927 ==================================
+수정사항 두가지	check 수정할것
+중요)<수요기관> 링크에 해당수요기관의 입찰에 낙찰된 기업 목록이 나왔으면 합니다.
+
+===========================================20180926 ==================================
+이메일 보내기 다른방법으로 고침. table, tr, td object.innerHTML 로 처리
+
+===========================================20180925 ==================================
+--------- ie
+str=<tr><td style="text-align: center;"><a onclick='viewDtl("http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=20180916278&amp;bidseq=00&amp;releaseYn=Y&amp;taskClCd=5")'>20180916278-00</a></td><td title="용역">한국해양과학기술원 부산 본원 홍보공간 구축 사업</td><td align="right">318,181,818</td><td style="text-align: center;">2018-09-18</td><td><a onclick='viewscs("한국해양과학기술원")'>한국해양과학기술원</a></td><td style="text-align: center;"><a onclick='viewRslt("20180916278","00","2018-10-29 14:00:00","용역")'>2018-10-29</a></td></tr> pss=
+=========chrome
+tr=<tr><td style="text-align: center;"><a onclick="viewDtl(&quot;http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=20180916278&amp;bidseq=00&amp;releaseYn=Y&amp;taskClCd=5&quot;)">20180916278-00</a></td><td title="용역">한국해양과학기술원 부산 본원 홍보공간 구축 사업</td><td align="right">318,181,818</td><td style="text-align: center;">2018-09-18</td><td><a onclick="viewscs(&quot;한국해양과학기술원&quot;)">한국해양과학기술원</a></td><td style="text-align: center;"><a onclick="viewRslt(&quot;20180916278&quot;,&quot;00&quot;,&quot;2018-10-29 14:00:00&quot;,&quot;용역&quot;)">2018-10-29</a></td></tr> pss=용역
+g2b.js:992 str=<tr><td style="text-align: center;"><a onclick="viewDtl(&quot;http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=20180916278&amp;bidseq=00&amp;releaseYn=Y&amp;taskClCd=5&quot;)">20180916278-00</a></td><td title="용역">한국해양과학기술원 부산 본원 홍보공간 구축 사업</td><td align="right">318,181,818</td><td style="text-align: center;">2018-09-18</td><td><a onclick="viewscs(&quot;한국해양과학기술원&quot;)">한국해양과학기술원</a></td><td style="text-align: center;"><a onclick="viewRslt(&quot;20180916278&quot;,&quot;00&quot;,&quot;2018-10-29 14:00:00&quot;,&quot;용역&quot;)">2018-10-29</a></td></tr> dminsttNm=한국해양과학기술원
+
+===========================================20180921 ==================================
+select a.compno , a.cnt, b.compname, b.repname from (select count(idx) as cnt,compno  
+from openBidSeq_2018_2 group by compno) a,  openCompany b where a.compno=b.compno and compname like '%부산%'
+
+select count(idx) cnt, compno from openBidSeq_2018_2 b group by compno,
+(select * from openCompany where compname like '%부산%') a
+where a.compno = b.compno
+
+select count(idx) cnt, b.compno from openBidSeq_2018_2 b , 
+(select * from openCompany where compname like '%부산%') a
+where a.compno = b.compno group by b.compno
+
+select x.compno,x.compname,x.repname, (x.bcnt+x.ccnt+x.dcnt+x.ecnt+x.fcnt+x.gcnt) cnt from (
+select a.*, IFNULL(b.cnt,0) as bcnt, IFNULL(c.cnt,0) ccnt, IFNULL(d.cnt,0) dcnt, IFNULL(e.cnt,0) ecnt, IFNULL(f.cnt,0) fcnt, IFNULL(g.cnt,0) as gcnt from openCompany a   
+left outer join (select count(idx) cnt,compno from openBidSeq_2018_2 group by compno) b on a.compno = b.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2018 group by compno) c on a.compno = c.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2017_2 group by compno) d on a.compno = d.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2017 group by compno) e on a.compno = e.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2016_2 group by compno) f on a.compno = f.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2016 group by compno) g on a.compno = g.compno
+where a.compname like '%부산%'
+) x
+
+select a.*, IFNULL(b.cnt,0) as bcnt, IFNULL(c.cnt,0) ccnt, IFNULL(d.cnt,0) dcnt from openCompany a   
+left outer join (select count(idx) cnt,compno from openBidSeq_2018_2 group by compno) b on a.compno = b.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2018 group by compno) c on a.compno = c.compno
+left outer join (select count(idx) cnt,compno from openBidSeq_2017_2 group by compno) d on a.compno = d.compno
+
+where a.compname like '%부산%'
+
+select a.* from openCompany a   
+where a.compname like '%부산%'
+
+select count(idx) cnt,compno from openBidSeq_2018_2  
+where compno = (select compno from openCompany  where compname like '%부산%') group by compno
+Subquery returns more than 1 row
+===========================================20180920 ==================================
+mail 에 uloca link 추가
+getInfobyComp.php mail 추가	jayhmj@naver.com
+===========================================20180919 ==================================
+ServerAddr	http://uloca.net/ 생략
+
+===========================================20180918 ==================================
+===========================================20180917 ==================================
+===========================================20180914 ==================================
+메일 보내기 최근 10건처럼 건수로 보내는걸로 수정했음합니다.
+	한글 문제---------ok
+입찰정보 검색 후 이메일 보내기하려고, 체크박스 전체 선택이 안되네요.---------ok
+
+게시파 확인
+
+오류 수정 --> 기능 --> 속도 (우선 순위)
+
+===========================================20180913 ==================================
+편차 계산시	투찰율 50과 100 사이	g2b/datas/getInfobyCom.php?compno=5100245788
+mobile 검토	table 사용 안하고
+
+2/20	물품	공사	용역0
+
+===========================================20180912 ==================================
+유노비젼	137-81-96923	1378196923
+select * from openCompany where compname like '%유노%'
+select * from openBidInfo_2018 where bidNtceNo='E011713539'
+===========================================20180911 ==================================
+===========================================20180910 ==================================
+dbconn 바꾸기
+require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php'); 
+$dbConn = new dbConn;
+$conn = $dbConn->conn();
+바꿀 file
+g2b/datas/bidCompanySearch.php
+plugins/doauto
+===========================================20180908 ==================================
+검색종류 변경	입찰-->물품,공사,용역
+
+g2bClass -> getBidOne
+===========================================20180907 ==================================
+g2bClass -> getBidOne ($search) 추가 로직 <-- 검색종류 변경으로 인하여.. 
+	plugins/doauto.php
+	datas/datas.js
+	plugins/pubdatas.php
+	plugins/runauto.php
+2018-07-23 00:00:00	KM	100000	2018-09-30 22:00:00
+eliot@furence.com
+apeed047@fmail.com
+seong-hun.lee@genesys.com
+kakao_5b81307a0ce01
+seojun82@naver.com
+shimtler@gmail.com
+smpark1102@hanmail.net
+drleecho@hanmail.net
+kakao_5b90f04d14a7c
+yjji@2sumdata.com
+enable21@hotmail.com
+2018-09-30 22:00:00
+===========================================20180906 ==================================
+http://uloca.net/g2b/bidResult.php 에도	사업체 정보 링크 담
+<a href="http://uloca.net/g2b/datas/getInfobyComp.php?compno='.$arr['prcbdrBizno'].'"/>
+
+http://uloca.net/g2b/datas/bidCompanySerch.php 에도	사업체 정보 링크 담
+<a onclick=\'compInfo('.$row['compno'].')\'>
+===========================================20180905 ==================================
+===========================================20180904 ==================================
+데이타 수집건 검정
+
+입찰정보>검색종류
+입찰/ 사전규격 => 전체/물품/공사/용역/사전규격  (체크박스로 선택하도록 했으면 합니다. 사용자들의 요구사항이네요)
+
+입찰업체 정보
+===========================================20180903 ==================================
+일일데이타수집
+plugins/dailyData.php
+g2b/datas/dailyDataSearch.php
+g2b/datas/dailyDataSeq.php
+
+2018-09-03일 데이타 수집결과 약 15분
+  timer 입찰 640건, 개찰 43,260	    약 10:00    09:00 - 12:00
+	    381	       17,351	    약 04:10    12:00 - 16:00
+	    102	        3,497	    약 46초     16:00 - 23:59
+  ---------1,123------64,000----------15분
+===========================================20180831 ==================================
+select max(idx) from openBidInfo_2018_2		73,616
+select max(bidIdx) from openBidSeq_2018_2	73,518
+select max(idx) from openBidSeq_2018_2		4,979,136
+
+===========================================20180830 ==================================
+select * from openBidSeq_2016 where bidIdx=223374 223403
+select * from openBidSeq_2016 where idx=12556056
+select * from  openBidInfo_2016 where idx>223386
+select max(idx) from openBidSeq_2016	223374
+일일자료수집	dailyData
+===========================================20180829 ==================================
+sql=select a.compno , a.cnt, b.compname, b.repname from (select count(idx) as cnt,compno from openBidSeq_2018 group by compno) a, openCompany b where a.compno=b.compno and compname like ? order by b.compname asc parm=%부산%
+
+select count(x.idx) as cnt,x.compno, y.compname, y.repname from openBidSeq_2018 x, openCompany y where x.compno=y.compno and  y.compname like '%부산%' group by compno 
+13.6초 297건
+select count(b.idx) as cnt, a.compno, a.compname, a.repname
+(select * from openCompany where compname like '%부산%') a,openBidSeq_2018 b where a.compno=b.compno
+group by a.compno
+
+
+select a.compno , a.cnt, b.compname, b.repname from (select count(idx) as cnt,compno from openBidSeq_2018 group by compno) a, openCompany b where a.compno=b.compno and b.compname like '%부산%'
+
+12.1초
+
+
+
+
+select a.compno , a.cnt, b.compname, b.repname from (select count(idx) as cnt,compno from openBidSeq_2018 group by compno) a, openCompany b where a.compno=b.compno and compname like ? order by b.compname
+===========================================20180828 ==================================
+http://uloca.net/g2b/datas/getBidInfo.php	201607-12 입찰공고 수집 197,006 199,709
+http://uloca.net/g2b/datas/getBidInfo.php	201601-06 입찰공고 수집 220,232 223,406
+
+select max(idx) from openBidInfo_2016_2
+openBidSeq_2017 완료
+
+
+===========================================20180827 ==================================
+http://uloca.net/g2b/datas/getBidInfo.php	201701-06 입찰공고 수집 251,616 254,916
+
+select max(idx) from openBidInfo_2017	254,916
+============================================================20180824 =================
+getBidRslt.php 1초마다 자동 실행 에러시 중지
+
+session_start();
+$duration = $_SESSION['duration']  ;
+$openBidSeq = 'openBidSeq_'.$duration;
+$openBidInfo = 'openBidInfo_'.$duration;
+bidcompanySearch.php, getInfobyComp
+
+select max(idx) from openBidInfo_2017_2		210890
+select count(idx) from openBidSeq_2017_2	15,702,514
+select count(*) from openBidInfo_2017_2		216,098
+
+전체 로직 union
+
+
+select c.compno,count(c.cnt) as cnt,c.compname, c.repname from
+(
+select a.compno , a.cnt, b.compname, b.repname from
+(select count(idx) as cnt,compno  from openBidSeq_2016 group by compno) a,  openCompany b
+where a.compno=b.compno and b.compname like '%부산%'
+union 
+select a.compno , a.cnt, b.compname, b.repname from
+(select count(idx) as cnt,compno  from openBidSeq_2016_2 group by compno) a,  openCompany b
+where a.compno=b.compno and b.compname like '%부산%'
+union
+select a.compno , a.cnt, b.compname, b.repname from
+(select count(idx) as cnt,compno  from openBidSeq_2017 group by compno) a,  openCompany b
+where a.compno=b.compno and b.compname like '%부산%'
+union
+select a.compno , a.cnt, b.compname, b.repname from
+(select count(idx) as cnt,compno  from openBidSeq_2017_2 group by compno) a,  openCompany b
+where a.compno=b.compno and b.compname like '%부산%'
+union
+select a.compno , a.cnt, b.compname, b.repname from
+(select count(idx) as cnt,compno  from openBidSeq_2018 group by compno) a,  openCompany b
+where a.compno=b.compno and b.compname like '%부산%'
+) c group by c.compno order by compname
+===========================================20180823 =================
+bidResult.php 에서 pss 누락됨.	getInfobyComp.php 에서 parm 수정
+openBidSeq_2017_2 작업	2017-07 - 2017-12	지우고 다시
+
+select max(idx) from openBidSeq_2017_2		12,333,784
+===========================================20180822 =================
+comp=135,659	seq count=15,143,850 max=15,145,177	bidinfo count=262,376 max=272,339
+select * from openBidSeq_2018 where bidIdx=272339
+===========================================20180821 =================
+
+<낙찰결과>목록에서 업체명 클릭하면 특정업체 응찰기록이 나왔으면 합니다.(기존 응찰업체 로직 그대로)
+---> 사업자등록번호에 링크 걸었음	g2b.js->viewRslt->from=getBid 추가
+				g2b/bidResult.php 수정
+===========================================20180820 =================
+운영 변경후 
+	1일 레코드수	1,000,000 건
+	나라장터 입찰공고정보서비스키 BT4h3Pd5ovl0%2BOWmcIGClMw42vc%2F%2B9Asx6MAg%2Fa4xt1jg%2BF4q9ZfU9Tm8qlo09bZWZjSlcr3Uf062qMVG56vpA%3D%3D 
+	나라장터 낙찰정보,사전규격서비스키 Q5eI3cYX4CzlTWVI4YMFOkw41NPqQMvSZ%2FXhLM9eud43t%2B7NKImGzkhz4%2F4iIHi0SmrZBkgYSrlhhyshLQhVvA%3D%3D
+===========================================20180817 =================
+62,378	3,223,852
+
+입찰 공고 'openBidInfo_2018' 262,376 건 20180101-20180630
+개찰결과 'openBidSeq2' 1,378,029건 20180101-20180129	1,495,541 error 11:50
+	2,424,675
+회사정보 'openCompany' 97,390 건 이때까지 한번이라도 검색된 거 모두
+select max(tuchaldatetime) from openBidSeq_2018
+select count(*) from openBidSeq_2018
+select max(bididx) from openBidSeq_2018
+select a.tuchalamt,a.tuchalrate,a.tuchaldatetime,a.remark,a.bidNtceNo, a.bidNtceOrd, b.bidNtceNm,b.ntceInsttNm,b.dminsttNm,b.bidtype,a.bidIdx  from openBidSeq a, openBidInfo b  where a.compno='1148645047' and a.bidNtceNo = b.bidNtceNo and a.remark=1
+
+select b.bidNtceNo, b.compno, b.tuchalrate, b.remark from openBidSeq b,
+(select bidNtceNo from openBidSeq where compno='1148645047') a where a.bidNtceNo = b.bidNtceNo and b.remark=1
+===========================================20180816 =================
+데이타 수집		openBidSeq2 
+		http://uloca.net/g2b/datas/getBidRslt.php
+		$openBidSeq = 'openBidSeq2';
+		$openBidInfo = 'openBidInfo2'; 262,376 건 20180101-20180630
+		$norec = 100;
+		bididx=7758
+		openBidSeq2 = 801,608
+		openCompany = 90,410
+	idx = 30,000 개
+
+selectCheckedRowSelf2	-> DOM 사용으로 -- no need
+selectCheckedRowSelf2	selectCheckedRowDom
+	메일 목록에서 URL 링크
+
+select * from openBidSeq2 order by bididx desc , remark asc limit 20
+select * from openBidSeq2 where idx<1125137 order by bididx desc , remark asc limit 100
+1137052,20180130290,00,2208630271,106000,99.987, ,1,21977	08/16 last rec
+select * from openBidSeq2 where idx>=946751 limit 30
+select * from openBidSeq2 where bididx=0 order by idx limit 30
+ 726920,20180104980,00,3130529058,814,84.428,2018-01-13 22:05:45,2,0
+select * from openBidSeq_2018 where bidNtceNo=20180637613
+select * from openBidInfo2 where bidNtceNo=20180116908
+11246,20180104980,00,2018년 천안처리장 현장약품(차아염소산나트륨 및 구연산)_단가계약,충청남도 천안시,충청남도 천안시,2018-01-16 15:00:00,물품
+
+update openBidSeq2 set bididx=11248 where bidNtceNo=20180104933
+select * from openBidSeq2 where bidNtceNo=20180104933
+
+'20180100180
+select * from openBidSeq2 where bidNtceNo='20180100180' order by remark
+select count(idx) from openBidSeq2 where bidIdx=0
+404017
+===========================================20180815 =================
+평균 투찰율- http://uloca.net/g2b/datas/getInfobyComp.php?compno=1298116011
+표준편차
+내가 응찰한것의 다른업체가응찰한 정보
+
+데이타 수집		openBidSeq2 
+		http://uloca.net/g2b/datas/getBidRslt.php
+		$openBidSeq = 'openBidSeq2';
+		$openBidInfo = 'openBidInfo2'; 262,376 건 20180101-20180630
+		$norec = 100;
+		bididx=7758
+		openBidSeq2 = 801,608
+		openCompany = 90,410
+		1일 100,000 회 22, LIMITED_NUMBER_OF_SERVICE_REQUESTS_EXCEEDS_ERROR
+===========================================20180814 =================
+Graph y축 수정
+메일 목록에서 URL 링크 g2b.js/mailMe2()->sendmail2.php
+	공고번호	<a onclick=\'viewDtl("'. $arr['bidNtceDtlUrl'].'")\'>'.$arr['bidNtceNo'].'-'.$arr['bidNtceOrd'].'</a>
+		http://www.g2b.go.kr:8101/ep/tbid/facilBidDtl.do?tbidno=20180607807&bidseq=00
+	마감일시	<a onclick=\'viewRslt("'.$arr['bidNtceNo'].'","'.$arr['bidNtceOrd'].'","'.$arr['bidClseDt'].'","'.$pss.'")\'>'.$arr['bidClseDt'].'</a>
+		http://uloca.net/g2b/bidResult.php?bidNtceNo=1801717&bidNtceOrd=00&pss=공사
+	수요기관	<a onclick=\'viewscs("'.$arr['dminsttNm'].'")\'>'.$arr['dminsttNm'].'</a>
+		http://uloca.net/g2b/getBid.php?kwd=부산&dminsttNm=한국토지주택공사&inqryBgnDt=20170814&inqryEndDt=20180814
+
+===========================================20180813 =================
+	url = 'http://uloca.net/g2b/datas/getInfobyComp.php?compno='+compno; 에 그래프 추가
+
+	2018년도 데이타 수집, openBidInfo2, openBidSeq2, openCompany(공용)
+	openBidInfo2	1월	31,007	2월	69,702	3월	121,432
+			4월     171,860	5월    217,766	6월      262,376
+
+	6월 4주-27 공사	물품, 공사, 용역
+
+===========================================20180810 =================
+	plugins/bidCompany	보완
+
+
+
+
+===========================================20180809 =================
+개찰결과 긁어오기 할것....
+idx=5254 개찰일시=2017-07-07 14:00:00 bidNtceNo=20170700643 bidNtceNo=20170700643 bidNtceOrd=00
+
+openBidInfo	216,098		2017-07-01 - 2017-12-31
+openBidSeq=964,887건 openCompany=73,689	2017-07-01 - 2017-07-25 
+갯수 파악
+select a.bidNtceNo , a.cnt, b.bidNtceNm from
+(select count(idx) as cnt,bidNtceNo  from openBidSeq group by bidNtceNo) a,  openBidInfo b
+where a.bidNtceNo=b.bidNtceNo and a.cnt>5 order by a.cnt desc
+
+응찰한 수 -----
+select a.compno , a.cnt, b.compname from
+(select count(idx) as cnt,compno  from openBidSeq group by compno) a,  openCompany b
+where a.compno=b.compno and a.cnt>1 order by a.cnt desc
+
+select * from openBidSeq where bidNtceNo='20170700282'
+select * from openBidSeq order by tuchaldatetime desc limit 0,10
+===========================================20180808 =================
+201707	물품 2,390+2,563+2,838+3,287	공사 3,072+3,520+3,371+3,157	용역 2607+2,785+2,830+3,087
+201708	물품 2,684+2,807+3,556+4,771	공사 2,129+1,917+2,090+2,692	용역 2,389+2,500+2,788+3,160
+201709	물품 2,472+3,408+3,643+4,277	공사 2,060+2,594+3,643+2,648	용역 2,145+2,677+2,389+2,609
+201710	물품 8+2,328+3,333+6,100		공사 11+1,975+3,272+4,719		용역 7+1,996+2,282+3,547
+201711	물품 3,344+4,213+3,807+5,077	공사 3,089+3,879+	3,398+3,537	용역 2,162+2,552+2,280+3,412
+201712	물품 3,179+4,214+3,587+2,634	공사 2,869+4,497+4,304+837+1,311	용역 3,310+5,581+4,674+2,415+2,150
+
+218,090 건 (201707-201712)
+
+===========================================20180807 =================
+20170101-20170131	물품	9579
+20170101-20170131	공사	7983
+20170101-20170131	용역	17,161
+20170101-20170115	용역	7,371
+20170101-20170631	공사	48,603
+20180101-20180115	용역	7,675
+
+공고일 기준(개찰일 기준)
+201707	물품	12,770	공사	13,788	용역	12,403
+201708	물품	14,855	공사	9,786	용역	
+201709	물품	15,170	공사	10,633	용역	10,725
+201710	물품	13,202	공사	11,624	용역	8,772
+201711	물품	17,657	공사	15,109	용역	13,916
+201712	물품	12,884(14,930)	공사	13,597	용역	17,862
+201801	물품	12,684	공사	9,412	용역	18,820
+201802	물품	20,000	공사	10,411	용역	17,997
+201803	물품	19,282	공사	18,354	용역	21,188
+201804	물품	18,974	공사	16,899	용역	19,278
+201805	물품	17,897	공사	15,502	용역	16,251
+201806	물품	15,790	공사	16,228	용역	14,381
+201807	물품	13,505	공사	14,234	용역	12,696
+Fatal error: Allowed memory size of 134217728 bytes exhausted (tried to allocate 4096 bytes) 
+in /uloca22/www/g2b/datas/getBidInfo.php on line 34
+
+===========================================20180806 =================
+1. 입찰 정보를 모아서 우리 DB로 긁어 온다. 
+	201701-201706
+	210707-201712
+	201801-201806
+	openBidInfo"개찰정보"
+
+	나라장터검색조건에 의한 입찰공고물품조회	http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch
+	나라장터검색조건에 의한 입찰공고용역조회	http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch
+	나라장터검색조건에 의한 입찰공고공사조회	http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch
+
+	 
+2. 각 입찰정보의 낙찰정보를 uloca DB 화 한다.
+	openBidSeq"개찰결과순위"
+	openCompany"응찰회사정보"
+
+
+www폴더와 같은 루트상의 .htaccess 파일에서 php에러 발생시 로그가 저장되도록 아래와 같이 코드를 추가하였습니다.
+
+php_value error_reporting 6135
+php_flag display_errors on
+php_flag log_errors on
+php_value error_log /home/hosting_users/uloca22/php_error.log
+===========================================20180806 =================
+
+
+http://www.g2b.go.kr/pt/menu/selectSubFrame.do?framesrc=/pt/menu/frameTgong.do?url=http://www.g2b.go.kr:8067/contract/contList.jsp?searchType=1&orderbychk=B&contType=0&v_pagesize=10&page_no=1&bu_name=TcontSearchCall&geyak_way=&balzu_code=&giguan_name=&giguan_code=1&geyak_number=&pummung_name=%BA%CE%BB%EA&from_date=20180701&to_date=20180731&upmu_code=10&upmu_gubun=%B9%B0%C7%B0
+
+http://www.g2b.go.kr/gov/koneps/co/js/crossDomain.js
+
+1. 통합검색 '부산' 치고 '검색' 클릭 하거나 엔터
+2. 왼쪽 메뉴의 '개찰결과' 클릭
+3. '상세검색' 클릭해서 상세검색 창을 연다.
+4. 개찰일자를 '20180701' '20180731' 친다
+5. 키워드 란으로 가서 내용을 지운다.
+6. '검색' 버튼을 누른다.(키워드 란에서 엔터를 친다.)
+7. 건수를 확인한다. (25,771건/10건당 페이지 = 2,578페이지)
+8. 목록중 순서대로 1번을 누른다. 낙찰자 정보만 나타난다.
+9. '개찰완료' 버튼을 누른다.
+
+gotoPage function
+	function gotoPage( pageNum ){
+		$('#hstr_pageNum').val(pageNum);
+		$('#historyForm').submit();
+	}
+
+==================20180803===========개찰순위 조회===================================================
+g2b/bidResult.php?bidNtceNo=20170525353&bidNtceOrd=00
+입찰정보탕에 마감일시에 링크
+==================20180802===========개찰순위 조회===================================================
+개찰결과 상세검색 전부
+
+용역은 된다 개찰완료	subCategory=용역 -----------------------------------
+http://www.g2b.go.kr:8101/ep/result/serviceBidResultDtl.do?bidno=20180517670&bidseq=00&whereAreYouFrom=piser 
+
+시설 입찰공고 상세	subCategory=공사
+http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno=20070112011&bidseq=00&releaseYn=Y&taskClCd=3
+공사 개찰결과 상세조회	----------------------
+http://www.g2b.go.kr:8101/ep/result/facilBidResultDtl.do?bidno=20070112011&bidseq=00
+
+
+
+물품	subCategory=물품
+	조회	물품 개찰결과 분류조회
+http://www.g2b.go.kr:8101/ep/result/prodBidResultCateList.do?whereAreYouFrom=piser&check=211.42.85.19915331727476461&bidno=20180730659&bidseq=00
+	개찰완료
+--http://www.g2b.go.kr:8101/ep/result/prodBidResultDtl.do?bidno=20180730659&bidseq=00&whereAreYouFrom=piser
+
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPreparPcDetail?pageNo=1&numOfRows=100&type=json&inqryDiv=2&bidNtceNo=20170529198&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D&inqryBgnDt=20170601&inqryEndDt=20170630
+낙찰된 목록 현황 물품조회	낙찰1건만
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThng?pageNo=1&numOfRows=100&type=json&inqryDiv=4&bidNtceNo=20170529198&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+개찰결과 물품 목록 조회	낙찰1건만
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThng?pageNo=1&numOfRows=100&type=json&inqryDiv=4&bidNtceNo=20170529198&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+나라장터 검색조건에 의한 낙찰된 목록 현황 물품조회	낙찰1건만/6건
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch?pageNo=1&numOfRows=100&type=json&inqryDiv=3&bidNtceNo=20170529198&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+나라장터 검색조건에 의한 개찰결과 물품 목록 조회		낙찰1건만/6건
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoThngPPSSrch?pageNo=1&numOfRows=100&type=json&inqryDiv=3&bidNtceNo=20170529198&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+개찰결과 개찰완료 목록 조회	000000000000000000000000000000000000000000000000
+물품
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt?pageNo=1&numOfRows=100&type=json&inqryDiv=3&bidNtceNo=20170529198&bidNtceOrd=00&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+공사 시설
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt?pageNo=1&numOfRows=100&type=json&inqryDiv=3&bidNtceNo=20170532764&bidNtceOrd=00&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+용역
+http://apis.data.go.kr/1230000/ScsbidInfoService/getOpengResultListInfoOpengCompt?pageNo=1&numOfRows=100&type=json&inqryDiv=3&bidNtceNo=20170525353&bidNtceOrd=00&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+==================20180802===========개찰순위 조회===================================================
+
+
+
+
+용역 개찰결과 상세조회		바로 개찰 결과화면 감
+http://www.g2b.go.kr:8340/search.do?subCategory=ALL&kwd=&startDate=20180701&endDate=20180731&dateType=2&orgType=suyo&orgName=&orgCode=&swFlag=Y&gonggoNo=&preKwd=&preKwds=&detailSearch=true&category=GC#self
+
+<form name="send" id="send" action="" method="post">
+			<input name="bidno" id="bidno" type="hidden" value="20180730659">
+			<input name="bidseq" id="bidseq" type="hidden" value="00">
+			<input name="bidcate" id="bidcate" type="hidden">
+			<input name="rebidno" id="rebidno" type="hidden">
+			<input name="progressInfo" id="progressInfo" type="hidden">
+			<input name="check" id="check" type="hidden" value="1533170342674">
+		</form>
+
+
+
+
+
+insert into openBidInfo (idx, gonggono, gonggoname, gonggofrom,suyyo, opendatetime) value(  )
+insert into openBidSeq (idx, gonggono, compno, tuchalamt, tuchalrate, selno, tuchaldatetime,remark) values (  )
+insert into openCompany (compno, compname, repname, phone) values (  )
+
+
+var url = "kwd=";
+	url += "&category=GC";
+	url += "&subCategory=ALL";
+	url += "&detailSearch=true";
+	url += "&sort=R";
+	url += "&reSrchFlag=false";
+	url += "&pageNum=1";
+	url += "&srchFd=ALL";
+	url += "&date=";
+	url += "&startDate=20180701";
+	url += "&endDate=20180731";
+	url += "&startDate2=";
+	url += "&endDate2=";
+	url += "&orgType=suyo";
+	url += "&orgName=";
+	url += "&orgCode=";
+	url += "&swFlag=Y";
+	url += "&dateType=2";
+	url += "&area=";
+	url += "&gonggoNo=";
+	url += "&preKwd=";
+	url += "&preKwds=";
+	url += "&body=yes"
+
+	/body.do?kwd=&category=GC&subCategory=ALL&detailSearch=true&sort=R&reSrchFlag=false&startDate=20180701&endDate=20180731&orgType=suyo&swFlag=Y&dateType=2
+개찰결과 검색 결과 (25,771건)
+	http://www.g2b.go.kr:8340/body.do?kwd=&category=GC&subCategory=ALL&detailSearch=true&sort=R&reSrchFlag=false&startDate=20180701&endDate=20180731&orgType=suyo&swFlag=Y&dateType=2&body=yes&date=&startDate2=&endDate2=&orgName=&orgCode=&area=&gonggoNo=&preKwd=&preKwds=
+
+물품 개찰결과 분류조회
+<a href="javascript:showGcLinkView('20180730659','00','0','1','1','물품')">
+
+function showGcLinkView( val1, val2, val3, seq, type, target) {
+	var url = "kwd=";
+	url += "&category=GC";
+	url += "&subCategory=ALL";
+	url += "&detailSearch=true";
+	url += "&sort=R";
+	url += "&reSrchFlag=false";
+	url += "&pageNum=1";
+	url += "&srchFd=ALL";
+	url += "&date=";
+	url += "&startDate=20180701";
+	url += "&endDate=20180731";
+	url += "&orgType=suyo";
+	url += "&orgName=";
+	url += "&orgCode=";
+	url += "&swFlag=Y";
+	url += "&dateType=2";
+	url += "&area=";
+	url += "&gonggoNo=";
+	
+	location.href="/link.do?" + url + "&val1=" + val1 + "&val2=" + val2 + "&val3=" + val3 + "&seq=" + seq + "&type=" + type + "&target=" + target;
+}
+http://www.g2b.go.kr:8340/link.do?kwd=&category=GC&subCategory=ALL&detailSearch=true&sort=R&reSrchFlag=false&pageNum=1&srchFd=ALL&date=&startDate=20180701&endDate=20180731&orgType=suyo&orgName=&orgCode=&swFlag=Y&dateType=2&area=&gonggoNo=&val1=20180730659&val2=00&val3=0&seq=1&type=1&target=물품
+
+
+
+<a class="btn_mdl" href="javascript:yj_send('1','0','개찰완료');">
+<iframe name="bodyFrame" id="bodyFrame" style="width:100%;height:100%;" scrolling="no" frameborder="0" src="http://www.g2b.go.kr:8101/ep/result/prodBidResultCateList.do?whereAreYouFrom=piser&check=211.42.85.19915330998445151&bidno=20180730659&bidseq=00" onload="doResize();"></iframe>
+
+물품 개찰결과 분류조회
+http://www.g2b.go.kr:8101/ep/result/prodBidResultCateList.do?whereAreYouFrom=piser&check=211.42.85.19915330998445151&bidno=20180730659&bidseq=00
+http://www.g2b.go.kr:8101/ep/result/prodBidResultCateList.do?bidno=20180730659&bidseq=00
+
+http://www.g2b.go.kr:8101/ep/result/prodBidResultDtl.do?whereAreYouFrom=piser&check=211.42.85.19915330998445151&bidno=20180730659&bidseq=00
+
+
+물품 개찰결과 상세조회
+http://www.g2b.go.kr:8101/ep/result/prodBidResultDtl.do?kwd=&category=GC&subCategory=ALL&detailSearch=true&sort=R&reSrchFlag=false&pageNum=1&srchFd=ALL&date=&startDate=20180701&endDate=20180731&orgType=suyo&orgName=&orgCode=&swFlag=Y&dateType=2&area=&gonggoNo=&val1=20180730582&val2=00&val3=0&seq=3&type=1&target=물품
+========== Frame Name=bodyFrame
+
+
+
+
+	<div id="content_wrap">
+		<div id="content_header">
+			<h2>물품 개찰결과 상세조회</h2>
+			<div id="help"><button title="새창열림" id="btn_help" onclick="javascript:util_viewOnlineManual('/WEB-INF/jsp/ep/result/prodBidResultComtDtl.jsp','','/WEB-INF/jsp/ep/result/prodBidResultComtDtl.jsp','/ep/result/prodBidResultDtl.do','null');" type="button"><span>온라인매뉴얼</span></button></div>
+		</div>
+
+
+ 		
+		<div id="container">
+			<p class="btn_description dx"><a class="desc_open" href="#none"><span class="hide">설명글 열기/닫기</span></a></p>
+			<div class="description mdx2">
+				<ol>
+					<li>개찰결과는 단지 입찰서 제출결과 보여주는 것으로서 입찰참가자격, 적격심사 결과에 따라 최종낙찰자는 별도로 결정됩니다.</li>
+					<li>적격심사 대상업체는 적격심사신청서를 지정된 기일내에 반드시 제출하시기 바랍니다.</li>
+					
+					
+					
+					<li>개찰결과의 업체명은 현재 시점의 업체정보가 반영됩니다.</li>
+				</ol>
+			</div>		
+
+			
+						
+			<form name="rebid" id="rebid" action="" method="post">			    
+				
+				    
+	                
+	                   
+											
+							
+								<div class="infoleft"><h3><span class="black">[입찰결과]</span></h3></div>
+							
+	                   
+	                
+							
+
+				<div class="section">
+					<table class="table_info">
+					<caption><span>입찰결과 내용표시 테이블</span></caption>
+						<colgroup>
+							<col class="w18p">
+							<col class="w32p">
+							<col class="w18p">
+							<col class="w32p">							
+						</colgroup>
+						<tbody><tr>
+							<th><p>입찰공고번호</p></th>
+							<td><div class="tb_inner">20180730659-00</div></td>
+							<th><p>참조번호</p></th>
+							<td><div class="tb_inner">2018-142</div></td>
+						</tr>
+						<tr>
+							<th><p>공고명</p></th>
+							<td colspan="3"><div class="tb_inner">전동휠체어(JWX1) 구매 수의시담</div></td>
+						</tr>
+						<tr>
+							<th><p>공고기관</p></th>
+							<td><div class="tb_inner">한국보훈복지의료공단 중앙보훈병원</div></td>
+							<th><p>수요기관</p></th>
+							<td><div class="tb_inner">한국보훈복지의료공단 중앙보훈병원</div></td>
+						</tr>
+						<tr>
+							<th><p>집행관</p></th>
+							<td><div class="tb_inner">구매과</div></td>
+							<th><p>입회관(담당자)</p></th>
+							<td><div class="tb_inner">구매과</div></td>
+						</tr>
+						<tr>
+							<th><p>실제개찰일시</p></th>
+							<td><div class="tb_inner">2018/07/27 16:11</div></td>
+							<th><p>복수예비가 및<br>예정가격</p></th>
+							<td><div class="tb_inner">								
+								<a class="btn_mdl" href="javascript:showYebiga('2','1');"><span>보 기</span></a></div>
+							</td>
+						</tr>
+						<tr>
+							<th><p>적격심사결과</p></th>
+							<td colspan="3"><div class="tb_inner">
+								</div>
+							</td>
+						</tr>
+						
+						
+						
+						
+
+						<tr>
+							<th><p>유의사항</p></th>
+							<td colspan="3"><div class="tb_inner">
+								ㅁ 사전판정 과정에서 부적격 처리된 업체의 투찰금액과 투찰률은 표시되지 않습니다. 판정관련 문의는 해당 공고의 입찰집행관에게 문의하시기 바랍니다. <br>
+								</div>
+							</td>
+						</tr>
+												
+					</tbody></table>
+				</div>
+			</form>
+
+			<div class="infoleft">
+				<h3>
+					<span class="black">[개찰순위]</span> &nbsp;&nbsp;
+						
+				</h3>
+			</div>
+			<div class="results">
+				<p class="hide">개찰순위검색결과리스트:순위,사업자등록번호,업체명,대표자,투찰금액,투찰률,추첨번호,투찰일시,비고 정보제공</p>
+				<table class="table_list_prodBidResultTbl table_list">				
+				<thead>
+					<tr>
+						<th class="w6p">순위</th>
+						<th class="w14p">사업자등록번호</th>
+						<th class="w18p">업체명</th>
+						<th class="w9p">대표자</th>
+						<th class="w13p">투찰금액(원)</th>
+						<th class="w10p">투찰률(%)</th>
+						
+						<th class="w7p">추첨<br>번호</th>
+						<th class="w10p">투찰일시</th>
+						<th class="w15p">비고</th>
+					</tr>
+				</thead>
+						
+					
+						
+					<tbody>								
+					
+					<tr onmouseover="this.className='on'" onmouseout="this.className=''">
+						<td>
+							<span class="red">
+								
+								
+								1
+							</span>
+						</td>
+						<td><span class="red">
+							
+							
+							
+								5148114147
+							
+								
+							</span>
+						</td>
+						<td class="tl"><div><span class="red">(주)동방</span></div>
+						</td>
+						<td><span class="red">이종원</span>
+						</td>
+						<td class="tr"><span class="red">124,680,000</span>
+						</td>
+						<td class="tr"><span class="red">  99.008</span>
+						</td>
+						
+						<td><span class="red"></span>
+						</td>
+						<td><span class="red"></span>
+						</td>
+						<td><span class="red"> </span>
+						</td>
+					</tr>
+					
+					</tbody>
+					
+				</table>
+			</div>
+			
+			<form name="toYebi" id="toYebi" action="" method="post">
+				<input name="bidno" id="bidno1" type="hidden" value="20180730659">
+				<input name="bidseq" id="bidseq1" type="hidden" value="00">
+				<input name="bidcate" id="bidcate1" type="hidden" value="1">
+				<input name="rebidno" id="rebidno1" type="hidden" value="0">
+				<input name="gve_yega_method" id="gve_yega_method" type="hidden">
+				<input name="gve_danga_gubn" id="gve_danga_gubn" type="hidden">
+				<input name="check" id="check1" type="hidden" value="201807306591533099994546">
+			</form>
+			
+			<form name="send" id="send" action="" method="post">
+				<input name="bidno" id="bidno2" type="hidden" value="20180730659">
+				<input name="bidseq" id="bidseq2" type="hidden" value="00">
+				<input name="bidcate" id="bidcate2" type="hidden">
+				<input name="rebidno" id="rebidno2" type="hidden">
+				<input name="progressInfo" id="progressInfo" type="hidden">
+				<input name="check" id="check2" type="hidden" value="201807306591533099994546">
+			</form>
+			
+			<div class="button_wrap">
+				<div class="button4">
+
+						<a class="btn_mdl" href="javascript:toList();"><span>목록</span></a>
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+	
+
+	
+
+
+
+------------------------------

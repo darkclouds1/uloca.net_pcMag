@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+   <head>
+       <title> button </title>
+       <meta charset = "utf-8">
+	</head>
+	<body>
+	  <? echo copyURL() ?>
+	</body>
+</html>
+
+<?php 
+
+function copyURL(){
+	$ourl = 'uloca.net'; //<!-- "; -->
+	$url = get_bitly_short_url(ourl);
+	return $url;
+}
+
+
+/* returns the shortened url */
+function get_bitly_short_url($url,$login='',$appkey='',$format='txt') {
+	$login = 'enable21';
+	$apiKey = 'R_cb94c2cd92bba988984791acf7704b6e';
+	$connectURL = 'http://api.bit.ly/v3/shorten?login='.$login.'&apiKey='.$appkey.'&uri='.urlencode($url).'&format='.$format;
+	return curl_get_result($connectURL);
+}
+
+/* returns a result form url */
+function curl_get_result($url) {
+	$ch = curl_init();
+	$timeout = 5;
+	curl_setopt($ch,CURLOPT_URL,$url);
+	curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+	$data = curl_exec($ch);
+	curl_close($ch);
+	return $data;
+}
+
+?>
+
+

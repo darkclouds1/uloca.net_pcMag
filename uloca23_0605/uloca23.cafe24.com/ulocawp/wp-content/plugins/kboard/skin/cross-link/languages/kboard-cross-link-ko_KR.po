@@ -1,0 +1,189 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: kboard-cross-link\n"
+"POT-Creation-Date: 2017-11-02 19:19+0900\n"
+"PO-Revision-Date: 2017-11-02 19:19+0900\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ko_KR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _;__;gettext;gettext_noop\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: confirm.php:4 confirm.php:6 editor.php:79 editor.php:80 editor.php:87
+#: editor.php:88
+msgid "Password"
+msgstr "비밀번호"
+
+#: confirm.php:8
+msgid "※ Your password is incorrect."
+msgstr "※ 비밀번호가 올바르지 않습니다."
+
+#: confirm.php:15
+msgid "Document"
+msgstr "본문보기"
+
+#: confirm.php:17 document.php:94 editor.php:111
+msgid "List"
+msgstr "목록보기"
+
+#: confirm.php:20
+msgid "Password confirm"
+msgstr "비밀번호 확인"
+
+#: document.php:20 editor.php:75 editor.php:76 list.php:32
+msgid "Author"
+msgstr "작성자"
+
+#: document.php:24
+msgid "Date"
+msgstr "등록일"
+
+#: document.php:28
+msgid "Views"
+msgstr "조회"
+
+#: document.php:41
+msgid "Like"
+msgstr "좋아요"
+
+#: document.php:42
+msgid "Unlike"
+msgstr "싫어요"
+
+#: document.php:45
+msgid "Print"
+msgstr "인쇄"
+
+#: document.php:52
+#, php-format
+msgid "Download %s"
+msgstr "다운로드 %s"
+
+#: document.php:99 list.php:77 list.php:92 list2.php:16 list2.php:34
+msgid "Edit Link"
+msgstr "수정"
+
+#: document.php:100 list.php:81 list.php:94 list2.php:20 list2.php:36
+msgid "Are you sure you want to delete?"
+msgstr "삭제 하시겠습니까?"
+
+#: document.php:100 list.php:81 list.php:94 list2.php:20 list2.php:36
+msgid "Delete Link"
+msgstr "삭제"
+
+#: document.php:107 list.php:123
+msgid "KBoard is the best community software available for WordPress"
+msgstr "의미있는 워드프레스 게시판"
+
+#: editor.php:15 editor.php:16 latest.php:12 list.php:31 list.php:53
+msgid "Title"
+msgstr "제목"
+
+#: editor.php:20 editor.php:21
+msgid "Link"
+msgstr "링크"
+
+#: editor.php:25
+msgid "Target"
+msgstr "타겟"
+
+#: editor.php:28
+msgid "blank"
+msgstr "새 창"
+
+#: editor.php:29
+msgid "self"
+msgstr "현재 창"
+
+#: editor.php:35
+msgid "Options"
+msgstr "옵션"
+
+#: editor.php:38
+msgid "Top fixing"
+msgstr "상단고정"
+
+#: editor.php:46 editor.php:49 editor.php:60 editor.php:63 latest.php:10
+#: list.php:51
+msgid "Category"
+msgstr "카테고리"
+
+#: editor.php:49 editor.php:63
+msgid "Select"
+msgstr "선택"
+
+#: editor.php:102
+msgid "CAPTCHA"
+msgstr "CAPTCHA"
+
+#: editor.php:110 editor.php:113
+msgid "Back"
+msgstr "뒤로 가기"
+
+#: editor.php:118 list.php:18
+msgid "Register Link"
+msgstr "링크 등록"
+
+#: functions.php:9
+msgid "Missing link address."
+msgstr "링크 주소가 없습니다."
+
+#: functions.php:10
+msgid "There is no more data to display."
+msgstr "더 이상 표시 할 데이터가 없습니다."
+
+#: latest.php:8 list.php:49
+msgid "Number"
+msgstr "번호"
+
+#: latest.php:14 list.php:55
+msgid "Source"
+msgstr "출처"
+
+#: latest.php:16 list.php:57
+msgid "Article Date"
+msgstr "등록일"
+
+#: latest.php:17 list.php:58 list.php:103 list2.php:46
+msgid "Shortcuts"
+msgstr "바로가기"
+
+#: list.php:20
+msgid "All List"
+msgstr "전체 목록"
+
+#: list.php:20 list.php:30
+msgid "All"
+msgstr "전체"
+
+#: list.php:33
+msgid "category1"
+msgstr "카테고리"
+
+#: list.php:34
+msgid "category2"
+msgstr "출처"
+
+#: list.php:37
+msgid "Search"
+msgstr "검색"
+
+#: list.php:118
+msgid "View More"
+msgstr "더 보기"
+
+#~ msgid "Notice"
+#~ msgstr "공지사항"
+
+#~ msgid "Secret"
+#~ msgstr "비밀글"
+
+#~ msgid "Delete link"
+#~ msgstr "삭제"

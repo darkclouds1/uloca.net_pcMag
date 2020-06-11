@@ -15,7 +15,7 @@ function g2b_newShortCode() {
 	//echo $_SESSION['ServerAddr']; // http://uloca23.cafe24.com/ or http://uloca23.cafe24.com/
 	date_default_timezone_set('Asia/Seoul');
 	require($_SERVER['DOCUMENT_ROOT'].'/classphp/g2bClass.php'); //'/g2b/classPHP/g2bClass.php');
-	
+
 	$g2bClass = new g2bClass;
 	$uloca_live_test = $g2bClass->getSystem('1');
 	$mobile = $g2bClass->MobileCheck(); // "Mobile" : "Computer"
@@ -24,7 +24,7 @@ function g2b_newShortCode() {
 		//echo $mobile;
 		//exit();
 	}
-	
+
 	global $current_user;
 	$current_user = wp_get_current_user();
 	$_SESSION['current_user'] = $current_user;
@@ -35,7 +35,7 @@ function g2b_newShortCode() {
 	 echo 'User last name: ' . $current_user->user_lastname . "\n";
 	 echo 'User display name: ' . $current_user->display_name . "\n";
 	 echo 'User ID: ' . $current_user->ID . "\n"; */
-	
+
 	require($_SERVER['DOCUMENT_ROOT'].'/classphp/dbConn.php');
 	$dbConn = new dbConn;
 	$conn = $dbConn->conn();
@@ -43,15 +43,15 @@ function g2b_newShortCode() {
 	//pgDtlCD		01:용역, 02:공사:, 03:물품, 04:사전용역, 05:사공, 06:사물
 	//keyDtlCD		01:공고명, 02:수요기관, 03:공고+수요기관, 04:기업검색, 05:차트보기, 06:공고상세, 07:수요기관재검색,
 	//				08:낙찰결과, 09:기업응찰기록, 10:업체정보, 11:사용자 사용현황, 12:메일발송
-	
+
 	$id = $_SESSION['current_user']->user_login;
 	$rmrk = $mobile.' '.$_SERVER ['HTTP_USER_AGENT'];
 	$dbConn->logWrite($id,$_SERVER['REQUEST_URI'],$rmrk);
 	// --------------------------------- log
-	
+
 	$SearchCount = $dbConn->countLog($conn,$_SERVER['REMOTE_ADDR']);
 	//echo 'my ip='.$_SERVER['REMOTE_ADDR'].' cnt = '.$SearchCount;
-	
+
 	//if(isset($_GET['endDate'])) $endDate = $_GET['endDate'];
 	//else $endDate = NULL;
 	if(!isset($endDate)) $endDate = date("Y-m-d"); //$today;
@@ -76,7 +76,7 @@ function g2b_newShortCode() {
 	}
 	$sYear = date("Y");
 	$loginSW = $dbConn->getMemberFee($conn,$id); // login 여부 0 or 1(login)
-	
+
 	/* ---------------------------------------------- graph ---------------------------- * /
 	 if ($frrange == '') $frrange =75;
 	 if ($torange == '') $torange =99;
@@ -100,7 +100,7 @@ function g2b_newShortCode() {
 	 $stmt = $conn->prepare($sql);
 	 //$stmt->bind_param("dd", $frrange, $torange);
 	 }
-	 
+
 	 else { // 물품,공사,용역
 	 if ($range == 1) {
 	 $sql = 'select ROUND(tuchalrate1) tr, count(*) cnt from forecastData where pss = ? and ROUND(tuchalrate1)>=? and ROUND(tuchalrate1)<=? group by ROUND(tuchalrate1)';
@@ -115,14 +115,14 @@ function g2b_newShortCode() {
 	 $stmt = $conn->prepare($sql);
 	 //$stmt->bind_param("sdd", $pss,$frrange, $torange);
 	 }
-	 
-	 
+
+
 	 if (!$stmt->execute()) return $stmt->errno;
 	 $rowCount = $stmt->num_rows;
 	 $fields = $g2bClass->bindAll($stmt);
-	 
+
 	 $json_string = $g2bClass->rs2Json11($stmt, $fields);
-	 
+
 	 / * ---------------------------------------------- graph ---------------------------- */
 	?>
 
@@ -144,12 +144,14 @@ function g2b_newShortCode() {
 <script src="/jquery/jquery-ui.min.js"></script>
 <script src="/include/JavaScript/tableSort.js"></script>
 <script src="/js/common.js?version=20190203"></script>
-<script src="/g2b/g2b.js?version=20190924"></script>
+<script src="/g2b/g2b.js"></script>
+<script src="/g2b/g2b_2019.js"></script>
+
 <script>
 	//location.replace("http://uloca23.cafe24.com/g2b/scsBid.php");
 	var SearchCounts = '<?=$SearchCount?>'; // 검색회수
 	//alert(SearchCounts);
-</script>	
+</script>
 </head>
 
 <body> <!-- onload='reinit()'> <!-- onscroll='viewScroll()' -->
@@ -172,12 +174,12 @@ if ($mobile == "Mobile") {
 			<col style="width:auto;" />
 		</colgroup>
 		<tbody>
-			
+
 			<tr>
 				<th>입찰정보</th>
 				<td>&nbsp;
 					<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='20' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax000(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;"  placeholder="키워드 2개입력(ex):정보 감리" />
-					
+
 				</td>
 			</tr>
 			<tr>
@@ -194,27 +196,27 @@ if ($mobile == "Mobile") {
 						<option value="bid" selected="selected">입찰정보</option>
 						<option value="hrc">사전규격</option>
 						<option value="pln">발주계획</option>
-						
+
 					</select>
 					&nbsp;
 					<input type="radio" name="kind2" id="kind21" value="물품" onclick="chBack(1)">물품&nbsp;
 					<input type="radio" name="kind2" id="kind22" value="공사" onclick="chBack(1)">공사&nbsp;
 					<input type="radio" name="kind2" id="kind23" value="용역"  onclick="chBack(1)" checked="checked">용역&nbsp;
-					
+
 				</td>
 			</tr>
 			<tr>
 				<th>기업검색</th>
 				<td >&nbsp;
 					<input class="input_style2" autocomplete="on" type="text" name="compname" id="compname" size='20' style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax000(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;"  placeholder="' 업체명 ' or ' 대표자명 '"  />
-					
+
 				</td>
 			</tr>
 			<input type="hidden" name="id" id="id" value="<?=$id?>"  />
 			<input type="hidden" name="lastStartDate" id="lastStartDate" value="<?=$lastStartDate?>"  />
 				<input type="hidden" name="startDate" id="startDate" value="<?=$startDate?>" />
 				<input type="hidden" name="endDate" id="endDate" value="<?=$endDate?>"   />
-			
+
 			<!-- tr>
 				<th>검색년도</th>
 				<td>
@@ -222,15 +224,15 @@ if ($mobile == "Mobile") {
 					<select name="syear" id="syear">
 						<?
 						for ($i=0;$i<count($ssYear);$i++) {
-							if ($sYear == $ssYear[$i]) echo "<option value='$ssYear[$i]'selected='selected' >$ssYear[$i]</option>"; 
+							if ($sYear == $ssYear[$i]) echo "<option value='$ssYear[$i]'selected='selected' >$ssYear[$i]</option>";
 							else echo "<option value='$ssYear[$i]'>$ssYear[$i]</option>";
 						}
 						?>
 					</select>
-					
-					
+
+
 				</td>
-				
+
 			</tr -->
 		</table>
 <? } else { ?>
@@ -244,12 +246,12 @@ if ($mobile == "Mobile") {
 			<col style="width:auto;" />
 		</colgroup>
 		<tbody>
-			
+
 			<tr>
 				<th>입찰정보</th>
 				<td>&nbsp;
 					<input class="input_style2" autocomplete="on" type="text" name="kwd" id="kwd" size='30' style="ime-mode:active;" size='24px' value="" onkeypress="if(event.keyCode==13) {searchajax000(); return false;}" onclick="chBack(1)" maxlength="50" style="width:80%;" placeholder="키워드 2개입력(ex):정보 감리" />
-					
+
 				</td>
 				<th style='border-left:hidden ;border-right:hidden;'>수요기관</th>
 				<td>&nbsp;
@@ -270,12 +272,12 @@ if ($mobile == "Mobile") {
 					<input type="radio" name="kind2" id="kind23" value="용역" onclick="chBack(1)" checked="checked">&nbsp;용역
 				</td>
 			</tr>
-			
+
 			<tr>
 				<th>기업검색</th>
 				<td colspan=5>&nbsp;
 					<input class="input_style2" autocomplete="on" type="text" size='30px'  name="compname" id="compname"  style="ime-mode:active;" value="" onkeypress="if(event.keyCode==13) {searchajax000(); return false;}" onclick="chBack(2)" maxlength="50" style="width:80%;"  placeholder="' 업체명 ' or ' 대표자명 '"  />
-					
+
 				</td>
 				<input type="hidden" name="id" id="id" value="<?=$id?>"  />
 				<input type="hidden" name="lastStartDate" id="lastStartDate" value="<?=$lastStartDate?>" />
@@ -287,21 +289,21 @@ if ($mobile == "Mobile") {
 					<select name="syear" id="syear">
 						<?
 						for ($i=0;$i<count($ssYear);$i++) {
-							if ($sYear == $ssYear[$i]) echo "<option value='$ssYear[$i]'selected='selected' >$ssYear[$i]</option>"; 
+							if ($sYear == $ssYear[$i]) echo "<option value='$ssYear[$i]'selected='selected' >$ssYear[$i]</option>";
 							else echo "<option value='$ssYear[$i]'>$ssYear[$i]</option>";
 						}
 						?>
 					</select -->
 			</tr>
 
-			
+
 			<!-- tr>
 				<th>이메일</th>
 				<td>
 					<input class="input_style2" type="text" name="email" id="email" value="<?=$current_user->user_email?>" maxlength="50" style="width:70%;" />
-					
+
 				</td>
-			</tr -->	
+			</tr -->
 		</table>
 <? } ?>
 		<div class="btn_area">
@@ -313,7 +315,7 @@ if ($mobile == "Mobile") {
 
 		<!-- a onclick="mailMe2();" class="search">이메일</a>
 		<a onclick="gotoComp();" class="search">기업검색</a><!-- a onclick="tableToExcel('bidData','bidData','bid_<?=$endDate?>.xls')" class="search">엑셀</a -->
-		</div>	
+		</div>
 	</div>
 	</div>
 </form>
@@ -329,7 +331,7 @@ if ($mobile == "Mobile") {
 <div id='totalrec'></div>
 <div id='LinkExplain'></div>
 <div id='tables' style='width: 100%;'></div>
-	
+
 <a name="buttom"></a>
 <div class="btn_area" id='continueSearch' style='visibility: hidden;'>
 		<a onclick="searchajaxmore();" class="search"><input type=button value="더보기"></a>
@@ -421,7 +423,7 @@ function dominus() {
 	refresh2();
 }
 function refresh2() {
-	
+
 	makeparm2();
 	parm = parm.substring(1);
 	url = '/nwp/statistics3s.php'; //+parm;
@@ -449,15 +451,15 @@ function makeparm2() {
 	if (val == 'hrc') return; // 사전규격이면 안함...
 	var form = document.myForm;
 	parm="?a=1&pall=1";
-	
+
 	//if (document.getElementById('kind20').checked) parm +='&bidall=1';
 	if (document.getElementById('kind21').checked) parm +='&bidthing=1';
 	if (document.getElementById('kind22').checked) parm +='&bidcnstwk=1';
 	if (document.getElementById('kind23').checked) parm +='&bidservc=1';
 
-	parm += '&kwd='+encodeURIComponent(form.kwd.value); 
+	parm += '&kwd='+encodeURIComponent(form.kwd.value);
 	parm +='&dminsttNm='+encodeURIComponent(form.dminsttNm.value);
-	parm +='&id='+document.popForm.id.value;	
+	parm +='&id='+document.popForm.id.value;
 	/*if (document.getElementById('kind40').checked) parm +='&p1w=1';
 	if (document.getElementById('kind41').checked) parm +='&p1m=1';
 	if (document.getElementById('kind42').checked) parm +='&p6m=1';
@@ -465,7 +467,7 @@ function makeparm2() {
 	if (document.getElementById('kind44').checked) parm +='&pall=1';
 	frrange = document.getElementById('frrange').value;
 	torange = document.getElementById('torange').value;
-	
+
 	parm += '&frrange='+frrange+'&torange='+torange+'&curpos='+curpos;
 	/ * if (document.getElementById('kind60').checked) parm +='&loc0=1';
 	if (document.getElementById('kind61').checked) parm +='&loc1=1';
@@ -490,7 +492,7 @@ function drawchart(datas) {
 var maxindex;
 var maxvalue;
 var stepvalue;
- 
+
 function getMaxno() {
 	max = 0;
 	for (i=0;i<data.length ; i++)
@@ -501,7 +503,7 @@ function getMaxno() {
 		}
 		//clog ("data[i]['cnt']="+data[i]['cnt']+" max="+max);
 		if (mobile == "Mobile" && i % 5 != 0 ) data[i]['tr'] = '';
-		
+
 	}
 	if (max<1000) {
 		maxvalue = Math.ceil(max/100)*100;
@@ -519,12 +521,12 @@ function getMaxno() {
 		maxvalue = Math.ceil(max/100000)*100000;
 		stepvalue = maxvalue/5;
 	}
-	return max; 
+	return max;
 }
 
 function mydrawChart() {
 	//clog('drawChart');
-	chartbox = document.getElementById("chartbox"); 
+	chartbox = document.getElementById("chartbox");
 	chartbox.innerHTML = '';
 	//if (data.length<100) chartbox.style.width= '100%';
 	//else chartbox.style.width= (data.length * 12) + 'px'; //2400px
@@ -537,7 +539,7 @@ function mydrawChart() {
 		container:"chartbox",
 		value:"#cnt#",
 		label:"#cnt#",
-		
+
 		item:{
 			borderColor: "#1293f8",
 			color: function(obj){
@@ -586,7 +588,7 @@ var unselcolor = '#ffffff';
 var choiceTable = '';
 function chBack(ln) {
 	<? if ($mobile == "Mobile") { ?>
-		choiceTable = document.getElementById( "choice" ); 
+		choiceTable = document.getElementById( "choice" );
 		if (ln == 1) {
 			choiceTable.rows[0].style.background = selcolor;
 			choiceTable.rows[1].style.background = selcolor;
@@ -601,7 +603,7 @@ function chBack(ln) {
 			searchType=2;
 		}
 	<? } else { ?>
-		choiceTable = document.getElementById( "choice" ); 
+		choiceTable = document.getElementById( "choice" );
 		if (ln == 1) {
 			choiceTable.rows[0].style.background = selcolor;
 			choiceTable.rows[1].style.background = unselcolor;
@@ -613,14 +615,14 @@ function chBack(ln) {
 		}
 	<? } ?>
 }
-var bidDataTable ; 
+var bidDataTable ;
 var sortreplace ;
 function setSort() {
-	bidDataTable = document.getElementById( "specData" ); 
-	sortreplace = replacement( bidDataTable ); 
+	bidDataTable = document.getElementById( "specData" );
+	sortreplace = replacement( bidDataTable );
 }
-function sortTD( index ){ sortreplace.ascending( index );  } 
-function reverseTD( index ){ sortreplace.descending( index ); } 
+function sortTD( index ){ sortreplace.ascending( index );  }
+function reverseTD( index ){ sortreplace.descending( index ); }
 </script>
 <script>
 var mobile = '<?=$mobile?>'; // "Mobile" : "Computer"
@@ -690,7 +692,7 @@ var idx = 0;
 // chart clear
 
 function nochart() {
-	chartbox0 = document.getElementById("chartbox0"); 
+	chartbox0 = document.getElementById("chartbox0");
 	//chartbox.innerHTML = '<br><b><br><center><p style="color:blue;">사전규격과 기업검색는 그래프가 없습니다.</p></center>';
 	chartbox0.style.display = 'none';
 	document.getElementById("nochartmsg").style.display = 'block';
@@ -708,16 +710,16 @@ function hidechart() {
 }
 function showhidegr() {
 	if (loginCheck()==false) return;
-	
+
 	var sel = document.getElementById("kind1");
 	var val = sel.options[sel.selectedIndex].value; // 입찰 = bid 사전규격 = hrc
 	if (val != 'bid' || searchType==2) {
 		alert('사전규격과 기업검색는 그래프가 없습니다.');
 		return;
 	}
-	chartbox0 = document.getElementById("chartbox0"); 
+	chartbox0 = document.getElementById("chartbox0");
 	if (chartbox0.style.display == 'block') chartbox0.style.display = 'none';
-	else { 
+	else {
 		document.getElementById("nochartmsg").style.display = 'none';
 		chartbox0.style.display = 'block';
 		move();
@@ -729,13 +731,13 @@ function showhidegr() {
 function copyURL(){
 	var ourl = "<?php echo wp_get_shortlink(get_the_ID()); ?>";
 	var url = ourl + parm;
-	
+
 	try{
 		shortURL(url);
 	} catch(e) {
 		alert ('Error:'.e);
 	}
-	
+
 }
 
 function makeTable(data) {
@@ -744,38 +746,38 @@ function makeTable(data) {
 	//alert('searchType='+searchType);
 	//move_stop();
 	document.getElementById("nochartmsg").style.display = 'none';
-	
+
 	/* ----------------------------------------------------------------------------
 		기업검색
 	----------------------------------------------------------------------------- */
 	if (searchType==2)
 	{
-		//total record 뒤에 검색 URL 표시 기업검색: searchType=2 -by jsj 190320 
-		//searchUrl = searchUrl_path + '?page_id=1134&searchType=2&' + parm;			
+		//total record 뒤에 검색 URL 표시 기업검색: searchType=2 -by jsj 190320
+		//searchUrl = searchUrl_path + '?page_id=1134&searchType=2&' + parm;
 		parm = '&searchType=2&' + parm; //copyURL() 사용 -by jsj 190320
-		
+
 		if (mobile == "Computer")
 		{
 			if (curStart == 0) makeTableHead(colc,colc2,colc3,colcw);
 			//clog("title ok");
 			makeTabletrCompany(data);
 			document.getElementById('totalrec').innerHTML = "["+ String(SearchCounts) + "]total record= " + (table1.rows.length-1);
-			document.getElementById('LinkExplain').innerHTML = "<font size='2em'> ✔︎︎[사업자번호]클릭 → 기업의 응찰기록  ✔︎︎[업체명]클릭 → 업체정보팝업"; //-by jsj 링크설명 
-			
+			document.getElementById('LinkExplain').innerHTML = "<font size='2em'> ✔︎︎[사업자번호]클릭 → 기업의 응찰기록  ✔︎︎[업체명]클릭 → 업체정보팝업"; //-by jsj 링크설명
+
 			setSort();
-		
+
 		} else {
 			//if (searchCount > 5) makeTableHead(colc);
 			makeTabletrCompany2(data);
 			document.getElementById('totalrec').innerHTML = "<font size='2em'>[" + String(SearchCounts) + "]total record=" + idx;
 		}
 		//if (searchCount > 1) searchajax2();
-		
+
 		//if (endSw) {
 		//document.getElementById('totalrec').innerHTML += '(완료)';
 		//document.getElementById('continueSearch').style.visibility = 'visible';
 		//}
-		
+
 		viewmore();
 		// chart clear
 		nochart();
@@ -790,12 +792,12 @@ function makeTable(data) {
 	//clog(val);
 	// var mobile = '<?=$mobile?>'; // "Mobile" : "Computer"
 
-	//total record 뒤에 검색 URL표시 입찰정보 : searchType=1 -by jsj 190320 
-	//searchUrl = searchUrl_path + '?page_id=1134&searchType=1&' + parm;			
+	//total record 뒤에 검색 URL표시 입찰정보 : searchType=1 -by jsj 190320
+	//searchUrl = searchUrl_path + '?page_id=1134&searchType=1&' + parm;
 	parm = '&searchType=1&' + parm; //copyURL() 사용 -by jsj 190320
 	if (mobile == "Computer")
 	{
-	
+
 		if (val == 'bid') { // 입찰정보
 			makeTableHead(col,col2,col3,colw);
 			makeTabletr(data);
@@ -809,13 +811,13 @@ function makeTable(data) {
 		else {	// 사전규격
 			makeTableHead(colsx,colsx2,colsx3,colsxw);
 			makeTabletrhrc(data);
-			
+
 		}
 		document.getElementById('totalrec').innerHTML = "["+ String(SearchCounts) + "] total record= " + (table1.rows.length-1);
-		document.getElementById('LinkExplain').innerHTML = "<font size='2em'>✔︎<font color=red>[공고번호]</font>클릭 → 입찰정보상세(나라장터)  ✔︎︎<font color=red>[수요기관]</font>클릭 → 수요기관으로 재검색   ✔︎︎<font color=red>[개찰일시]</font>클릭 → 낙찰결과 순위목록을 보여줍니다."; //-by jsj 링크설명 
-		
+		document.getElementById('LinkExplain').innerHTML = "<font size='2em'>✔︎<font color=red>[공고번호]</font>클릭 → 입찰정보상세(나라장터)  ✔︎︎<font color=red>[수요기관]</font>클릭 → 수요기관으로 재검색   ✔︎︎<font color=red>[개찰일시]</font>클릭 → 낙찰결과 순위목록을 보여줍니다."; //-by jsj 링크설명
+
 		if (val == 'bid' && table1.rows.length>2) setSort();
-		
+
 	} else { // "Mobile"
 		if (val == 'bid' || val == 'pln') {
 			//makeTableHead(col);
@@ -839,13 +841,13 @@ function makeTable(data) {
 	*/
 
 	//searchajax2();
-	
+
 		//setSort();
 		viewmore();
 		move_stop();
 		hidechart();
 		clog('val='+val+' chartbox0.style.display='+chartbox0.style.display);
-		/* if (val == 'bid') { 
+		/* if (val == 'bid') {
 			if (chartbox0.style.display == 'block') refresh2();
 			else move_stop();
 		}
@@ -874,7 +876,7 @@ function makeTableHead(column,column2,columnattr,columnw) {
         for (var i = 0; i < column.length; i++) {
             var th = document.createElement("th");      // TABLE HEADER.
 			if (column[i] == 'check') th.innerHTML = '<input type="checkbox" onclick="javascript:CheckAll(\''+chkid+'\')">';
-			
+
             else if(i!=0) th.innerHTML = column[i]+'<a onclick="sortTD ('+i+')">▲</a><a onclick="reverseTD ('+i+')">▼</a>';
 			else th.innerHTML = column[i];
 			th.setAttribute('style', 'width:'+columnw[i]+';');
@@ -885,11 +887,11 @@ function makeTableHead(column,column2,columnattr,columnw) {
 		//clog(table1.outerHTML);
 		//document.getElementById('tables').innerHTML = table1.innerHTML;
 }
-function custonSort(a, b) { 
-	if(a.bidClseDt == b.bidClseDt){ return 0} return a.bidClseDt > b.bidClseDt ? -1 : 1; 
-} 
-function custonSortHrc(a, b) { 
-	if(a.opninRgstClseDt == b.opninRgstClseDt){ return 0} return a.opninRgstClseDt > b.opninRgstClseDt ? -1 : 1; 
+function custonSort(a, b) {
+	if(a.bidClseDt == b.bidClseDt){ return 0} return a.bidClseDt > b.bidClseDt ? -1 : 1;
+}
+function custonSortHrc(a, b) {
+	if(a.opninRgstClseDt == b.opninRgstClseDt){ return 0} return a.opninRgstClseDt > b.opninRgstClseDt ? -1 : 1;
 }
 function makeTabletr(datas) {
 	// ADD JSON DATA TO THE TABLE AS ROWS.
@@ -935,18 +937,18 @@ function makeTabletr(datas) {
 					if (!(val=='pln' && j==1)) tabCell.innerHTML = setLink(items,i,j,tabCell);
 
 				}
-				
+
 			}
 			catch (ex) {}
-			
+
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
         var divContainer = document.getElementById("tables");
         //divContainer.innerHTML = "";
 		divContainer.appendChild(table1);
-	
-}	
+
+}
 
 function makeTablePln(datas) {
 	// ADD JSON DATA TO THE TABLE AS ROWS.
@@ -954,7 +956,7 @@ function makeTablePln(datas) {
 	//viewObject(datas);
 	var data = JSON.parse(datas);
 	//r = data.response;
-	
+
 	items = data.response.body.items;
 	if (items.length>1) items.sort(custonSort);
 	var tbody = table1.createTBody();
@@ -989,10 +991,10 @@ function makeTablePln(datas) {
 					//if (colp2[j] == 'bidNtceNo') tabCell.innerHTML += '-' + items[i]['bidNtceOrd'];
 					tabCell.innerHTML = setLink(items,i,j,tabCell);
 				}
-				
+
 			}
 			catch (ex) {}
-			
+
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
@@ -1026,14 +1028,14 @@ function makeTabletr2bid(datas) { // mobile
 
 					*/
 				//if (items[i]['bidNtceNo'] == '') continue;
-				
+
 				idx = idx + 1;
 
 				//licn += '<li><a class="a1" href = "http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='+items[i]['bidNtceNo']+'&bidseq='+items[i]['bidNtceOrd']+'&releaseYn=Y&taskClCd=1 ">';
 				pss = getPSS();
 
 				//clog("pss="+pss);
-				
+
 				if (val != "pln")
 				{
 				licn += '<li><a class="a1" onclick=openButton('+idx+')>';
@@ -1042,9 +1044,9 @@ function makeTabletr2bid(datas) { // mobile
 					licn += '<li style="font-weight:bold"><';
 				licn += items[i]['bidNtceNm']+'<br />' + items[i]['dminsttNm']+ '<br />공고일:'+items[i]['bidNtceDt'].substr(0,10) +  ' 추정가격: ' +items[i]['presmptPrce'].format()+ '<br />'+items[i]['pss'] ;
 				}
-				
-				
-				
+
+
+
 				if (val != "pln")
 				{
 					licn += '<div id="link'+idx+'" style="display:none;">';
@@ -1052,17 +1054,17 @@ function makeTabletr2bid(datas) { // mobile
 
 
 					licn += '<p ><input type=button value="낙찰결과" onclick=\'viewRslt("'+items[i]['bidNtceNo']+'","'+items[i]['bidNtceOrd']+'","'+items[i]['opengDt']+'","'+pss+'")\'>';
-				
+
 					licn += '&nbsp;<input type=button value="낙찰기업" onclick=\'viewComp("'+items[i]['bidNtceNo']+'","'+items[i]['bidNtceOrd']+'","'+items[i]['bidClseDt'].substr(0,10)+'")\'></p></center>';
 					licn += '</div>';
-				
+
 				}
 				licn += '</li>';
-				//clog('licn = '+licn);			
+				//clog('licn = '+licn);
 				//if (today<=items[i]['opengDt'].substr(0,10)) return cell.innerHTML;
 			}
 			catch (ex) {}
-			
+
         }
 	lic += licn;
 	//alert(lic);
@@ -1077,10 +1079,10 @@ function openButton(idx) {
 	}
 	else document.getElementById("link"+idx).style.display='inline';
 }
-function custonSorthrc(a, b) { 
-	if(a.opninRgstClseDt == b.opninRgstClseDt){ return 0} return a.opninRgstClseDt > b.opninRgstClseDt ? -1 : 1; 
-} 
-	
+function custonSorthrc(a, b) {
+	if(a.opninRgstClseDt == b.opninRgstClseDt){ return 0} return a.opninRgstClseDt > b.opninRgstClseDt ? -1 : 1;
+}
+
 function makeTabletrhrc(datas) { // 사전규격
 	// ADD JSON DATA TO THE TABLE AS ROWS.
 	//json_result =  jdata.js_result[0]["rows"];
@@ -1088,7 +1090,7 @@ function makeTabletrhrc(datas) { // 사전규격
 	//clog(datas);
 	var data = JSON.parse(datas);
 	//r = data.response;
-	
+
 	items = data.response.body.items;
 	clog('items.length='+items.length);
 	if (items.length>1) items.sort(custonSort); //hrc);
@@ -1120,11 +1122,11 @@ function makeTabletrhrc(datas) { // 사전규격
 					tabCell.setAttribute('style', attr);
 					tabCell.innerHTML = setLinksx(items,i,j,tabCell);
 				}
-				
-				
+
+
 			}
 			catch (ex) {}
-			
+
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
@@ -1155,7 +1157,7 @@ function setLink(items, i, j, cell) {
 
 	switch (j) {
 		case 2:	// 공고번호
-			//$arr['bidNtceDtlUrl'] 가 없는 경우 viewDtl에 링크 삽입  -by jsj 20181129 
+			//$arr['bidNtceDtlUrl'] 가 없는 경우 viewDtl에 링크 삽입  -by jsj 20181129
 			if (items[i]['bidNtceNo'].length == 6) {// 사전규격
 				cell.innerHTML = '<a onclick=\'viewDtls("' + items[i]['bidNtceNo'] + '")\'>' + cell.innerHTML.substr(0, 6) + '</a>';
 				return cell.innerHTML;
@@ -1177,7 +1179,7 @@ function setLink(items, i, j, cell) {
 			pss = items[i]['pss']; 					// getPSS(); 사전규격
 			if (items[i]['pss'].substr(0, 2) == '사전') {
 				return "사전공개일→";
-			}	
+			}
 			if (items[i]['progrsDivCdNm'] == '개찰완료') {
 				bidwinnrNm = items[i]['bidwinnrNm'];
 				bidwinnrNm = bidwinnrNm.replace("주식회사","");
@@ -1189,7 +1191,7 @@ function setLink(items, i, j, cell) {
 			}
 			break;
 
-		case 9: // 개찰일시 
+		case 9: // 개찰일시
 			if (today < items[i]['opengDt'].substr(0, 10)) return cell.innerHTML;
 			bidwinnrNm = items[i]['progrsDivCdNm'];	// 유찰 or 재입찰 외
 			pss = items[i]['pss']; 					// getPSS(); 사전규격
@@ -1200,7 +1202,7 @@ function setLink(items, i, j, cell) {
 			} else {	// 개찰결과 링크
 				cell.innerHTML = '<a onclick=\'viewRslt("' + items[i]['bidNtceNo'] + '","' + items[i]['bidNtceOrd'] + '","' + items[i]['opengDt'] + '","' + pss + '","' + resudi + '")\'>' + cell.innerHTML + '</a>';
 			}
-			break;					
+			break;
 	}	// switch
 	return cell.innerHTML;
 }
@@ -1208,7 +1210,7 @@ function setLink(items, i, j, cell) {
 
 function setLinksx(items,i,j,cell) {  // 사전규격
 	//if (i<2) clog('j='+j+'/'+cell.innerHTML);
-	
+
 	if (j == 1 ) {
 		//cell.innerHTML = '<a href="http://www.g2b.go.kr:8081/ep/invitation/publish/bidInfoDtl.do?bidno='+items[i]['bidNtceNo']+'&bidseq='+items[i]['bidNtceOrd']+'&releaseYn=Y&taskClCd=5" target="_blank">' + cell.innerHTML + '</a>';
 		cell.innerHTML = '<a onclick=\'viewDtls("'+ items[i]['bidNtceNo']+'")\'>' + cell.innerHTML + '</a>';
@@ -1227,9 +1229,9 @@ function setLinksx(items,i,j,cell) {  // 사전규격
 		if (form.kind23.checked) pss ='용억';
 		//cell.innerHTML = '<a href="http://uloca23.cafe24.com/g2b/bidResult.php?bidNtceNo='+items[i]['bidNtceNo']+'&bidNtceOrd='+items[i]['bidNtceOrd']+'&pss='+pss+'&from=getBid" target="_blank">' + cell.innerHTML + '</a>';
 		cell.innerHTML = '<a onclick=\'viewRslt("'+items[i]['bidNtceNo']+'","'+items[i]['bidNtceOrd']+'","'+items[i]['bidClseDt']+'","'+pss+'")\'>'+ cell.innerHTML + '</a>';
-		
+
 	} */
-		
+
 	return cell.innerHTML;
 }
 
@@ -1241,7 +1243,7 @@ function makeTabletr2hrc(datas) { // mobile 사전규격
 		data = JSON.parse(datas);
 	}
 	catch (ex) {return;}
-	
+
 	//r = data.response;
 	//alert('makeTabletr2bid');
 	items = data.response.body.items;
@@ -1251,7 +1253,7 @@ function makeTabletr2hrc(datas) { // mobile 사전규격
 	for (var i = 0; i < items.length; i++) {
 			try
 			{
-				/* 
+				/*
 				var colsx = ["번호","check","등록번호","품명","예산금액","등록일","수요기관","낙찰결과","구분"];
 				var colsx2 = [ '','check','bfSpecRgstNo', 'prdctClsfcNoNm', 'asignBdgtAmt', 'rgstDt', 'rlDminsttNm', 'opninRgstClseDt', 'pss' ];
 
@@ -1273,14 +1275,14 @@ function makeTabletr2hrc(datas) { // mobile 사전규격
 				//licn += '<p ><input type=button value="낙찰결과" onclick=\'viewRslt("'+items[i]['bidNtceNo']+'","'+items[i]['bidNtceOrd']+'","'+items[i]['bidClseDt']+'","'+pss+'")\'>&nbsp;<input type=button value="낙찰기업"></p></center>';
 				licn += '</div>';
 				licn += '</li>';
-				//clog('licn = '+licn);			
+				//clog('licn = '+licn);
 				pss = getPSS();
-				
+
 				licn += '</div>';
 				licn += '</li>';
 			}
 			catch (ex) {}
-			
+
         }
 	lic += licn;
 	//alert(lic);
@@ -1296,15 +1298,15 @@ function makeTabletrCompany(datas){
 	{
 		data = JSON.parse(datas);
 	}
-	catch (ex) {alert(ex); return;}	
-	
+	catch (ex) {alert(ex); return;}
+
 	var data = JSON.parse(datas);
 	//r = data.response;
 	var tbody = table1.createTBody();
 	items = data.response.body.items;
 	//items.sort(custonSort);
 	//idx = 0;
-	
+
         for (var i = 0; i < items.length; i++) {
 			try
 			{
@@ -1329,14 +1331,14 @@ function makeTabletrCompany(datas){
 						if (tabCell != null && tabCell.innerHTML.length > 10) tabCell.innerHTML = tabCell.innerHTML.substr(0,10);
 					}
 					tabCell.setAttribute('style', attr);
-					
+
 					tabCell.innerHTML = setLinkcomp(items,i,j,tabCell);
 				}
-				
-				
+
+
 			}
 			catch (ex) {}
-			
+
         }
 
         // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
@@ -1352,10 +1354,10 @@ function setLinkcomp(items,i,j,cell) {  // 기업저ㅓㅇ보
 		cell.innerHTML = '<a onclick=\'compInfobyComp("'+ items[i]['compno']+'")\'>' + cell.innerHTML + '</a>';
 	} else if (j == 2)
 	{
-		
+
 		cell.innerHTML = '<a onclick=\'compInfo("'+ items[i]['compno']+'")\'>' + cell.innerHTML + '</a>';
 	}
-			
+
 	return cell.innerHTML;
 }
 function makeTabletrCompany2(datas) { // mobile 사전규격
@@ -1366,7 +1368,7 @@ function makeTabletrCompany2(datas) { // mobile 사전규격
 		data = JSON.parse(datas);
 	}
 	catch (ex) {return;}
-	
+
 	//r = data.response;
 	//alert('makeTabletr2bid');
 	items = data.response.body.items;
@@ -1383,17 +1385,17 @@ function makeTabletrCompany2(datas) { // mobile 사전규격
 				licn += items[i]['compname']+'<br /> <font class="f1">- ' + items[i]['compno']+ ' 대표 : '+items[i]['repname'] + '</font> </a>';
 				licn += '<div id="link'+idx+'" style="display:none;">';
 				licn += '<center><p style="LINE-HEIGHT: 102%"><input type=button value="응찰기록" onclick=\'bidInfo("'+ items[i]['compno']+'")\'>&nbsp;<input type=button value="업체정보" onclick=\'compInfo("'+ items[i]['compno']+'")\'><br>';
-				
+
 				licn += '</div>';
 				licn += '</li>';
-				//clog('licn = '+licn);			
+				//clog('licn = '+licn);
 				//pss = getPSS();
-				
+
 				licn += '</div>';
 				licn += '</li>';
 			}
 			catch (ex) {}
-			
+
         }
 	lic += licn;
 	//alert(lic);
@@ -1402,10 +1404,10 @@ function makeTabletrCompany2(datas) { // mobile 사전규격
 var curStart = 0;
 var cntonce = 100;
 function searchajaxmore() {
-	
+
 	curStart += cntonce;
 	var form = document.myForm;
-		clog('searchajaxmore ');		
+		clog('searchajaxmore ');
 		durationIndex = 0;
 
 		eDate1 = dateAddDel(sDate1, -1, 'd'); //eDate1 = form.endDate.value;
@@ -1415,7 +1417,7 @@ function searchajaxmore() {
 		sDate1 = dateAddDel(eDate1, ddur, 'd');
 		endSw = false;
 		form.startDate.value = dateAddDel(eDate1, -1, 'y');
-		
+
 		//idx = 0;
 		ajaxCnt = 0;
 		//clog('ajax 3 form.startDate.value='+form.startDate.value+' eDate1='+eDate1+' endSw ='+ endSw+' durationIndex='+durationIndex+' ddur='+ddur+' ajaxCnt='+ajaxCnt);
@@ -1430,7 +1432,7 @@ function searchajaxmore() {
 		if (form.kind23.checked) parm +='&bidservc=1';
 		if (searchType==2) parm +='&compinfo=1';
 		else parm +='&bidinfo=1';
-		
+
 		//var sel = document.getElementById("kind1");
 		//var val = sel.options[sel.selectedIndex].value;
 		parm += '&bidhrc=bid'; //+val;
@@ -1439,10 +1441,10 @@ function searchajaxmore() {
 		//if (form.chkHrc.checked) parm +='&chkHrc=hrc';
 		server="/datas/publicData.php";
 		clog(server+parm);
-				
+
 		//move();
 		getAjaxPost(server,recv,parm);
- 
+
 		/*   $.ajax({
         type: "get",/*method type* /
 		scriptCharset: "utf-8" ,
@@ -1464,7 +1466,7 @@ function searchajaxmore() {
         }
     });
 */
-		
+
 }
 function recv(data) {
 	move_stop();
@@ -1502,7 +1504,7 @@ reinit();
 	&bidthing=1		물품
 	&bidcnstwk=1	공사
 	&bidservc=1		용역
-	
+
 	입찰정보 물품: https://uloca23.cafe24.com/ulocawp/?page_id=1138&bidinfo=1&kwd=부산&dminsttNm=&curStart=0&cntonce=100&bidthing=1&bidhrc=bid&id=blueoceans
 	입찰정보 공사: https://uloca23.cafe24.com/ulocawp/?page_id=1138&bidinfo=1&kwd=부산&dminsttNm=&curStart=0&cntonce=100&bidcnstwk=1&bidhrc=bid&id=blueoceans
 	입찰정보 용역: https://uloca23.cafe24.com/ulocawp/?page_id=1138&bidinfo=1&kwd=부산&dminsttNm=부산&curStart=0&cntonce=100&bidservc=1&bidhrc=bid&id=blueoceans
@@ -1572,7 +1574,7 @@ getAjax(server,recv);
 </script>
 
 <?
-	} 
+	}
 	// https://uloca23.cafe24.com/ulocawp/?page_id=1138&compinfo=1&compname=부산
 	// https:///datas/publicData.php
 ?>
@@ -1583,7 +1585,7 @@ getAjax(server,recv);
 	https://uloca23.cafe24.com/datas/publicData.php?compinfo=1&compname=부산&kwd=&dminsttNm=&curStart=0&cntonce=100&bidservc=1&compinfo=1&bidhrc=bid&id=
 	//searchajax000()
 */
-	
+
 }
 add_shortcode('g2b_new','g2b_newShortCode');
 

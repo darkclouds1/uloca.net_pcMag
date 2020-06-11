@@ -1,0 +1,1276 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 코스모스팜 회원관리\n"
+"POT-Creation-Date: 2018-08-13 19:18+0900\n"
+"PO-Revision-Date: 2018-08-13 19:18+0900\n"
+"Last-Translator: Cosmosfarm <support@cosmosfarm.com>\n"
+"Language-Team: \n"
+"Language: ko_KR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.1.1\n"
+"X-Poedit-KeywordsList: _;__;gettext;gettext_noop\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: .git\n"
+"X-Poedit-SearchPathExcluded-1: .settings\n"
+
+#: admin/activity_history.php:13 admin/subscription_order.php:14
+#: admin/subscription_product.php:13 skin/default/messages.php:14
+#: skin/default/notifications.php:14 skin/default/orders.php:14
+#: skin/default/users.php:12 skin/two/messages.php:14
+#: skin/two/notifications.php:14 skin/two/orders.php:14 skin/two/users.php:12
+msgid "Search"
+msgstr "검색"
+
+#: admin/setting.php:150 admin/setting.php:158
+#: class/Cosmosfarm_Members.class.php:1051
+#: class/Cosmosfarm_Members.class.php:1052
+msgid "Log in to view this page."
+msgstr "이 페이지를 보려면 로그인하십시오."
+
+#: admin/setting.php:159 class/Cosmosfarm_Members.class.php:1053
+msgid "Sign up to view this page."
+msgstr "이 페이지를 보려면 회원가입하십시오."
+
+#: admin/setting.php:167 class/Cosmosfarm_Members.class.php:1054
+msgid "You do not have permission to view this page."
+msgstr "페이지를 볼 권한이 없습니다."
+
+#: class/Cosmosfarm_Members.class.php:297
+#: class/Cosmosfarm_Members.class.php:720 skin/default/login-form.php:41
+#: skin/two/login-form.php:36
+msgid "Register"
+msgstr "회원가입"
+
+#: class/Cosmosfarm_Members.class.php:298
+#: class/Cosmosfarm_Members_Skin.class.php:64
+msgid "Account"
+msgstr "회원정보"
+
+#: class/Cosmosfarm_Members.class.php:299 skin/default/login-form.php:7
+#: skin/default/login-form.php:28 skin/two/login-form.php:21
+msgid "Log In"
+msgstr "로그인"
+
+#: class/Cosmosfarm_Members.class.php:300
+#: class/Cosmosfarm_Members_Page_Builder.class.php:235
+msgid "Log Out"
+msgstr "로그아웃"
+
+#: class/Cosmosfarm_Members.class.php:430
+msgid "Check Availability"
+msgstr "중복확인"
+
+#: class/Cosmosfarm_Members.class.php:436
+msgid "Find"
+msgstr "찾기"
+
+#: class/Cosmosfarm_Members.class.php:454
+#: class/Cosmosfarm_Members.class.php:461
+#: skin/default/subscription-checkout-fields.php:115
+#: skin/two/subscription-checkout-fields.php:115
+#, php-format
+msgid "I agree to %s."
+msgstr "%s에 동의합니다."
+
+#: class/Cosmosfarm_Members.class.php:491
+#: class/Cosmosfarm_Members.class.php:502
+#: class/Cosmosfarm_Members.class.php:513
+#: class/Cosmosfarm_Members.class.php:525
+#: class/Cosmosfarm_Members.class.php:536
+msgid "Certify"
+msgstr "휴대폰 본인인증"
+
+#: class/Cosmosfarm_Members.class.php:551 cosmosfarm-members.php:143
+#: skin/default/change-password-form.php:25
+#: skin/two/change-password-form.php:25
+msgid ""
+"Password must consist of 8 digits, including English, numbers and special "
+"characters."
+msgstr ""
+"비밀번호는 영문,숫자,특수문자를 포함하여 8자리 이상으로 구성해야 합니다."
+
+#: class/Cosmosfarm_Members.class.php:584
+msgid "<strong>ERROR</strong>: User has not been activated."
+msgstr ""
+
+#: class/Cosmosfarm_Members.class.php:590
+#: class/Cosmosfarm_Members_Security.class.php:62
+msgid "Please check the email sent to your email address."
+msgstr "가입시 입력한 이메일 주소로 발송된 이메일을 확인해주세요."
+
+#: class/Cosmosfarm_Members.class.php:598
+#: class/Cosmosfarm_Members_Security.class.php:43
+#, php-format
+msgid ""
+"You have exceeded the maximum number of %d attempts, try again in %d minutes."
+msgstr "비밀번호 오류 %d회를 초과하였습니다. 시스템 접속이 %d분간 제한됩니다."
+
+#: class/Cosmosfarm_Members.class.php:625
+#: class/Cosmosfarm_Members.class.php:722 skin/default/login-form.php:10
+#: skin/two/login-form.php:11
+msgid "Email"
+msgstr "이메일"
+
+#: class/Cosmosfarm_Members.class.php:714
+#: class/Cosmosfarm_Members.class.php:715 skin/default/login-form.php:15
+#: skin/two/login-form.php:13
+msgid "Username"
+msgstr "아이디"
+
+#: class/Cosmosfarm_Members.class.php:716 skin/default/login-form.php:27
+#: skin/two/login-form.php:18
+msgid "Keep me signed in"
+msgstr "자동로그인"
+
+#: class/Cosmosfarm_Members.class.php:718 skin/default/login-form.php:35
+#: skin/two/login-form.php:31
+msgid "Forgot Password"
+msgstr "비밀번호 찾기"
+
+#: class/Cosmosfarm_Members.class.php:721
+msgid "Required"
+msgstr "필수입력"
+
+#: class/Cosmosfarm_Members.class.php:724
+#: class/Cosmosfarm_Members.class.php:725
+msgid "Forgot Username"
+msgstr "아이디 찾기"
+
+#: class/Cosmosfarm_Members.class.php:726
+msgid "Email address does not exist."
+msgstr "이메일 주소가 존재하지 않습니다."
+
+#: class/Cosmosfarm_Members.class.php:727
+#, php-format
+msgid "An email was sent to %s with your username."
+msgstr "%s 이메일로 아이디를 전송했습니다."
+
+#: class/Cosmosfarm_Members.class.php:728
+msgid "Password successfully changed!"
+msgstr "비밀번호가 성공적으로 변경되었습니다!"
+
+#: class/Cosmosfarm_Members.class.php:968
+msgid "Please enter the required information."
+msgstr "필수 정보를 입력해주세요."
+
+#: class/Cosmosfarm_Members.class.php:991
+#: class/Cosmosfarm_Members.class.php:1011
+#, php-format
+msgid "%s already exists."
+msgstr "%s이(가) 이미 존재합니다."
+
+#: class/Cosmosfarm_Members.class.php:1310
+msgid "Your email has been verified. Please log in."
+msgstr "이메일이 확인되었습니다. 로그인 해주세요."
+
+#: class/Cosmosfarm_Members.class.php:1315
+#: class/Cosmosfarm_Members.class.php:1318
+msgid "Congratulations! Register was successful."
+msgstr "축하합니다! 회원가입이 성공했습니다."
+
+#: class/Cosmosfarm_Members.class.php:1315
+msgid "An email sent to the email address you signed up with, please check."
+msgstr "가입한 이메일 주소로 발송된 이메일을 확인해주세요."
+
+#: class/Cosmosfarm_Members.class.php:1323
+msgid "You have been automatically logged out to protect your privacy."
+msgstr "개인정보 보호를 위해서 자동으로 로그아웃 되었습니다."
+
+#: class/Cosmosfarm_Members.class.php:1337
+msgid "Last login"
+msgstr "마지막 로그인"
+
+#: class/Cosmosfarm_Members.class.php:1340
+msgid "Notification"
+msgstr "알림"
+
+#: class/Cosmosfarm_Members_Activity_History_Table.class.php:70
+msgid "No history found."
+msgstr "기록이 없습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:96
+#: class/Cosmosfarm_Members_Controller.class.php:116
+#: class/Cosmosfarm_Members_Controller.class.php:136
+#: class/Cosmosfarm_Members_Controller.class.php:149
+#: class/Cosmosfarm_Members_Controller.class.php:162
+#: class/Cosmosfarm_Members_Controller.class.php:175
+#: class/Cosmosfarm_Members_Controller.class.php:188
+#: class/Cosmosfarm_Members_Controller.class.php:202
+#: class/Cosmosfarm_Members_Controller.class.php:215
+#: class/Cosmosfarm_Members_Controller.class.php:245
+#: class/Cosmosfarm_Members_Controller.class.php:277
+#: class/Cosmosfarm_Members_Controller.class.php:293
+#: class/Cosmosfarm_Members_Controller.class.php:352
+#: class/Cosmosfarm_Members_Controller.class.php:396
+#: class/Cosmosfarm_Members_Controller.class.php:629
+msgid "You will not be able to perform this task."
+msgstr "이 작업을 수행할 수 없습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:403
+#: class/Cosmosfarm_Members_Controller.class.php:721
+#: class/Cosmosfarm_Members_Controller.class.php:778
+#: class/Cosmosfarm_Members_Controller.class.php:825
+#: class/Cosmosfarm_Members_Controller.class.php:1077
+#: class/Cosmosfarm_Members_Controller.class.php:1130
+#: class/Cosmosfarm_Members_Controller.class.php:1153
+#: class/Cosmosfarm_Members_Controller.class.php:1176
+#: class/Cosmosfarm_Members_Controller.class.php:1199
+#: class/Cosmosfarm_Members_Controller.class.php:1233
+#: class/Cosmosfarm_Members_Controller.class.php:1273
+#: class/Cosmosfarm_Members_Controller.class.php:1296
+#: class/Cosmosfarm_Members_Controller.class.php:1319
+#: class/Cosmosfarm_Members_Controller.class.php:1342
+#: class/Cosmosfarm_Members_Controller.class.php:1376
+msgid "You do not have permission."
+msgstr "권한이 없습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:428
+msgid "This payment has been canceled."
+msgstr "결제가 취소되었습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:659
+msgid "Your account has been deleted. Thank you."
+msgstr "탈퇴되었습니다. 이용해 주셔서 감사합니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:724
+#: class/Cosmosfarm_Members_Controller.class.php:761
+#: class/Cosmosfarm_Members_Controller.class.php:801
+#: class/Cosmosfarm_Members_Controller.class.php:844
+#: class/Cosmosfarm_Members_Controller.class.php:1080
+#: class/Cosmosfarm_Members_Controller.class.php:1133
+#: class/Cosmosfarm_Members_Controller.class.php:1156
+#: class/Cosmosfarm_Members_Controller.class.php:1179
+#: class/Cosmosfarm_Members_Controller.class.php:1202
+#: class/Cosmosfarm_Members_Controller.class.php:1236
+#: class/Cosmosfarm_Members_Controller.class.php:1276
+#: class/Cosmosfarm_Members_Controller.class.php:1299
+#: class/Cosmosfarm_Members_Controller.class.php:1322
+#: class/Cosmosfarm_Members_Controller.class.php:1345
+#: class/Cosmosfarm_Members_Controller.class.php:1381
+msgid "Please Log in to continue."
+msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1090
+#: class/Cosmosfarm_Members_Controller.class.php:1142
+#: class/Cosmosfarm_Members_Controller.class.php:1165
+#: class/Cosmosfarm_Members_Controller.class.php:1223
+#: class/Cosmosfarm_Members_Controller.class.php:1285
+#: class/Cosmosfarm_Members_Controller.class.php:1308
+#: class/Cosmosfarm_Members_Controller.class.php:1366
+msgid "Has been changed."
+msgstr "변경했습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1115
+#: cosmosfarm-members.php:153
+msgid "Already in use."
+msgstr "이미 사용중입니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1118
+#: cosmosfarm-members.php:151
+msgid "Available."
+msgstr "사용 가능합니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1188
+#: class/Cosmosfarm_Members_Controller.class.php:1331
+msgid "Has been deleted."
+msgstr "삭제했습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1244
+#: class/Cosmosfarm_Members_Controller.class.php:1389
+msgid "Recipient is required."
+msgstr "받는사람은 필수입니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1247
+#: class/Cosmosfarm_Members_Controller.class.php:1392
+msgid "Content is required."
+msgstr "내용은 필수입니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1258
+msgid "A notification has been sent."
+msgstr "알림이 전송되었습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1261
+msgid "Notification failed to send."
+msgstr "알림을 보내지 못했습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1403
+msgid "Your message has been sent."
+msgstr "쪽지가 전송되었습니다."
+
+#: class/Cosmosfarm_Members_Controller.class.php:1406
+msgid "Message failed to send."
+msgstr "쪽지를 보내지 못했습니다."
+
+#: class/Cosmosfarm_Members_File_Handler.class.php:43
+msgid "Please upload an image file."
+msgstr "이미지 파일을 업로드해주세요."
+
+#: class/Cosmosfarm_Members_KBoard.class.php:40
+#: class/Cosmosfarm_Members_KBoard.class.php:122
+msgid "Notify me of new comments"
+msgstr "새로운 댓글 알림 받기"
+
+#: class/Cosmosfarm_Members_Meta_Box.class.php:23
+msgid "Page Restriction"
+msgstr "페이지 제한"
+
+#: class/Cosmosfarm_Members_Meta_Box.class.php:98
+#: class/Cosmosfarm_Members_Meta_Box.class.php:123
+msgid "Category Restriction"
+msgstr "카테고리 제한"
+
+#: class/Cosmosfarm_Members_Option.class.php:108
+msgid "Naver"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:109
+msgid "Facebook"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:110
+msgid "Kakao"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:111
+msgid "Google+"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:112
+msgid "Twitter"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:113
+msgid "Instagram"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Option.class.php:114
+msgid "Line"
+msgstr ""
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:208
+msgid "Change Avatar"
+msgstr "아바타 변경"
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:219
+#: class/Cosmosfarm_Members_Skin.class.php:71
+msgid "Orders"
+msgstr "주문"
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:222
+#: class/Cosmosfarm_Members_Page_Builder.class.php:227
+msgid "My Points"
+msgstr "보유 포인트"
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:227
+msgid "Thank you."
+msgstr "감사합니다."
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:240
+msgid ""
+"Press OK button to delete all information from DB.\\nDo you want to delete "
+"account?\\nYou can also re-register at any time."
+msgstr ""
+"확인 버튼을 누르면 모든 정보가 DB에서 삭제됩니다.\\n탈퇴 하시겠습니까?\\n또 "
+"언제든지 다시 등록 가능합니다."
+
+#: class/Cosmosfarm_Members_Page_Builder.class.php:240
+msgid "Delete account"
+msgstr "계정 삭제"
+
+#: class/Cosmosfarm_Members_Skin.class.php:79
+msgid "Notifications"
+msgstr "알림"
+
+#: class/Cosmosfarm_Members_Skin.class.php:87
+msgid "Messages"
+msgstr "쪽지"
+
+#: class/Cosmosfarm_Members_Skin.class.php:95
+msgid "Members"
+msgstr "회원"
+
+#: class/Cosmosfarm_Members_Subscription_Order_Table.class.php:141
+#: cosmosfarm-members.php:157 skin/default/orders-list.php:18
+#: skin/two/orders-list.php:18
+msgid "No orders found."
+msgstr "주문이 없습니다."
+
+#: class/Cosmosfarm_Members_Subscription_Order_Table.class.php:162
+msgid "Cancel orders"
+msgstr "주문 환불하기"
+
+#: class/Cosmosfarm_Members_Subscription_Order_Table.class.php:163
+msgid "Cancel and permanently delete"
+msgstr "환불하고 영구적으로 삭제하기"
+
+#: class/Cosmosfarm_Members_Subscription_Order_Table.class.php:164
+#: class/Cosmosfarm_Members_Subscription_Product_Table.class.php:65
+msgid "Delete Permanently"
+msgstr "영구적으로 삭제하기"
+
+#: class/Cosmosfarm_Members_Subscription_Product_Table.class.php:47
+msgid "No products found."
+msgstr "제품이 없습니다."
+
+#: cosmosfarm-members.php:139
+msgid "Please enter the postcode."
+msgstr "우편번호를 입력해주세요."
+
+#: cosmosfarm-members.php:140
+msgid "Please wait."
+msgstr "기다려주세요."
+
+#: cosmosfarm-members.php:141
+msgid "Yes"
+msgstr "예"
+
+#: cosmosfarm-members.php:142
+msgid "No"
+msgstr "아니요"
+
+#: cosmosfarm-members.php:144
+msgid "Your password is different."
+msgstr "비밀번호가 서로 다릅니다."
+
+#: cosmosfarm-members.php:145
+msgid "Please enter your password without spaces."
+msgstr "비밀번호는 공백 없이 입력해주세요."
+
+#: cosmosfarm-members.php:146
+msgid "It is a safe password."
+msgstr "안전한 비밀번호입니다."
+
+#: cosmosfarm-members.php:147
+msgid "Male"
+msgstr "남성"
+
+#: cosmosfarm-members.php:148
+msgid "Female"
+msgstr "여성"
+
+#: cosmosfarm-members.php:149
+msgid "Certificate Completed"
+msgstr "본인인증 완료"
+
+#: cosmosfarm-members.php:150
+msgid "Please fill out this field."
+msgstr "필드에 내용을 입력해주세요."
+
+#: cosmosfarm-members.php:152
+msgid "Not available."
+msgstr "사용할 수 없습니다."
+
+#: cosmosfarm-members.php:154
+msgid "Are you sure you want to delete?"
+msgstr "삭제 하시겠습니까?"
+
+#: cosmosfarm-members.php:155 skin/default/notifications-list.php:18
+#: skin/two/notifications-list.php:18
+msgid "No notifications found."
+msgstr "알림이 없습니다."
+
+#: cosmosfarm-members.php:156 skin/default/messages-list.php:17
+#: skin/two/messages-list.php:17
+msgid "No messages found."
+msgstr "쪽지가 없습니다."
+
+#: cosmosfarm-members.php:158 skin/default/users-list.php:17
+#: skin/two/users-list.php:17
+msgid "No users found."
+msgstr "사용자가 없습니다."
+
+#: cosmosfarm-members.php:159
+msgid "Please agree."
+msgstr "동의해주세요."
+
+#: cosmosfarm-members.php:160 skin/default/subscription-checkout.php:47
+#: skin/two/subscription-checkout.php:47
+msgid "Place order"
+msgstr "결제하기"
+
+#: skin/default/change-password-form.php:9 skin/two/change-password-form.php:9
+msgid "Change password"
+msgstr "비밀번호 변경"
+
+#: skin/default/change-password-form.php:11
+#: skin/two/change-password-form.php:11
+msgid "Current password"
+msgstr "현재 비밀번호"
+
+#: skin/default/change-password-form.php:16
+#: skin/two/change-password-form.php:16
+msgid "New password"
+msgstr "새로운 비밀번호"
+
+#: skin/default/change-password-form.php:21
+#: skin/two/change-password-form.php:21
+msgid "Confirm new password"
+msgstr "새로운 비밀번호 확인"
+
+#: skin/default/change-password-form.php:30
+#: skin/two/change-password-form.php:30
+msgid "Update Password"
+msgstr "비밀번호 변경 완료"
+
+#: skin/default/login-form.php:21 skin/two/login-form.php:16
+msgid "Password"
+msgstr "비밀번호"
+
+#: skin/default/login-timeout-popup.php:42 skin/two/login-timeout-popup.php:42
+msgid "Log out automatically."
+msgstr "자동으로 로그아웃 합니다."
+
+#: skin/default/login-timeout-popup.php:44 skin/two/login-timeout-popup.php:44
+msgid "Extend Time"
+msgstr "시간연장"
+
+#: skin/default/messages.php:46 skin/default/notifications.php:46
+#: skin/default/orders.php:34 skin/default/users.php:20
+#: skin/two/messages.php:46 skin/two/notifications.php:46
+#: skin/two/orders.php:34 skin/two/users.php:20
+msgid "More"
+msgstr "더보기"
+
+#: skin/default/social-buttons.php:3 skin/two/social-buttons.php:3
+msgid "Social Login"
+msgstr "소셜 로그인"
+
+#: skin/default/subscription-checkout-fields.php:173
+#: skin/two/subscription-checkout-fields.php:173
+msgid ""
+"I have confirmed my payment terms and I agree to proceed with the purchase."
+msgstr "결제조건을 확인하였으며 구매진행에 동의합니다."
+
+#: skin/default/users-list-item-default.php:9
+#: skin/two/users-list-item-default.php:9
+msgid "Points"
+msgstr "포인트"
+
+#~ msgid "Delete"
+#~ msgstr "삭제"
+
+#~ msgid "Login is disabled, try again in %s minute(s)."
+#~ msgstr "비밀번호를 연속해서 잘못 입력하여 로그인을 %s분간 차단합니다."
+
+#~ msgid "Current Password"
+#~ msgstr "현재 비밀번호"
+
+#~ msgid "Email address does not exist"
+#~ msgstr "이메일 주소가 존재하지 않습니다."
+
+#~ msgid "Logout"
+#~ msgstr "로그아웃"
+
+#~ msgid "Please fill in the required information."
+#~ msgstr "필수 정보를 입력해주세요."
+
+#~ msgid "KBoard 게시판 포인트"
+#~ msgstr "KBoard 게시판 포인트"
+
+#~ msgid "KBoard 게시판의 활동 포인트를 관리합니다."
+#~ msgstr "KBoard 게시판의 활동 포인트를 관리합니다."
+
+#~ msgid "KBoard 댓글 포인트"
+#~ msgstr "KBoard 댓글 포인트"
+
+#~ msgid "KBoard 댓글 포인트를 관리합니다."
+#~ msgstr "KBoard 댓글 포인트를 관리합니다."
+
+#~ msgid "This page is restricted from external access."
+#~ msgstr "이 페이지는 외부에서의 접근을 제한하고 있습니다."
+
+#~ msgid "복원파일의 데이터로 복구 되었습니다."
+#~ msgstr "복원파일의 데이터로 복구 되었습니다."
+
+#~ msgid "올바른 복원파일이 아닙니다."
+#~ msgstr "올바른 복원파일이 아닙니다."
+
+#~ msgid "파일 업로드에 실패 했습니다."
+#~ msgstr "파일 업로드에 실패 했습니다."
+
+#~ msgid "&#91;Pending&#93; %s"
+#~ msgstr "&#91;승인대기&#93; %s"
+
+#~ msgid "<p>&#91;Waiting for administrator Approval.&#93;</p>%s"
+#~ msgstr "<p>&#91;관리자의 승인을 기다리고 있습니다.&#93;</p>%s"
+
+#~ msgid "&#91;Pending&#93; Waiting for administrator Approval."
+#~ msgstr "&#91;승인대기&#93; 관리자의 승인을 기다리고 있습니다."
+
+#~ msgid "&#91;Waiting for administrator Approval.&#93;"
+#~ msgstr "&#91;관리자의 승인을 기다리고 있습니다.&#93;"
+
+#~ msgid "CAPTCHA is invalid."
+#~ msgstr "CAPTCHA가 올바르지 않습니다."
+
+#~ msgid "KBoard new document"
+#~ msgstr "KBoard 신규등록"
+
+#~ msgid "No upload path. Please enter board ID and initialize."
+#~ msgstr "업로드 경로가 없습니다. 게시판 ID를 입력하고 초기화 해주세요."
+
+#~ msgid "All"
+#~ msgstr "모두"
+
+#~ msgid "Published"
+#~ msgstr "발행됨"
+
+#~ msgid "Pending approval"
+#~ msgstr "승인 대기중"
+
+#~ msgid "Trash"
+#~ msgstr "휴지통"
+
+#~ msgid "Forum"
+#~ msgstr "게시판"
+
+#~ msgid "Title"
+#~ msgstr "제목"
+
+#~ msgid "Author"
+#~ msgstr "작성자"
+
+#~ msgid "Views"
+#~ msgstr "조회"
+
+#~ msgid "Secret"
+#~ msgstr "비밀글"
+
+#~ msgid "Notice"
+#~ msgstr "공지사항"
+
+#~ msgid "Date"
+#~ msgstr "작성일"
+
+#~ msgid "Status"
+#~ msgstr "상태"
+
+#~ msgid "Restore"
+#~ msgstr "복구"
+
+#~ msgid "Move to Trash"
+#~ msgstr "휴지통으로 이동"
+
+#~ msgid "Filter"
+#~ msgstr "필터"
+
+#~ msgid "The reply."
+#~ msgstr "댓글입니다."
+
+#~ msgid "Update"
+#~ msgstr "업데이트"
+
+#~ msgid "Please enter the author."
+#~ msgstr "작성자를 입력해주세요."
+
+#~ msgid "Please enter the password."
+#~ msgstr "비밀번호를 입력해주세요."
+
+#~ msgid "Please enter the content."
+#~ msgstr "내용을 입력해주세요."
+
+#~ msgid "File does not exist."
+#~ msgstr "파일이 없습니다."
+
+#~ msgid "%s 파일이 올바르게 업로드되지 않았습니다."
+#~ msgstr "%s 파일이 올바르게 업로드되지 않았습니다."
+
+#~ msgid "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+#~ msgstr "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+
+#~ msgid "%s 파일의 용량이 너무 큽니다."
+#~ msgstr "%s 파일의 용량이 너무 큽니다."
+
+#~ msgid "%s 파일 업로드 중 오류가 발생했습니다."
+#~ msgstr "%s 파일 업로드 중 오류가 발생했습니다."
+
+#~ msgid "No latestview found."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "이름"
+#~ msgstr "이름"
+
+#~ msgid "스킨"
+#~ msgstr "스킨"
+
+#~ msgid "게시글 표시 수"
+#~ msgstr "게시글 표시 수"
+
+#~ msgid "정렬 순서"
+#~ msgstr "정렬 순서"
+
+#~ msgid "생성일"
+#~ msgstr "생성일"
+
+#~ msgid "Edit"
+#~ msgstr "글수정"
+
+#~ msgid "Go home"
+#~ msgstr "홈으로"
+
+#~ msgid "Go back"
+#~ msgstr "뒤로가기"
+
+#~ msgid "Integration feed"
+#~ msgstr "통합 피드"
+
+#~ msgid ""
+#~ "Unable to connect to the update server, Cosmosfarm account please connect "
+#~ "again."
+#~ msgstr ""
+#~ "업데이트 서버에 연결할 수 없습니다, 코스모스팜 계정에 다시 연결하세요."
+
+#~ msgid ""
+#~ "Download file is decompression failed, please check directory and file "
+#~ "permissions."
+#~ msgstr "다운로드 파일 압축 해제 실패, 디렉토리 및 파일 권한을 확인하십시오."
+
+#~ msgid "File copy failed, directory requires write permission."
+#~ msgstr "파일 복사 실패, 디렉토리에 쓰기 권한이 필요합니다."
+
+#~ msgid "No document."
+#~ msgstr "글이 없습니다."
+
+#~ msgid "썸네일"
+#~ msgstr "썸네일"
+
+#~ msgid "게시판 이름"
+#~ msgstr "게시판 이름"
+
+#~ msgid "설치된 페이지"
+#~ msgstr "설치된 페이지"
+
+#~ msgid "읽기권한"
+#~ msgstr "읽기권한"
+
+#~ msgid "쓰기권한"
+#~ msgstr "쓰기권한"
+
+#~ msgid "댓글쓰기권한"
+#~ msgstr "댓글쓰기권한"
+
+#~ msgid "편집"
+#~ msgstr "편집"
+
+#~ msgid "페이지 보기"
+#~ msgstr "페이지 보기"
+
+#~ msgid "페이지 연결 없음"
+#~ msgstr "페이지 연결 없음"
+
+#~ msgid "제한없음"
+#~ msgstr "제한없음"
+
+#~ msgid "로그인 사용자"
+#~ msgstr "로그인 사용자"
+
+#~ msgid "선택된 관리자"
+#~ msgstr "선택된 관리자"
+
+#~ msgid "최고관리자"
+#~ msgstr "최고관리자"
+
+#~ msgid "직접선택"
+#~ msgstr "직접선택"
+
+#~ msgid "First"
+#~ msgstr "처음"
+
+#~ msgid "Last"
+#~ msgstr "마지막"
+
+#~ msgid "KBoard : 게시판"
+#~ msgstr "KBoard : 게시판"
+
+#~ msgid "KBoard 미디어 추가"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "게시판 생성"
+#~ msgstr "게시판 생성"
+
+#~ msgid "대시보드"
+#~ msgstr "대시보드"
+
+#~ msgid "게시판 목록"
+#~ msgstr "게시판 목록"
+
+#~ msgid "최신글 뷰 목록"
+#~ msgstr "최신글 뷰 목록"
+
+#~ msgid "최신글 뷰 생성"
+#~ msgstr "최신글 뷰 생성"
+
+#~ msgid "백업 및 복구"
+#~ msgstr "백업 및 복구"
+
+#~ msgid "전체 게시글"
+#~ msgstr "전체 게시글"
+
+#~ msgid "게시판 업데이트"
+#~ msgstr "게시판 업데이트"
+
+#~ msgid "스토어"
+#~ msgstr "스토어"
+
+#~ msgid "전체 댓글"
+#~ msgstr "전체 댓글"
+
+#~ msgid "KBoard Add Media"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "Next"
+#~ msgstr "다음"
+
+#~ msgid "Prev"
+#~ msgstr "이전"
+
+#~ msgid "Please enter the CAPTCHA."
+#~ msgstr "옆에 보이는 보안코드를 입력해주세요."
+
+#~ msgid "Please enter the name."
+#~ msgstr "이름을 입력해주세요."
+
+#~ msgid "Please enter the email."
+#~ msgstr "이메일을 입력해주세요."
+
+#~ msgid "You have already voted."
+#~ msgstr "이미 투표했습니다."
+
+#~ msgid "Newest"
+#~ msgstr "최신순"
+
+#~ msgid "Best"
+#~ msgstr "추천순"
+
+#~ msgid "Updated"
+#~ msgstr "업데이트순"
+
+#~ msgid "Viewed"
+#~ msgstr "조회순"
+
+#~ msgid "Did it help?"
+#~ msgstr "도움이 되었나요?"
+
+#~ msgid "Home"
+#~ msgstr "홈페이지"
+
+#~ msgid "Community"
+#~ msgstr "커뮤니티"
+
+#~ msgid "Support"
+#~ msgstr "고객지원"
+
+#~ msgid "Blog"
+#~ msgstr "블로그"
+
+#~ msgid "KBoard : 백업 및 복구"
+#~ msgstr "KBoard : 백업 및 복구"
+
+#~ msgid "백업파일 다운로드"
+#~ msgstr "백업파일 다운로드"
+
+#~ msgid ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+#~ msgstr ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+
+#~ msgid "백업파일 선택"
+#~ msgstr "백업파일 선택"
+
+#~ msgid "복구하기"
+#~ msgstr "복구하기"
+
+#~ msgid ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+#~ msgstr ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+
+#~ msgid "Attachments"
+#~ msgstr "첨부 파일"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+
+#~ msgid "KBoard : 전체 게시글"
+#~ msgstr "KBoard : 전체 게시글"
+
+#~ msgid "KBoard : 대시보드"
+#~ msgstr "KBoard : 대시보드"
+
+#~ msgid "시스템 설정"
+#~ msgstr "시스템 설정"
+
+#~ msgid "커뮤니티로 이동"
+#~ msgstr "커뮤니티로 이동"
+
+#~ msgid "KBoard : 최신글 뷰"
+#~ msgstr "KBoard : 최신글 뷰"
+
+#~ msgid "KBoard : 최신글 뷰 관리"
+#~ msgstr "KBoard : 최신글 뷰 관리"
+
+#~ msgid "KBoard : 게시판 목록"
+#~ msgstr "KBoard : 게시판 목록"
+
+#~ msgid "KBoard : 게시판 관리"
+#~ msgstr "KBoard : 게시판 관리"
+
+#~ msgid "기본설정"
+#~ msgstr "기본설정"
+
+#~ msgid "권한설정"
+#~ msgstr "권한설정"
+
+#~ msgid "고급설정"
+#~ msgstr "고급설정"
+
+#~ msgid "소셜댓글"
+#~ msgstr "소셜댓글"
+
+#~ msgid "확장설정"
+#~ msgstr "확장설정"
+
+#~ msgid "변경 사항 저장"
+#~ msgstr "변경 사항 저장"
+
+#~ msgid "KBoard : 스토어"
+#~ msgstr "KBoard : 스토어"
+
+#~ msgid "로그인"
+#~ msgstr "로그인"
+
+#~ msgid "코스모스팜 대시보드 입니다."
+#~ msgstr "코스모스팜 대시보드 입니다."
+
+#~ msgid "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+#~ msgstr "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+
+#~ msgid "KBoard 버전"
+#~ msgstr "KBoard 버전"
+
+#~ msgid "설치된 게시판 플러그인 버전"
+#~ msgstr "설치된 게시판 플러그인 버전"
+
+#~ msgid "최신"
+#~ msgstr "최신"
+
+#~ msgid "변경사항"
+#~ msgstr "변경사항"
+
+#~ msgid "설치된 댓글 플러그인 버전"
+#~ msgstr "설치된 댓글 플러그인 버전"
+
+#~ msgid "등록된 상품이 없습니다."
+#~ msgstr "등록된 상품이 없습니다."
+
+#~ msgid "Document"
+#~ msgstr "본문보기"
+
+#~ msgid "List"
+#~ msgstr "목록보기"
+
+#~ msgid "Password confirm"
+#~ msgstr "비밀번호 확인"
+
+#~ msgid "Like"
+#~ msgstr "좋아요"
+
+#~ msgid "Unlike"
+#~ msgstr "싫어요"
+
+#~ msgid "Print"
+#~ msgstr "인쇄"
+
+#~ msgid "Download %s"
+#~ msgstr "다운로드 %s"
+
+#~ msgid "Reply"
+#~ msgstr "답글쓰기"
+
+#~ msgid "KBoard is the best community software available for WordPress"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "Options"
+#~ msgstr "옵션"
+
+#~ msgid "Category"
+#~ msgstr "카테고리"
+
+#~ msgid "Select"
+#~ msgstr "선택"
+
+#~ msgid "CAPTCHA"
+#~ msgstr "CAPTCHA"
+
+#~ msgid "Photos"
+#~ msgstr "사진"
+
+#~ msgid "Thumbnail"
+#~ msgstr "썸네일"
+
+#~ msgid "Delete file"
+#~ msgstr "파일 삭제"
+
+#~ msgid "Attachment"
+#~ msgstr "첨부파일"
+
+#~ msgid "WP Search"
+#~ msgstr "통합검색"
+
+#~ msgid "Public"
+#~ msgstr "제목과 내용 검색허용"
+
+#~ msgid "Only title (secret document)"
+#~ msgstr "제목만 검색허용 (비밀글)"
+
+#~ msgid "Exclusion"
+#~ msgstr "통합검색 제외"
+
+#~ msgid "Back"
+#~ msgstr "돌아가기"
+
+#~ msgid "Save"
+#~ msgstr "저장하기"
+
+#~ msgid "Total"
+#~ msgstr "전체"
+
+#~ msgid "Votes"
+#~ msgstr "추천"
+
+#~ msgid "Content"
+#~ msgstr "내용"
+
+#~ msgid "New"
+#~ msgstr "글쓰기"
+
+#~ msgid "Name"
+#~ msgstr "이름"
+
+#~ msgid "Phone number"
+#~ msgstr "연락처"
+
+#~ msgid "Send"
+#~ msgstr "보내기"
+
+#~ msgid "이미지 선택하기"
+#~ msgstr "이미지 선택하기"
+
+#~ msgid "업로드"
+#~ msgstr "업로드"
+
+#~ msgid "선택된 이미지 삽입하기"
+#~ msgstr "선택된 이미지 삽입하기"
+
+#~ msgid "선택 삽입"
+#~ msgstr "선택 삽입"
+
+#~ msgid "전체선택"
+#~ msgstr "전체선택"
+
+#~ msgid "창닫기"
+#~ msgstr "창닫기"
+
+#~ msgid "선택됨"
+#~ msgstr "선택됨"
+
+#~ msgid "삽입"
+#~ msgstr "삽입"
+
+#~ msgid "삭제"
+#~ msgstr "삭제"
+
+#~ msgid "업로드된 이미지가 없습니다."
+#~ msgstr "업로드된 이미지가 없습니다."
+
+#~ msgid "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+#~ msgstr "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+
+#~ msgid "로딩중"
+#~ msgstr "로딩중"
+
+#~ msgid "선택한 이미지가 없습니다."
+#~ msgstr "선택한 이미지가 없습니다."
+
+#~ msgid "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+#~ msgstr "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+
+#~ msgid "이미지 파일만 업로드 가능합니다."
+#~ msgstr "이미지 파일만 업로드 가능합니다."
+
+#~ msgid "WordPress KBoard feed"
+#~ msgstr "워드프레스 KBoard 피드"
+
+#~ msgid "Unable to connect to Cosmosfarm server."
+#~ msgstr "코스모스팜 서버에 접속할 수 없습니다."
+
+#~ msgid "The CAPTCHA code is not valid. Please enter the CAPTCHA code."
+#~ msgstr "보안코드가 올바르지 않습니다. 보안 코드를 입력해주세요."
+
+#~ msgid "관리 권한이 없습니다."
+#~ msgstr "관리 권한이 없습니다."
+
+#~ msgid "게시물 표시"
+#~ msgstr "게시물 표시"
+
+#~ msgid "생성일자"
+#~ msgstr "생성일자"
+
+#~ msgid "답글입니다."
+#~ msgstr "답글입니다."
+
+#~ msgid "게시판"
+#~ msgstr "게시판"
+
+#~ msgid "제목/내용"
+#~ msgstr "제목/내용"
+
+#~ msgid "작성자"
+#~ msgstr "작성자"
+
+#~ msgid "조회수"
+#~ msgstr "조회수"
+
+#~ msgid "비밀글"
+#~ msgstr "비밀글"
+
+#~ msgid "공지사항"
+#~ msgstr "공지사항"
+
+#~ msgid "작성일"
+#~ msgstr "작성일"
+
+#~ msgid "게시판 변경"
+#~ msgstr "게시판 변경"
+
+#~ msgid "Open"
+#~ msgstr "페이지 열기"
+
+#~ msgid "예"
+#~ msgstr "예"
+
+#~ msgid "아니오"
+#~ msgstr "아니오"
+
+#~ msgid "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+#~ msgstr "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+
+#~ msgid "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+#~ msgstr "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+
+#~ msgid "새창열기"
+#~ msgstr "새창열기"
+
+#~ msgid "검색"
+#~ msgstr "검색"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+
+#~ msgid ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+#~ msgstr ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+
+#~ msgid "게시글이 없습니다."
+#~ msgstr "게시글이 없습니다."
+
+#~ msgid "최신글 뷰가 없습니다."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "게시판이 없습니다."
+#~ msgstr "게시판이 없습니다."
+
+#~ msgid "Vote"
+#~ msgstr "추천"
+
+#~ msgid "홈페이지"
+#~ msgstr "홈페이지"
+
+#~ msgid "커뮤니티"
+#~ msgstr "커뮤니티"
+
+#~ msgid "고객지원"
+#~ msgstr "고객지원"
+
+#~ msgid "블로그"
+#~ msgstr "블로그"
+
+#~ msgid "다음"
+#~ msgstr "다음"
+
+#~ msgid "이전"
+#~ msgstr "이전"
+
+#~ msgid "WordPress"
+#~ msgstr "워드프레스"
+
+#~ msgid "No backup privilege."
+#~ msgstr "백업 권한이 없습니다."
+
+#, fuzzy
+#~ msgid "No document UID."
+#~ msgstr "글이 없습니다."
+
+#, fuzzy
+#~ msgid "Total Reply"
+#~ msgstr "답글쓰기"
+
+#, fuzzy
+#~ msgid "It is a comment does not exist."
+#~ msgstr "게시판 아이디가 없습니다."
+
+#, fuzzy
+#~ msgid "Password confirmation"
+#~ msgstr "비밀번호 확인"
+
+#~ msgid "Language"
+#~ msgstr "언어"
+
+#~ msgid "The Best of WordPress Board"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "Title and content searchable"
+#~ msgstr "제목과 내용 검색허용"
+
+#~ msgid "Back to top"
+#~ msgstr "뒤로가기"
+
+#~ msgid "It is the wrong approach."
+#~ msgstr "잘못된 접근입니다."
+
+#~ msgid "You will need to login."
+#~ msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#~ msgid "Update the server connection fails, please reconnect the Cosmosfarm."
+#~ msgstr "업데이트 서버 연결 실패, 코스모스팜 계정을 다시 연결해 주세요."
+
+#~ msgid ""
+#~ "Failure to decompress the file, check the permissions of directories and "
+#~ "files."
+#~ msgstr "파일 압축 해제 실패, 디렉토리 및 파일의 권한을 확인하세요."
+
+#~ msgid "File copy failed"
+#~ msgstr "파일 복사 실패"
+
+#~ msgid "Must have write permissions in the directory."
+#~ msgstr "디렉토리에 쓰기 권한이 있어야 합니다."

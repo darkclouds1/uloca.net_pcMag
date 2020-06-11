@@ -159,9 +159,9 @@ button:hover {
 <p style='text-align:center; font-weight:bold; font-size:24px;'>ULOCA 관리자 유지관리 메뉴</p>
 <div class="container" style='width:500px; position: fixed; top: 60px; left: 100px;'>
   <!-- button class="btn-1" onclick='clickme("http://uloca.net/ulocawp/?page_id=440")'>게시판</button -->
+  <button class="btn-2" onclick='clickme("dailyData.php")'>일일자료수집</button>
   <button class="btn-1" onclick='clickme("getBid12.php")'>응찰기록/면허제한 수집</button><!-- ' -->
-  <button class="btn-2" onclick='clickme("http://uloca.net/ulocawp/?page_id=490")'>일일자료수집</button>
-  <button class="btn-3" onclick='clickme("http://uloca.net/ulocawp/?page_id=364")'>자동받기 실행</button>
+  <button class="btn-3" onclick='clickme("../ulocawp/?page_id=364")'>자동받기 실행</button>
   <!-- button class="btn-4" onclick='clickme("완료 getForecast.php")'>예측Data 수집 완료</button -->
   <button class="btn-4" onclick='clickme("ip-id.php")'>ip-id</button>
   <button class="btn-5" onclick='clickme("statistics1.php")'>통계자료</button>

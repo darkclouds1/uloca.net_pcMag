@@ -1,0 +1,115 @@
+
+uloca.txt --> D:\uloca\uloca.txt
+uloca2.txt --> uloca.net\g2b\uloca2.txt
+datas.txt --> uloca.net\datas\datas.txt
+
+
+2018/06/10 시작 --> 2018/06/28 방향전환 공공데이터 포털 이용-https://www.data.go.kr/
+http://uloca.net/g2b/scsBid.php
+6/28	혁신 창업리그라는 정부지원사업 신청해 놨어요. 9월중 발표
+
+크롬 강력 새로고침 (Ctrl+Shift+R)
+
+앞으로 개발 검토 대상 데이타
+전국CCTV표준데이터
+전국무료와이파이표준데이터
+전국농수축산물조사가격표준데이터
+전국농수축산물도매시장경락가격표준데이터
+습득물정보 조회 서비스
+
+전국입찰공고표준데이터
+전국낙찰정보표준데이터
+전국계약정보표준데이터
+
+getAjax(server,client) 만듬 in datas.js
+mail에 링크 걸기... javascript는 안됨
+$message='<a href="http://blueoceans.dothome.co.kr/">blueoceans</a>';
+
+
+----------- 20180731----------------------------------
+특정업체가 입찰한 전체 입찰금액 정보를 찾아서 그래프에 해당업체가 입찰한 금액을 표시 (다른 업체들의 입찰 금액으로 확율 밀도 그래프를 만들고, 해당 업체의 위치를 표시)
+x축은 금액, y축은 업체수
+
+키워드   용역,공사,물품
+나라장터/물품 개찰결과 상세조회
+나라장터->통합검색->개찰결과->'개찰완료'버튼에 응찰업체와 금액등이 있으나, 우리가 목표로 하는 서비스를 할려면 여기의 모든 데이타를 긁어와서 별도로 DB 만들고 나면 특정업체별로도 필요한 자료를 보여줄수 있을거 같음, 문제는 모든 데이타를 긁어오는것이 어디까지 자동으로 될런지 연구 하여야함. 100% 자동으로 긁어오기는 힘들거 같음.
+http://www.g2b.go.kr/pt/menu/selectSubFrame.do?framesrc=/pt/menu/frameTgong.do?url=http://www.g2b.go.kr:8067/contract/contList.jsp?searchType=1&orderbychk=B&contType=0&v_pagesize=10&page_no=1&bu_name=TcontSearchCall&geyak_way=&balzu_code=&giguan_name=&giguan_code=1&geyak_number=&pummung_name=%BA%CE%BB%EA&from_date=20180701&to_date=20180731&upmu_code=10&upmu_gubun=%B9%B0%C7%B0
+
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch?bidNtceNo=20160439522&ServiceKey=mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D&pageNo=1&numOfRows=10&inqryDiv=1&inqryBgnDt=20160101&inqryEndDt=20160701
+----------- 20180730----------------------------------
+설정에서 삭제, 수정은 완료.
+
+----------- 20180727----------------------------------
+특정 업체가 어디어디 입찰했는지, 얼마에 입찰앴는지, 낙찰은 받았는지 목록
+항목: 입찰정보와 동일하게...
+자동받기 수정--> '추가' 버튼후에 리스트 새로 고침...
+----------- 20180726----------------------------------
+plugins/runauto.php -------작업완료, 발송은 이메일로만, 카톡,문자 추후에...
+gmail 도 메일 발송됨. 약간의 오류가 포함됨. 다른 사이트는 이상없슴.
+----------- 20180725----------------------------------
+php file 전부 에러남 ----> 수정 다시 만듬...
+
+입찰정보	plugins/g2b.php
+	g2b/g2b.js	searchajax()	검색
+	g2b/sendmail2.php	mailMe2()	이메일
+	g2b/getBid.php	
+	datas/publicData.php
+	http://uloca.net/g2b/getBid.php?kwd=%EA%B9%80%EC%B2%9C&dminsttNm=%EA%B2%BD%EC%83%81%EB%B6%81%EB%8F%84%20%EA%B9%80%EC%B2%9C%EC%8B%9C&inqryBgnDt=20170725&inqryEndDt=20180725
+
+자동받기 설정
+	plugins/pubdatas.php
+	datas/datas.js	savepubsetup()
+	datas/insAutoSet.php 
+	datas/updAutoSet.php
+	datas/delAutoset.php
+자동 받기 실행	history, 일 1회
+	plugins/doauto.php
+	plugins/runauto.php -------작업요------------------------------------------------
+	classphp/g2bclass.php
+----------- 20180724----------------------------------
+자동 검색
+----------- 20180723 ----------------------------------
+자동받기 설정 화면
+테이블 3개
+회원관리 테이블	wp-users	아이디,비밀번호,이메일
+회원 회비 납부	autoPubAccnt	아이디,일시,은행,금액, 기간(개월)
+회원요구 설정	autoPubDatas	아이디,키워드,검색종류(입찰,사전규격,낙찰), 보내는 방법-메일(1),문자(3),카톡(2)
+회원 히스토리	autoPubHist	아이디,키워드,마지막 조회 일시
+
+
+----------- 20180720 ----------------------------------
+공공데이타 서브메뉴
+메뉴 추가 순서
+	1. plugins 에 폴더를만들고 같은 이름의 php 파일을 만든다.
+	2. 다음과 같이 쇼트코드를 만든다. add_shortcode('pubdatas_setup','pubdatas_setupShortCode');
+	3. function pubdatas_setupShortCode 안에 코딩한다.
+	4. 페이지 메뉴에서 메뉴 추가한다. [pubdatas_setup]
+	5. 플로그인에서 '활성화'한다.
+----------- 20180719 ----------------------------------
+공공데이타 메뉴 ajax
+----------- 20180718 ----------------------------------
+https://kr.000webhost.com/free-website-sign-up
+adws2413
+blueoceans.000webhostapp.com
+admin/adws2413
+
+wordpress.org/codex
+
+https://developers.kakao.com/	jayhmj@gmail.com/adws2413
+----------- 20180717 ----------------------------------
+회원관리 - 코스모스팜
+php server, 메일,문자, 카톡
+
+
+
+입찰정보 화면은 워드프레스 플러그인으로 전환해서 워드페이지에 포함시키면됩니다
+
+http://uloca.net/ulocawp/wp-content/plugins/kboard
+내 생각 -----------------------------------
+내가 작업하다가 생각 났는데,
+검색 조건을 설정해 놓으면, 이전에 검색한 일 시 이후부터 다시 자동으로 하루에 2-3번 검색해서 조건에 맞는게 있으면 메일이나 카톡으로 보내주게 하는 시스템
+그러면 내가 김천에 사는 업자이면 김천 혹은 경북에 새로 입찰 뜨는거는 죄다 카톡으로 받을수 있음. 
+그럴려면 회원가입을 받아야 하고, 설정화면이 필요 할테고, 서버에서는 일정시간에 검색해서 새 정보가 있으면 메일이나 문자,카톡으로 보내준다.(카톡이 제일 무난, 무료에 상세페이지 링크까지 문제 없슴)
+그러면 매일 몇번씩 서버에서는 자동으로 조회하니, 검색기간이나, 검색시간 신경쓸 필요 없고..
+월 회비를 받던지, 건당 얼마를 받던지 하고, (1개월은 무료 서비스?)
+기존 거는 이정도에서 사용자가 원하는대로 접속해서 검색하도록 내버려두고(보완 하는 정도로)...

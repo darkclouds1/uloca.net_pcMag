@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: http://www.uloca.net/sitemap.xml

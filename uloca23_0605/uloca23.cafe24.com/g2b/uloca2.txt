@@ -1,0 +1,155 @@
+
+uloca.txt --> D:\uloca\uloca.txt
+http://uloca.net/ulocawp/
+uloca22/w3m69p21!@
+blueoceans/adws2413!!
+
+2018/06/10 시작 --> 2018/06/28 방향전환 공공데이터 포털 이용-https://www.data.go.kr/
+http://uloca.net/g2b/scsBid.php
+6/28	혁신 창업리그라는 정부지원사업 신청해 놨어요. 9월중 발표
+
+크롬 강력 새로고침 (Ctrl+Shift+R)
+
+앞으로 개발 검토 대상 데이타
+전국CCTV표준데이터
+전국무료와이파이표준데이터
+전국농수축산물조사가격표준데이터
+전국농수축산물도매시장경락가격표준데이터
+습득물정보 조회 서비스
+
+전국입찰공고표준데이터
+전국낙찰정보표준데이터
+전국계약정보표준데이터
+----------- 20180717 ----------------------------------
+회원관리 - 코스모스팜
+php server, 메일,문자, 카톡
+
+회원관리 테이블	아이디,비밀번호,
+회원 회비 납부	아이디,일시,은행,금액
+회원요구 설정	아이디,키워드,검색종류(입찰,사전규격,낙찰), 보내는 방법-메일(1),문자(3),카톡(2)
+회원 히스토리	아이디,키워드,마지막 조회 일시,보낸방법
+
+
+
+입찰정보 화면은 워드프레스 플러그인으로 전환해서 워드페이지에 포함시키면됩니다
+
+http://uloca.net/ulocawp/wp-content/plugins/kboard
+내 생각 -----------------------------------
+내가 작업하다가 생각 났는데,
+검색 조건을 설정해 놓으면, 이전에 검색한 일 시 이후부터 다시 자동으로 하루에 2-3번 검색해서 조건에 맞는게 있으면 메일이나 카톡으로 보내주게 하는 시스템
+그러면 내가 김천에 사는 업자이면 김천 혹은 경북에 새로 입찰 뜨는거는 죄다 카톡으로 받을수 있음. 
+그럴려면 회원가입을 받아야 하고, 설정화면이 필요 할테고, 서버에서는 일정시간에 검색해서 새 정보가 있으면 메일이나 문자,카톡으로 보내준다.(카톡이 제일 무난, 무료에 상세페이지 링크까지 문제 없슴)
+그러면 매일 몇번씩 서버에서는 자동으로 조회하니, 검색기간이나, 검색시간 신경쓸 필요 없고..
+월 회비를 받던지, 건당 얼마를 받던지 하고, (1개월은 무료 서비스?)
+기존 거는 이정도에서 사용자가 원하는대로 접속해서 검색하도록 내버려두고(보완 하는 정도로)...
+----------- 20180713 ----------------------------------
+사전규격 완료
+<사전규격 항목 순서를 입찰정보와 맞춤>
+입찰정보: 공고번호, 공고명, 추정가격, 공고일시, 수요기관, 마감일시
+사전규격: 등록번호, 품명, 예산금액, 등록일시, 수요기관, 마감일시 사전규격에도 상세정보 링크 필요
+
+-- 메일에 링크 문제 -------
+----------- 20180709 ----------------------------------
+메일에도 입찰결과, 수요기관 링크 그대로 반영
+조회 조건 중 외자는 제외, 나머지는 옵션으로 할지 차후 결정	적용
+키워드 & 수요기관 & (사전, 용역,물품...) 에 해당하는 입찰정보를 조회 링크
+사전규격이 빠진듯... (입찰공고는 아니지만, 사전규격은 입찰전 미리 확인해야 하는 공고이므로 필요합니다) (트렐로에도 적어놨습니다)
+	 data.go.kr에 사전규격 API신청해 놨습니다.
+	이렇게 되면 속도가 더 늦어질것 같고,,,, 선택 옵션을 넣어야 할지 고민되네요.
+낙찰정보(수요기관 링크)==>입찰정보(키워드&수요기관) 목록으로
+
+----------- 20180707 ----------------------------------
+메일	scsBid,php, sendmail2.php, g2b.js	css 가 안먹힘
+수요기관 클릭 기능	기간 6개월 고정	getBid.php
+반응형웹 구현	테이블 때문에 가로는 문제가 없지만 세로는 문제.
+
+----------- 20180705 ----------------------------------
+할거
+체크박스 - 메일	scsBid,php, sendmai.php, g2b.js
+수요기관 클릭 기능 확인	getBid.php
+
+Chrome이 이 페이지에서 비정상적인 코드를 감지했으며 개인정보(예: 비밀번호, 전화번호, 신용카드) 보호를 위해 차단했습니다.
+	header('X-XSS-Protection: 0');	php file에 추가로 해결됨
+
+메일 '닫기' 버튼이 위에 붙는다. - expoler 위 / chrome 아래 에 나타남
+
+
+업무 구분
+
+----------- 20180704 ----------------------------------
+현재는 물품만 끌고옴, 용역,공사,외자
+낙찰된 목록 현황 용역조회
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusServcPPSSrch
+낙찰된 목록 현황 공사조회
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusCnstwkPPSSrch
+낙찰된 목록 현황 물품조회
+http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch
+목록 현황 외자조회
+ http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusFrgcptPPSSrch
+
+입찰공고물품조회
+http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch
+입찰공고외자조회
+http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoFrgcptPPSSrch
+입찰공고용역조회
+http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoServcPPSSrch
+입찰공고공사조회
+http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoCnstwkPPSSrch
+
+사전규격 물품 목록 조회
+http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoThngPPSSrch
+사전규격 공사 목록 조회
+http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoCnstwkPPSSrch
+사전규격 용역 목록 조회
+http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoServcPPSSrch
+사전규격 외자 목록 조회
+http://apis.data.go.kr/1230000/HrcspSsstndrdInfoService/getPublicPrcureThngInfoFrgcptPPSSrch
+
+----------- 20180703 ----------------------------------
+json php version <- javascript
+
+----------- 20180702 ----------------------------------
+할거
+	낙찰 - 이메일,엑셀
+	입찰 창
+
+	입찰에서 링크해야
+	1년이상 조회 되도록 했으면 합니다.(건수 100건이하) 100건 이상이면 년도로 검색하라고 하고....
+	이왕 하시는 김에 콘트롤이 동적을 배치되도록 해주세요.
+	일단 입찰정보 검색을 먼저해서,,, 상세링크 및 낙찰정보 링크로 구현하도록 하시죠
+	1. 조회 속도에 문제가 있는지, 아니면 검색조건에 문제가 있던지.....
+	2. 공고번호 링크 —> 상세낙찰정보
+	3. 기본적으로 모바일에서도 보일수 있도록, 화면 콘트롤들이 동적으로 크기 변해야 할 것 같습니다.
+
+----------- 20180701 ----------------------------------
+입찰정보
+요청주소  http://apis.data.go.kr/1230000/BidPublicInfoService/getBidPblancListInfoThngPPSSrch
+서비스URL  http://apis.data.go.kr/1230000/BidPublicInfoService
+https://www.data.go.kr/subMain.jsp?param=T1BFTkFQSUAxNTAwMDgwMg==#/L3B1YnIvcG90L215cC9Jcm9zTXlQYWdlL29wZW5EZXZHdWlkZVBhZ2UkQF4wMTJtMSRAXnB1YmxpY0RhdGFQaz0xNTAwMDgwMiRAXnB1YmxpY0RhdGFEZXRhaWxQaz11ZGRpOjY0ZWNjMDI2LWEyODItNDNkZi1iMGUxLWY1OTQxN2M2MDZjZV8yMDE4MDUxMTEwMDUkQF5vcHJ0aW5TZXFObz0yMDI2OCRAXm1haW5GbGFnPXRydWU=
+
+낙찰된 목록 현황 물품조회
+요청주소  http://apis.data.go.kr/1230000/ScsbidInfoService/getScsbidListSttusThngPPSSrch
+서비스URL  http://apis.data.go.kr/1230000/ScsbidInfoService
+
+----------- 20180629 ----------------------------------
+오픈API 서비스명	나라장터 낙찰정보서비스 (ScsbidInfoService)
+오픈API 서비스명	나라장터 입찰공고정보서비스 (BidPublicInfoService)
+
+데이터셋 > OPEN API 상세기능 --> 셈플 프로그램
+일찰정보 항목: no. 구분, 공고번호, 공고명, 추정가격, 공고일시, 수요기관, 마감일시. + 낙찰자상호명
+우리는 여기 목록에서 상세가기 및 낙찰정보로 링크하는 걸로..
+----------- 20180628 ----------------------------------
+혁신 창업리그라는 정부지원사업 신청해 놨어요
+
+*개찰결과, 최종낙찰자 목록에서는 링크가 잘 안되요
+ -> 항목: 공고일, 수요기관, 제목, 개찰일, 낙찰자상호명 <-- 개찰일 역순으로
+ -> 상세 링크 (현재 링크 안됨)
+
+* 이메일: 원하는 이메일로 보내기
+* 기능 추가
+ - 엑셀다운로드 
+
+https://www.data.go.kr/
+나라장터 입찰공고정보서비스 mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+나라장터 낙찰 정보 서비스  mCQAlSkRqyZb00fZumkGyJin7uoOD7C8%2BKNRtfUUDEnnJa4p7c71m%2B%2F1h7cmFOFn87UCrnoTxzFPsd81kLuZww%3D%3D
+data.go.kr / id/pwd :  darkcloud / w3m69p21!@
